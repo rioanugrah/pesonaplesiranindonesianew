@@ -100,23 +100,24 @@ Pesona Plesiran Indonesia adalah Platform Digital Marketing milenial yang menyed
     </div>
 </section>
 
-{{-- <section class="space package-layout1">
+<section class="space package-layout1">
     <div class="container ">
         <div class="row">
             <div class="col-lg-12 wow fadeInUp wow-animated" data-wow-delay="0.3s"
                 style="visibility: visible; animation-delay: 0.3s; animation-name: fadeInUp;">
                 <div class="package-top">
                     <div class="title-area">
-                        <span class="sec-subtitle">Festered Tours</span>
-                        <h2 class="sec-title h1">Most Favorite Tour Place</h2>
+                        <span class="sec-subtitle">Trip Bromo</span>
+                        <h2 class="sec-title h1">Paket Trip Bromo</h2>
                     </div>
-                    <div class="title-btn">
+                    {{-- <div class="title-btn">
                         <a class="vs-btn style4" href="tour-booking.html">View all place</a>
-                    </div>
+                    </div> --}}
                 </div>
             </div>
         </div>
-        <div class="package-style2">
+        <div id="data_bromo"></div>
+        {{-- <div class="package-style2">
             <div class="row gx-5 align-items-center">
                 <div class="col-lg-4">
                     <div class="package-img">
@@ -277,9 +278,10 @@ Pesona Plesiran Indonesia adalah Platform Digital Marketing milenial yang menyed
                     </div>
                 </div>
             </div>
-        </div>
+        </div> --}}
     </div>
-</section> --}}
+</section>
+
 {{-- <section class="tour--layout4 space space-extra-bottom shape-mockup-wrap">
     <div class="container ">
         <div class="row justify-content-center text-center">
@@ -1096,4 +1098,109 @@ Pesona Plesiran Indonesia adalah Platform Digital Marketing milenial yang menyed
         </div>
     </div>
 </section> --}}
+@endsection
+@section('script')
+    <script>
+        function bromo() {
+            $.ajax({
+                type: 'GET',
+                url: "{{ route('api.bromo') }}",
+                contentType: "application/json;  charset=utf-8",
+                cache: false,
+                beforeSend: function(){
+                    document.getElementById('data_bromo').innerHTML = 'Loading ...';
+                },
+                success: function(result){
+                    if (result.success == true) {
+                        // console.table(result.data);
+                        var data_bromo = result.data;
+                        var txt_bromo = "";
+                        data_bromo.forEach(bromo);
+
+                        function bromo(value,index){
+                            txt_bromo = txt_bromo+'<div class="package-style2">';
+                            txt_bromo = txt_bromo+  '<div class="row gx-5 align-items-center">';
+                            txt_bromo = txt_bromo+      '<div class="col-lg-4">';
+                            txt_bromo = txt_bromo+          '<div class="package-img">';
+                            txt_bromo = txt_bromo+              '<a href="javascript:void()">';
+                            txt_bromo = txt_bromo+                  '<img src="{{ asset("frontend/new_1/assets/posting/bromo.webp") }}" style="height: 180px; object-fit: cover;">';
+                            txt_bromo = txt_bromo+              '<a>';
+                            txt_bromo = txt_bromo+              '<div class="price-box">';
+                            txt_bromo = txt_bromo+                  '<p class="price-text">Form</p>';
+                            txt_bromo = txt_bromo+                  '<span class="package-price">'+value.text_price+'</span>';
+                            txt_bromo = txt_bromo+              '</div>';
+                            txt_bromo = txt_bromo+              '<div class="package-icon">';
+                            txt_bromo = txt_bromo+                  '<a href="javascript:void()">';
+                            txt_bromo = txt_bromo+                      '<i class="far fa-arrow-right"></i>';
+                            txt_bromo = txt_bromo+                  '</a>';
+                            txt_bromo = txt_bromo+              '</div>';
+                            txt_bromo = txt_bromo+          '</div>';
+                            txt_bromo = txt_bromo+      '</div>';
+                            txt_bromo = txt_bromo+      '<div class="col-lg-3">';
+                            txt_bromo = txt_bromo+          '<div class="package-content">';
+                            txt_bromo = txt_bromo+              '<h3 class="package-title"><a href="javascript:void()">'+value.title+'</a></h3>';
+                                                                if (value.category_trip == 'Publik') {
+                            txt_bromo = txt_bromo+                  '<p class="package-text">Kategori Trip : Open Trip</p>';
+                                                                }else{
+                            txt_bromo = txt_bromo+                  '<p class="package-text">Kategori Trip : Private Trip</p>';
+                                                                }
+                            txt_bromo = txt_bromo+              '<strong>Destinasi :</strong>';
+                                                                var destination = value.destination;
+                                                                var txt_destination = "";
+                                                                destination.forEach(data_destination);
+
+                                                                function data_destination(dest){
+                                                                    txt_destination = txt_destination+'<li>'+dest.destination+'</li>';
+                                                                }
+
+                            txt_bromo = txt_bromo+              '<ol>';
+                            txt_bromo = txt_bromo+                  txt_destination;
+                            txt_bromo = txt_bromo+              '</ol>';
+                            // txt_bromo = txt_bromo+              '<strong>Include :</strong>';
+                            //                                     var include = value.include;
+                            //                                     var txt_include = "";
+                            //                                     include.forEach(data_include);
+
+                            //                                     function data_include(inc){
+                            //                                         txt_include = txt_include+'<li>'+inc.include+'</li>';
+                            //                                     }
+
+                            // txt_bromo = txt_bromo+              '<ol>';
+                            // txt_bromo = txt_bromo+                  txt_include;
+                            // txt_bromo = txt_bromo+              '</ol>';
+                            txt_bromo = txt_bromo+          '</div>';
+                            txt_bromo = txt_bromo+      '</div>';
+                            txt_bromo = txt_bromo+      '<div class="col-lg-5">';
+                            txt_bromo = txt_bromo+          '<div class="package-meta">';
+                            txt_bromo = txt_bromo+              '<ul>';
+                            txt_bromo = txt_bromo+                  '<li>';
+                            txt_bromo = txt_bromo+                      '<a href="javascript:void()"><i class="fas fa-user-friends"></i><strong>Min:</strong>'+value.max_quota+' Pax</a>';
+                            txt_bromo = txt_bromo+                  '</li>';
+                            txt_bromo = txt_bromo+                  '<li>';
+                            txt_bromo = txt_bromo+                      '<a href="javascript:void()"><i class="fab fa-telegram-plane"></i><strong>Tanggal Berangkat:</strong>'+value.tanggal+'</a>';
+                            txt_bromo = txt_bromo+                  '</li>';
+                            txt_bromo = txt_bromo+                  '<li>';
+                            txt_bromo = txt_bromo+                      '<a href="javascript:void()"><i class="fas fa-map-marker-alt"></i><strong>Meeting Point:</strong>'+value.meeting_point+'</a>';
+                            txt_bromo = txt_bromo+                  '</li>';
+                            txt_bromo = txt_bromo+              '</ul>';
+                            txt_bromo = txt_bromo+          '</div>';
+                            txt_bromo = txt_bromo+      '</div>';
+                            txt_bromo = txt_bromo+  '</div>';
+                            txt_bromo = txt_bromo+'</div>';
+                        }
+
+                        document.getElementById('data_bromo').innerHTML = txt_bromo;
+                    }else{
+                        document.getElementById('data_bromo').innerHTML = result.message_content;
+                    }
+                },
+                error: function (request, status, error) {
+
+                }
+            })
+        }
+        $(document).ready(function(){
+            bromo();
+        });
+    </script>
 @endsection

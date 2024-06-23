@@ -14,6 +14,14 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
+// Route::middleware('auth:api')->get('/user', function (Request $request) {
+//     return $request->user();
+// });
+
+Route::domain(parse_url(env('APP_URL'), PHP_URL_HOST))->group(function () {
+    Route::prefix('v1')->group(function(){
+        Route::prefix('bromo')->group(function(){
+            Route::get('/', [App\Http\Controllers\v1\BromoController::class, 'api_index'])->name('api.bromo');
+        });
+    });
 });

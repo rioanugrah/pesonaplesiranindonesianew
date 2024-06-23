@@ -24,7 +24,7 @@ use Illuminate\Support\Facades\Route;
 Auth::routes([
     'verify' => true,
     // 'login' => false,
-    'register' => false
+    'register' => true
 ]);
 
 Route::domain(parse_url(env('APP_URL'), PHP_URL_HOST))->group(function () {
@@ -36,4 +36,9 @@ Route::domain(parse_url(env('APP_URL'), PHP_URL_HOST))->group(function () {
     Route::get('contact-us', [App\Http\Controllers\FrontendController::class, 'contact'])->name('frontend.contact');
     Route::post('contact-us/send-mail', [App\Http\Controllers\FrontendController::class, 'contact_send_mail'])->name('frontend.contact_send_mail');
 
+    Route::group(['middleware' => 'auth'], function () {
+        Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+    });
+
+    Route::post('mark-as-read', 'NotifikasiController@markNotification')->name('markNotification');
 });

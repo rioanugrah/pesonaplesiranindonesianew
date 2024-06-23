@@ -33,7 +33,8 @@
     <link rel="stylesheet" href="{{ $asset }}/assets/css/fontawesome.min.css">
     <link rel="stylesheet" href="{{ $asset }}/assets/css/magnific-popup.min.css">
     <link rel="stylesheet" href="{{ $asset }}/assets/css/slick.min.css">
-    <link rel="stylesheet" href="{{ $asset }}/assets/css/style.css">
+    {{-- <link rel="stylesheet" href="{{ $asset }}/assets/css/style.css"> --}}
+    <link rel="stylesheet" href="{{ $asset }}/assets/css/style_new.css">
 
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-HJ8T1V4S3H"></script>
     <script async
