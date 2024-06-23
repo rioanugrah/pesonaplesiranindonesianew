@@ -18,7 +18,7 @@ class BromoController extends Controller
 
     public function api_index()
     {
-        $bromos = $this->bromo->all();
+        $bromos = $this->bromo->orderBy('tanggal','asc')->get();
         // dd($bromos);
         if ($bromos->isEmpty()) {
             return response()->json([
