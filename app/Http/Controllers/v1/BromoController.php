@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Bromo;
 use \Carbon\Carbon;
+use \Carbon\CarbonPeriod;
 
 class BromoController extends Controller
 {
@@ -18,8 +19,15 @@ class BromoController extends Controller
 
     public function api_index()
     {
-        $bromos = $this->bromo->orderBy('tanggal','asc')->get();
-        // dd($bromos);
+        $live_date = Carbon::today()->addDays(0);
+        $week_start = $live_date->startOfWeek()->format('Y-m-d');
+        $week_end = $live_date->endOfWeek()->format('Y-m-d');
+
+        $bromos = $this->bromo->whereDate('tanggal','>=',$week_start)
+                        ->whereDate('tanggal','<=',$week_end)
+                        ->orderBy('tanggal','asc')
+                        ->get();
+                        // dd($bromos);
         if ($bromos->isEmpty()) {
             return response()->json([
                 'success' => false,
@@ -45,11 +53,11 @@ class BromoController extends Controller
                 'discount' => $bromo->discount,
             ];
         }
-
         return response()->json([
             'success' => true,
             'data' => $data
         ]);
+
     }
 
     public function b_index(Request $request)
