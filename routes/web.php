@@ -24,7 +24,7 @@ use Illuminate\Support\Facades\Route;
 Auth::routes([
     'verify' => true,
     // 'login' => false,
-    'register' => true
+    'register' => false
 ]);
 
 Route::domain(parse_url(env('APP_URL'), PHP_URL_HOST))->group(function () {
