@@ -28,8 +28,12 @@ Auth::routes([
 ]);
 
 Route::domain(parse_url(env('APP_URL'), PHP_URL_HOST))->group(function () {
-    Route::get('/', function(){
-        return view('frontend.index');
-    })->name('frontend');
-    // Route::get('/','v2\FrontendController@home')->name('frontend');
+    // Route::get('/', function(){
+    //     return view('frontend.index');
+    // })->name('frontend');
+    Route::get('/', [App\Http\Controllers\FrontendController::class, 'index'])->name('frontend');
+    Route::get('about-us', [App\Http\Controllers\FrontendController::class, 'about'])->name('frontend.about');
+    Route::get('contact-us', [App\Http\Controllers\FrontendController::class, 'contact'])->name('frontend.contact');
+    Route::post('contact-us/send-mail', [App\Http\Controllers\FrontendController::class, 'contact_send_mail'])->name('frontend.contact_send_mail');
+
 });

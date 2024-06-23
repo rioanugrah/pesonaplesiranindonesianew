@@ -1,5 +1,5 @@
 <header class="vs-header header-layout5">
-    <div class="header-top">
+    {{-- <div class="header-top">
         <div class="container">
             <div class="row justify-content-between align-items-center">
                 <div class="col-auto">
@@ -9,7 +9,7 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div> --}}
     <div class="header-middle">
         <div class="container">
             <div class="row align-items-center justify-content-between">

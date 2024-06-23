@@ -9,7 +9,7 @@
                     <div class="widget footer-widget">
                         <div class="vs-widget-about">
                             <div class="footer-logo text-center d-block text-md-start">
-                                <a href="index.html"><img src="{{ asset('frontend/logo/logo_plesiran_new_white.png') }}" alt="Logo Pesona Plesiran Indonesia White"
+                                <a href="{{ route('frontend') }}"><img src="{{ asset('frontend/logo/logo_plesiran_new_white.png') }}" alt="Logo Pesona Plesiran Indonesia White"
                                         class="logo" /></a>
                             </div>
                             <p class="footer-text">Pesona Plesiran Indonesia adalah Platform Digital Marketing milenial yang menyediakan kemudahan dalam mendapat informasi dan pemesanan Akomodasi, Destinasi, Restoran, Transportasi, Travel dan MICE se-Indonesia.</p>
@@ -24,8 +24,8 @@
                         <h3 class="widget_title">Perusahaan</h3>
                         <div class="menu-all-pages-container">
                             <ul class="menu">
-                                <li><a href="javascript:void()">Tentang Kami</a></li>
-                                <li><a href="javascript:void()">Kontak Kami</a></li>
+                                <li><a href="{{ route('frontend.about') }}">Tentang Kami</a></li>
+                                <li><a href="{{ route('frontend.contact') }}">Kontak Kami</a></li>
                                 <li><a href="javascript:void()">Kebijakan Privasi</a></li>
                             </ul>
                         </div>
