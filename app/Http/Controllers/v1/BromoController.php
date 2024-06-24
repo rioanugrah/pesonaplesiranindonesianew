@@ -8,6 +8,10 @@ use App\Models\Bromo;
 use \Carbon\Carbon;
 use \Carbon\CarbonPeriod;
 
+use DataTables;
+use Notification;
+use Validator;
+
 class BromoController extends Controller
 {
     function __construct(
@@ -62,6 +66,141 @@ class BromoController extends Controller
 
     public function b_index(Request $request)
     {
+        if ($request->ajax()) {
+            $data = Bromo::all();
+            return DataTables::of($data)
+                    ->addIndexColumn()
+                    ->addColumn('status', function($row){
+                        // return 'Rp. '.number_format($row->price,0,',','.');
+                        if ($row->tanggal >= Carbon::now()) {
+                            $status = '<span class="badge bg-success">OPEN</span>';
+                        }else{
+                            $status = '<span class="badge bg-danger">CLOSED</span>';
+                        }
+                        return $status;
+                    })
+                    ->addColumn('price', function($row){
+                        return 'Rp. '.number_format($row->price,0,',','.');
+                    })
+                    ->addColumn('action', function($row){
+                        $btn = '<div class="btn-group">';
+                        $btn .= '<button onclick="reupload(`'.$row->id.'`)" class="btn btn-info btn-xs"><i class="fas fa-file"></i> Re-upload</button>';
+                        // $btn .= '<a href='.route('tour.edit',['id' => $row->id]).' class="btn btn-warning btn-xs"><i class="fas fa-edit"></i></a>';
+                        // $btn .= '<button onclick="hapus(`'.$row->id.'`)" class="btn btn-danger btn-xs"><i class="fas fa-trash"></i></button>';
+                        $btn .= '</div>';
+                        return $btn;
+                    })
+                    ->rawColumns(['action','status'])
+                    ->make(true);
+        }
 
+        return view('backend.paket_wisata.bromo.index');
+    }
+
+    public function b_simpan(Request $request)
+    {
+        $rules = [
+            'tanggal'  => 'required',
+            'title'  => 'required',
+            'meeting_point'  => 'required',
+            'category_trip'  => 'required',
+            'quota'  => 'required',
+            'max_quota'  => 'required',
+            'price'  => 'required',
+            'discount'  => 'required',
+            'group_destination'  => 'required',
+            'group_include'  => 'required',
+            'group_exclude'  => 'required',
+        ];
+
+        $messages = [
+            'tanggal.required'   => 'Tanggal Dibuat wajib diisi.',
+            'title.required'   => 'Judul wajib diisi.',
+            'meeting_point.required'   => 'Meeting Point wajib diisi.',
+            'category_trip.required'  => 'Kategori Trip wajib diisi.',
+            'quota.required'   => 'Kuota wajib diisi.',
+            'max_quota.required'   => 'Maksimal Kuota wajib diisi.',
+            'price.required'   => 'Harga wajib diisi.',
+            'discount.required'   => 'Diskon wajib diisi.',
+            'group_destination.required'   => 'Destination wajib diisi.',
+            'group_include.required'   => 'Include wajib diisi.',
+            'group_exlude.required'   => 'Exclude wajib diisi.',
+        ];
+
+        $validator = Validator::make($request->all(), $rules, $messages);
+        if ($validator->passes()) {
+            $input['id'] = Str::uuid()->toString();
+            $input['slug'] = Str::slug($request->title);
+            $input['tanggal'] = $request->tanggal;
+            $input['title'] = $request->title;
+            $input['meeting_point'] = $request->meeting_point;
+            $input['category_trip'] = $request->category_trip;
+            $input['quota'] = $request->quota;
+            $input['max_quota'] = $request->max_quota;
+            $input['destination'] = json_encode($request->group_destination);
+            $input['include'] = json_encode($request->group_include);
+            $input['exclude'] = json_encode($request->group_exclude);
+            $input['price'] = $request->price;
+            $input['discount'] = $request->discount;
+
+            $bromo = $this->bromo->create($input);
+            if ($bromo) {
+                $message_title="Berhasil !";
+                $message_content="Paket Bromo Berhasil Dibuat";
+                $message_type="success";
+                $message_succes = true;
+            }
+
+            $array_message = array(
+                'success' => $message_succes,
+                'message_title' => $message_title,
+                'message_content' => $message_content,
+                'message_type' => $message_type,
+            );
+
+            return $array_message;
+        }
+
+        return response()->json([
+            'success' => false,
+            'error' => $validator->errors()->all()
+        ]);
+    }
+
+    public function b_reupload_simpan(Request $request)
+    {
+        $bromo = $this->bromo->find($request->reupload_id);
+
+        $input['id'] = Str::uuid()->toString();
+        $input['tanggal'] = $request->reupload_tanggal;
+        $input['title'] = $request->reupload_title;
+        $input['slug'] = Str::slug($request->reupload_title);
+        $input['meeting_point'] = $request->reupload_meeting_point;
+        $input['category_trip'] = $request->reupload_category_trip;
+        $input['quota'] = $request->reupload_quota;
+        $input['max_quota'] = $request->reupload_max_quota;
+        $input['destination'] = $bromo->destination;
+        $input['include'] = $bromo->include;
+        $input['exclude'] = $bromo->exclude;
+        $input['price'] = $request->reupload_price;
+        $input['discount'] = $request->reupload_discount;
+
+        $reupload = $this->bromo->create($input);
+
+        if ($reupload) {
+            $message_title="Berhasil !";
+            $message_content="Paket Travelling ".$request->title." Berhasil Dibuat";
+            $message_type="success";
+            $message_succes = true;
+        }
+
+        $array_message = array(
+            'success' => $message_succes,
+            'message_title' => $message_title,
+            'message_content' => $message_content,
+            'message_type' => $message_type,
+        );
+
+        return response()->json($array_message);
     }
 }

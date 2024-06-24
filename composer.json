@@ -9,14 +9,20 @@
     "license": "MIT",
     "require": {
         "php": "^7.3",
+        "anhskohbo/no-captcha": "^3.4",
         "fideloper/proxy": "^4.2",
         "fruitcake/laravel-cors": "^2.0",
         "guzzlehttp/guzzle": "^7.0.1",
         "laravel/framework": "^8.0",
+        "laravel/socialite": "^5.3",
+        "shetabit/visitor": "^3.1",
+        "spatie/laravel-activitylog": "^3.17",
         "laravel/tinker": "^2.0",
         "laravel/ui": "^3.4",
+        "laravelcollective/html": "^6.4",
         "martinbutt/laravel-adsense": "^2.0",
-        "spatie/laravel-permission": "^5.11"
+        "spatie/laravel-permission": "^5.11",
+        "yajra/laravel-datatables-oracle": "~9.0"
     },
     "require-dev": {
         "facade/ignition": "^2.3.6",

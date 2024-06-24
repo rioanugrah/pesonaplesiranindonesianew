@@ -18,8 +18,13 @@ class CreateUsersTable extends Migration
             $table->uuid('generate');
             $table->string('name');
             $table->string('email')->unique();
+            $table->string('socialite_id')->nullable();
+            $table->string('socialite_name')->nullable();
+            $table->string('profile')->nullable();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
+            $table->string('api_token', 80)->nullable();
+            $table->string('device_token')->nullable();
             $table->rememberToken();
             $table->timestamps();
             $table->softDeletes();

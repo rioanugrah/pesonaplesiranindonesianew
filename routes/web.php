@@ -24,7 +24,7 @@ use Illuminate\Support\Facades\Route;
 Auth::routes([
     'verify' => true,
     // 'login' => false,
-    'register' => false
+    'register' => true
 ]);
 
 Route::domain(parse_url(env('APP_URL'), PHP_URL_HOST))->group(function () {
@@ -37,8 +37,21 @@ Route::domain(parse_url(env('APP_URL'), PHP_URL_HOST))->group(function () {
     Route::post('contact-us/send-mail', [App\Http\Controllers\FrontendController::class, 'contact_send_mail'])->name('frontend.contact_send_mail');
 
     Route::group(['middleware' => 'auth'], function () {
-        Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+        Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->middleware('verified')->name('home');
+        Route::prefix('bromo')->group(function(){
+            Route::get('/', [App\Http\Controllers\v1\BromoController::class, 'b_index'])->middleware('verified')->name('bromo.b_index');
+            Route::post('simpan', [App\Http\Controllers\v1\BromoController::class, 'b_simpan'])->middleware('verified')->name('bromo.b_b_simpan');
+            Route::post('reupload/simpan', [App\Http\Controllers\v1\BromoController::class, 'b_reupload_simpan'])->middleware('verified')->name('bromo.reupload_simpan');
+        });
+        Route::prefix('permissions')->group(function(){
+            Route::get('/', [App\Http\Controllers\v1\PermissionsController::class, 'index'])->name('permissions')->middleware('verified');
+            Route::post('simpan', [App\Http\Controllers\v1\PermissionsController::class, 'simpan'])->name('permissions.simpan')->middleware('verified');
+        });
+        Route::resource('users', App\Http\Controllers\v1\UsersController::class)->middleware('verified');
+        Route::resource('roles', App\Http\Controllers\v1\RolesController::class)->middleware('verified');
     });
 
-    Route::post('mark-as-read', 'NotifikasiController@markNotification')->name('markNotification');
+    Route::get('redirect/{driver}', [App\Http\Controllers\Auth\LoginController::class, 'redirectToProvider'])->name('login_google');
+    Route::get('{driver}/callback', [App\Http\Controllers\Auth\LoginController::class, 'handleProviderCallback'])->name('login.callback');
+    Route::post('mark-as-read', [App\Http\Controllers\NotifikasiController::class, 'markNotification'])->name('markNotification');
 });
