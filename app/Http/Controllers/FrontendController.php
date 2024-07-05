@@ -3,10 +3,21 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Http\Controllers\Payment\TripayController;
+use App\Models\Bromo;
+
 use Mail;
 
 class FrontendController extends Controller
 {
+    function __construct(
+        TripayController $tripay,
+        Bromo $bromo
+    )
+    {
+        $this->tripay = $tripay;
+        $this->bromo = $bromo;
+    }
     public function index()
     {
         return view('frontend.index');
@@ -41,5 +52,16 @@ class FrontendController extends Controller
             'message_title' => 'Berhasil',
             'message_content' => 'Terimakasih telah menghubungi kami'
         ]);
+    }
+
+    public function bromo_checkout($id)
+    {
+        $data['bromo'] = $this->bromo->find($id);
+        if (empty($data['bromo'])) {
+            return redirect()->back();
+        };
+        $tripay = $this->tripay;
+        $data['channels'] = json_decode($tripay->getPayment())->data;
+        return view('frontend.bromocheckout',$data);
     }
 }

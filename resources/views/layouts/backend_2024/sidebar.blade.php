@@ -46,25 +46,38 @@
                         <li><a href="#">Tour</a></li>
                     </ul>
                 </li>
-                <li class="menu-title">User Management</li>
+                @can('transaction-list')
+                <li>
+                    <a href="{{ route('b.transaction') }}">
+                        <i class="uil-user-circle"></i>
+                        <span>Transaction</span>
+                    </a>
+                </li>
+                @endcan
+                @can('permission-list')
                 <li>
                     <a href="{{ route('permissions') }}">
                         <i class="uil-user-circle"></i>
                         <span>Permission</span>
                     </a>
                 </li>
+                @endcan
+                @can('role-list')
                 <li>
                     <a href="{{ route('roles.index') }}">
                         <i class="uil-user-circle"></i>
                         <span>Roles</span>
                     </a>
                 </li>
+                @endcan
+                @can('user-list')
                 <li>
                     <a href="{{ route('users.index') }}">
                         <i class="uil-user-circle"></i>
                         <span>User</span>
                     </a>
                 </li>
+                @endcan
             </ul>
         </div>
     </div>

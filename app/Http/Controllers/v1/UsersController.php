@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Models\User;
-use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 use DB;
 use Hash;
@@ -56,10 +55,8 @@ class UsersController extends Controller
         $input['password'] = Hash::make($input['password']);
 
         $user = User::create($input);
-        $permissions = Permission::pluck('id', 'id')->all();
-        $role->syncPermissions($permissions);
-        // $user->assignRole($request->input('roles'));
-        $user->assignRole([$role->id]);
+
+        $user->assignRole($request->input('roles'));
 
         return redirect()->route('users.index')
                         ->with('success','User created successfully');
@@ -124,11 +121,7 @@ class UsersController extends Controller
         $user->update($input);
         DB::table('model_has_roles')->where('model_id',$id)->delete();
 
-        $permissions = Permission::pluck('id', 'id')->all();
-        $role->syncPermissions($permissions);
-
-        // $user->assignRole($request->input('roles'));
-        $user->assignRole([$role->id]);
+        $user->assignRole($request->input('roles'));
 
         return redirect()->route('users.index')
                         ->with('success','User updated successfully');

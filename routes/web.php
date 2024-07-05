@@ -37,11 +37,18 @@ Route::domain(parse_url(env('APP_URL'), PHP_URL_HOST))->group(function () {
     Route::post('contact-us/send-mail', [App\Http\Controllers\FrontendController::class, 'contact_send_mail'])->name('frontend.contact_send_mail');
 
     Route::group(['middleware' => 'auth'], function () {
+        Route::get('checkout/bromo/{id}', [App\Http\Controllers\FrontendController::class, 'bromo_checkout'])->name('frontend.bromo_checkout');
+
         Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->middleware('verified')->name('home');
         Route::prefix('bromo')->group(function(){
             Route::get('/', [App\Http\Controllers\v1\BromoController::class, 'b_index'])->middleware('verified')->name('bromo.b_index');
             Route::post('simpan', [App\Http\Controllers\v1\BromoController::class, 'b_simpan'])->middleware('verified')->name('bromo.b_b_simpan');
             Route::post('reupload/simpan', [App\Http\Controllers\v1\BromoController::class, 'b_reupload_simpan'])->middleware('verified')->name('bromo.reupload_simpan');
+        });
+        Route::prefix('transaction')->group(function(){
+            Route::get('/', [App\Http\Controllers\v1\TransactionController::class, 'index'])->name('b.transaction')->middleware('verified');
+            // Route::get('bukti_pembayaran/{kode_transaksi}', [App\Http\Controllers\v1\TransactionController::class, 'detail_bukti_pembayaran'])->name('b.transaction.detail_bukti_pembayaran')->middleware('verified');
+            // Route::post('bukti_pembayaran/simpan', [App\Http\Controllers\v1\TransactionController::class, 'bukti_pembayaran_simpan'])->name('b.transaction.bukti_pembayaran.simpan')->middleware('verified');
         });
         Route::prefix('permissions')->group(function(){
             Route::get('/', [App\Http\Controllers\v1\PermissionsController::class, 'index'])->name('permissions')->middleware('verified');

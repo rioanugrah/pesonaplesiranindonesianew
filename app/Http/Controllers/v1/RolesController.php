@@ -43,8 +43,23 @@ class RolesController extends Controller
      */
     public function create()
     {
-        $permission = Permission::get();
-        return view('backend.roles.create',compact('permission'));
+        DB::statement("SET SQL_MODE=''");;
+        $role_permission = Permission::select('name','id')->groupBy('name')->get();
+        $data['custom_permission'] = array();
+        foreach($role_permission as $per){
+
+            $key = substr($per->name, 0, strpos($per->name, "-"));
+
+            if(str_starts_with($per->name, $key)){
+
+                $data['custom_permission'][$key][] = $per;
+            }
+
+        }
+
+        return view('backend.roles.create',$data);
+        // $permission = Permission::get();
+        // return view('backend.roles.create',compact('permission'));
     }
 
     /**
@@ -90,13 +105,31 @@ class RolesController extends Controller
      */
     public function edit($id)
     {
-        $role = Role::find($id);
-        $permission = Permission::get();
-        $rolePermissions = DB::table("role_has_permissions")->where("role_has_permissions.role_id",$id)
-            ->pluck('role_has_permissions.permission_id','role_has_permissions.permission_id')
-            ->all();
+        // $role = Role::find($id);
+        // $permission = Permission::get();
+        // $rolePermissions = DB::table("role_has_permissions")->where("role_has_permissions.role_id",$id)
+        //     ->pluck('role_has_permissions.permission_id','role_has_permissions.permission_id')
+        //     ->all();
 
-        return view('backend.roles.edit',compact('role','permission','rolePermissions'));
+        // return view('backend.roles.edit',compact('role','permission','rolePermissions'));
+
+        $data['role'] = Role::find($id);
+        DB::statement("SET SQL_MODE=''");
+        $role_permission = Permission::select('name','id')->groupBy('name')->get();
+
+        $data['custom_permission'] = array();
+
+        foreach($role_permission as $per){
+
+            $key = substr($per->name, 0, strpos($per->name, "-"));
+
+            if(str_starts_with($per->name, $key)){
+                $data['custom_permission'][$key][] = $per;
+            }
+
+        }
+
+        return view('backend.roles.edit',$data);
     }
 
     /**

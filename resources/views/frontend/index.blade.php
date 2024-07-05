@@ -1126,7 +1126,7 @@ Pesona Plesiran Indonesia adalah Platform Digital Marketing milenial yang menyed
                             txt_bromo = txt_bromo+                  '<img src="{{ asset("frontend/new_1/assets/posting/bromo.webp") }}" style="height: 180px; object-fit: cover;">';
                             txt_bromo = txt_bromo+              '<a>';
                             txt_bromo = txt_bromo+              '<div class="price-box">';
-                            txt_bromo = txt_bromo+                  '<p class="price-text">Form</p>';
+                            txt_bromo = txt_bromo+                  '<p class="price-text">Price</p>';
                             txt_bromo = txt_bromo+                  '<span class="package-price">'+value.text_price+'</span>';
                             txt_bromo = txt_bromo+              '</div>';
                             txt_bromo = txt_bromo+              '<div class="package-icon">';
@@ -1174,7 +1174,7 @@ Pesona Plesiran Indonesia adalah Platform Digital Marketing milenial yang menyed
                             txt_bromo = txt_bromo+          '<div class="package-meta">';
                             txt_bromo = txt_bromo+              '<ul>';
                             txt_bromo = txt_bromo+                  '<li>';
-                            txt_bromo = txt_bromo+                      '<a href="javascript:void()"><i class="fas fa-user-friends"></i><strong>Min:</strong>'+value.max_quota+' Pax</a>';
+                            txt_bromo = txt_bromo+                      '<a href="javascript:void()"><i class="fas fa-user-friends"></i><strong>Max:</strong>'+value.max_quota+' Pax</a>';
                             txt_bromo = txt_bromo+                  '</li>';
                             txt_bromo = txt_bromo+                  '<li>';
                             txt_bromo = txt_bromo+                      '<a href="javascript:void()"><i class="fab fa-telegram-plane"></i><strong>Tanggal Berangkat:</strong>'+value.tanggal+'</a>';
@@ -1183,6 +1183,7 @@ Pesona Plesiran Indonesia adalah Platform Digital Marketing milenial yang menyed
                             txt_bromo = txt_bromo+                      '<a href="javascript:void()"><i class="fas fa-map-marker-alt"></i><strong>Meeting Point:</strong>'+value.meeting_point+'</a>';
                             txt_bromo = txt_bromo+                  '</li>';
                             txt_bromo = txt_bromo+              '</ul>';
+                            txt_bromo = txt_bromo+              '<a href="{{ url("/") }}'+'/'+'checkout/bromo/'+value.id+'" class="vs-btn"><i class="fas fa-cart-plus"></i> Booking Now</button>';
                             txt_bromo = txt_bromo+          '</div>';
                             txt_bromo = txt_bromo+      '</div>';
                             txt_bromo = txt_bromo+  '</div>';

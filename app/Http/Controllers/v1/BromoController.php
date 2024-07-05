@@ -3,6 +3,9 @@
 namespace App\Http\Controllers\v1;
 
 use App\Http\Controllers\Controller;
+// use App\Http\Controllers\Payment\TripayController;
+use App\Http\Controllers\v1\TransactionController;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Models\Bromo;
 use \Carbon\Carbon;
@@ -11,13 +14,16 @@ use \Carbon\CarbonPeriod;
 use DataTables;
 use Notification;
 use Validator;
+use DB;
 
 class BromoController extends Controller
 {
     function __construct(
+        TransactionController $transaction,
         Bromo $bromo
     )
     {
+        $this->transaction = $transaction;
         $this->bromo = $bromo;
     }
 
@@ -62,6 +68,59 @@ class BromoController extends Controller
             'data' => $data
         ]);
 
+    }
+
+    public function api_bromo_payment(Request $request, $id, $tanggal)
+    {
+        DB::beginTransaction();
+        try {
+            $live_date = Carbon::now();
+            $bromo = $this->bromo->where('id',$id)
+                                ->whereDate('tanggal',$tanggal)
+                                ->first();
+            $kode_jenis_transaksi = 'TRX-BRMO';
+            $kode_random_transaksi = $live_date->format('Ym').rand(1000,9999);
+            $input['id'] = Str::uuid()->toString();
+            $input['transaction_code'] = $kode_jenis_transaksi.'-'.$kode_random_transaksi;
+            $input['transaction_unit'] = $bromo->title.' - Booking Date '.$bromo->tanggal;
+            $transaction_price = $bromo->category_trip == 'Publik' ? ($bromo->price - (($bromo->discount/100) * $bromo->price)) * $request->qty : $bromo->price - (($bromo->discount/100) * $bromo->price);
+
+            $input['transaction_order'] = json_encode([
+                'first_name' => $request->first_name,
+                'last_name' => $request->last_name,
+                'address' => $request->alamat,
+                'email' => $request->email,
+                'phone' => $request->phone,
+            ]);
+
+            if($request->qty == 0 && $request->qty == null){
+                $input['transaction_qty'] = 1;
+            }else{
+                $input['transaction_qty'] = $request->qty;
+            }
+
+            $input['transaction_price'] = $transaction_price;
+            $input['user'] = auth()->user()->generate;
+            $input['status'] = 'Unpaid';
+
+            $transaction = $this->transaction->transaction(
+                $input['transaction_code'],
+                $input['transaction_unit'],
+                $input['transaction_order'],
+                $input['transaction_qty'],
+                $request->first_name,
+                $request->last_name,
+                $request->email,
+                $request->phone,
+                $request->method,
+                $input['status']
+            );
+            $bromo->quota = $bromo->quota - $request->qty+1;
+            $bromo->update();
+            DB::commit();
+        } catch (\Throwable $th) {
+            DB::rollback();
+        }
     }
 
     public function b_index(Request $request)
