@@ -16,6 +16,7 @@ class CreateTransactionTable extends Migration
         Schema::create('transaction', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->string('transaction_code');
+            $table->string('transaction_reference');
             $table->string('transaction_unit');
             $table->text('transaction_order');
             $table->integer('transaction_qty');

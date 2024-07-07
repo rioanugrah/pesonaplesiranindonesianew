@@ -19,9 +19,10 @@
             </div>
         </div>
     </div>
-    <section class="vs-checkout-wrapper space">
-        <div class="container">
-            <form action="#" class="woocommerce-checkout">
+    <form action="{{ route('frontend.bromo_payment',['id' => $bromo->id]) }}" method="post" enctype="multipart/form-data">
+        @csrf
+        <section class="vs-checkout-wrapper space">
+            <div class="container">
                 <div class="row ">
                     <div class="col-lg-12">
                         <h2 class="h4">Billing Details</h2>
@@ -44,9 +45,7 @@
                         </div>
                     </div>
                 </div>
-            </form>
-            <h4 class="mt-4 pt-lg-2">Your Order</h4>
-            <form action="#" class="woocommerce-cart-form">
+                <h4 class="mt-4 pt-lg-2">Your Order</h4>
                 <div class="table-responsive">
                     <table class="cart_table">
                         <thead>
@@ -60,14 +59,15 @@
                         <tbody>
                             <tr class="cart_item">
                                 <td data-title="Product">
-                                    <a class="cart-productimage" href="shop-details.html"><img width="91"
-                                            height="91" src="{{ asset("frontend/new_1/assets/posting/bromo.webp") }}"></a>
+                                    <a class="cart-productimage" href="shop-details.html"><img width="91" height="91"
+                                            src="{{ asset('frontend/new_1/assets/posting/bromo.webp') }}"></a>
                                 </td>
                                 <td data-title="Name">
-                                    <a class="cart-productname">{{ $bromo->title.' - Departure Date '.$bromo->tanggal }}</a>
+                                    <a class="cart-productname">{{ $bromo->title . ' - Departure Date ' . $bromo->tanggal }}</a>
                                 </td>
                                 <td data-title="Price">
-                                    <span class="amount"><bdi><span>Rp. </span>{{ number_format($bromo->price,0,',','.') }} </bdi></span>
+                                    <span class="amount"><bdi><span>Rp. </span>{{ number_format($bromo->price, 0, ',', '.') }}
+                                        </bdi></span>
                                 </td>
                                 <td data-title="Quantity">
                                     <input type="number" name="qty" class="form-control" id="qty" placeholder="QTY">
@@ -79,35 +79,37 @@
                                 <th>Subtotal</th>
                                 <td data-title="Subtotal" colspan="4"><span
                                         class="woocommerce-Price-amount amount"><bdi><span
-                                                class="woocommerce-Price-currencySymbol" id="subtotal"></span></bdi></span></td>
+                                                class="woocommerce-Price-currencySymbol" id="subtotal"></span></bdi></span>
+                                </td>
                             </tr>
                             <tr class="order-total">
                                 <th>Total</th>
                                 <td data-title="Total" colspan="4"><strong><span
                                             class="woocommerce-Price-amount amount"><bdi><span
-                                                    class="woocommerce-Price-currencySymbol" id="total"></span></bdi></span></strong>
+                                                    class="woocommerce-Price-currencySymbol"
+                                                    id="total"></span></bdi></span></strong>
                                 </td>
                             </tr>
                         </tfoot>
                     </table>
                 </div>
-            </form>
-            <div class="mt-lg-3">
-                <div class="woocommerce-checkout-payment">
-                    <h4 class="mt-4 pt-lg-2">Payment Method</h4>
-                    @foreach ($channels as $channel)
-                        <div class="mt-2 mb-2">
-                            <input type="radio" name="method" value="{{ $channel->code }}" id="{{ $channel->code }}">
-                            <label for="{{ $channel->code }}">{{ $channel->name }}</label>
+                <div class="mt-lg-3">
+                    <div class="woocommerce-checkout-payment">
+                        <h4 class="mt-4 pt-lg-2">Payment Method</h4>
+                        @foreach ($channels as $channel)
+                            <div class="mt-2 mb-2">
+                                <input type="radio" name="method" value="{{ $channel->code }}" id="{{ $channel->code }}">
+                                <label for="{{ $channel->code }}">{{ $channel->name }}</label>
+                            </div>
+                        @endforeach
+                        <div class="form-row place-order pt-lg-2">
+                            <button type="submit" class="vs-btn style4">Buy Now</button>
                         </div>
-                    @endforeach
-                    <div class="form-row place-order pt-lg-2">
-                        <button type="submit" class="vs-btn style4">Place order</button>
                     </div>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
+    </form>
 @endsection
 @section('script')
     <script>
@@ -131,16 +133,14 @@
                     rupiah += separator + ribuan.join('.');
                 }
 
-                document.getElementById('subtotal').innerHTML = 'Rp. '+rupiah;
-                document.getElementById('total').innerHTML = 'Rp. '+rupiah;
+                document.getElementById('subtotal').innerHTML = 'Rp. ' + rupiah;
+                document.getElementById('total').innerHTML = 'Rp. ' + rupiah;
                 // $('#order_total').val(penjumlahan);
-            }
-
-            else if ('{{ $bromo->category_trip }}' == 'Private') {
+            } else if ('{{ $bromo->category_trip }}' == 'Private') {
                 if (($('#qty').val() + parseInt(1)) > '{{ $bromo->max_quota }}') {
                     alert('Jumlah anggota maksimal ' + {{ $bromo->max_quota }} + ' orang');
                     $('#qty').val('');
-                }else{
+                } else {
                     var price = {{ $bromo->price - ($bromo->discount / 100) * $bromo->price }};
                     var jumlah = parseInt($('#qty').val());
                     var penjumlahan = jumlah * price;
@@ -157,8 +157,8 @@
                         rupiah += separator + ribuan.join('.');
                     }
 
-                    document.getElementById('subtotal').innerHTML = 'Rp. '+rupiah;
-                    document.getElementById('total').innerHTML = 'Rp. '+rupiah;
+                    document.getElementById('subtotal').innerHTML = 'Rp. ' + rupiah;
+                    document.getElementById('total').innerHTML = 'Rp. ' + rupiah;
 
                 }
             }

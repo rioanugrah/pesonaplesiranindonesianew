@@ -38,18 +38,18 @@ class TransactionController extends Controller
                         return ucwords($row->transaction_unit);
                     })
                     ->addColumn('kode_order', function($row){
-                        // if($row->status == 'Unpaid'){
-                        //     // return '<span class="badge bg-warning"><i class="uil-postcard"></i> '.strtoupper($row->status).'</span>';
-                        //     return $row->transaction_code.' <span class="badge bg-warning"><i class="uil-postcard"></i> '.strtoupper($row->status).'</span>'.'<br>'.'<span style="font-size:9pt">'.$row->created_at->isoFormat('LLLL').'</span>';
-                        // }elseif($row->status == 'Paid'){
-                        //     // return '<span class="badge bg-success"><i class="uil-check-circle"></i> '.strtoupper($row->status).'</span>';
-                        //     return $row->transaction_code.' <span class="badge bg-success"><i class="uil-check-circle"></i> '.strtoupper($row->status).'</span>'.'<br>'.'<span style="font-size:9pt">'.$row->created_at->isoFormat('LLLL').'</span>';
-                        // }elseif($row->status == 'Not Paid'){
-                        //     // return '<span class="badge bg-danger"><i class="uil-times-circle"></i> '.strtoupper($row->status).'</span>';
-                        //     return $row->transaction_code.' <span class="badge bg-danger"><i class="uil-times-circle"></i> '.strtoupper($row->status).'</span>'.'<br>'.'<span style="font-size:9pt">'.$row->created_at->isoFormat('LLLL').'</span>';
-                        // }
-                        // // return $row->kode_order.'<br>'.'<span style="font-size:9pt">'.$row->created_at->isoFormat('LLLL').'</span>';
-                        // // return $row->created_at->isoFormat('LLLL');
+                        if($row->status == 'Unpaid'){
+                            // return '<span class="badge bg-warning"><i class="uil-postcard"></i> '.strtoupper($row->status).'</span>';
+                            return $row->transaction_code.' <span class="badge bg-warning"><i class="uil-postcard"></i> '.strtoupper($row->status).'</span>'.'<br>'.'<span style="font-size:9pt">'.$row->created_at->isoFormat('LLLL').'</span>';
+                        }elseif($row->status == 'Paid'){
+                            // return '<span class="badge bg-success"><i class="uil-check-circle"></i> '.strtoupper($row->status).'</span>';
+                            return $row->transaction_code.' <span class="badge bg-success"><i class="uil-check-circle"></i> '.strtoupper($row->status).'</span>'.'<br>'.'<span style="font-size:9pt">'.$row->created_at->isoFormat('LLLL').'</span>';
+                        }elseif($row->status == 'Not Paid'){
+                            // return '<span class="badge bg-danger"><i class="uil-times-circle"></i> '.strtoupper($row->status).'</span>';
+                            return $row->transaction_code.' <span class="badge bg-danger"><i class="uil-times-circle"></i> '.strtoupper($row->status).'</span>'.'<br>'.'<span style="font-size:9pt">'.$row->created_at->isoFormat('LLLL').'</span>';
+                        }
+                        // return $row->kode_order.'<br>'.'<span style="font-size:9pt">'.$row->created_at->isoFormat('LLLL').'</span>';
+                        // return $row->created_at->isoFormat('LLLL');
                     })
                     ->addColumn('created_at', function($row){
                         return $row->created_at;
@@ -58,18 +58,19 @@ class TransactionController extends Controller
                         return 'Rp. '.number_format($row->transaction_price,2,",",".");
                     })
                     ->addColumn('pemesan', function($row){
-                        $pemesan = json_decode($row->transaction_order);
-                        $card = '';
-                        $card .= '<div class="d-flex align-items-start">';
-                        $card .=    '<div class="flex-grow-1 align-self-center">';
-                        $card .=        '<p class="mb-2">Nama</p>';
-                        $card .=        '<h6 class="mb-0">'.'1. '.$pemesan->first_name.' '.$pemesan->last_name.'</h6>';
-                        $card .=        '<p class="mb-2 mt-3">No.Telp / Whatsapp</p>';
-                        $card .=        '<h6 class="mb-0">'.'2. '.$pemesan->phone.'</h6>';
-                        $card .=    '</div>';
-                        $card .= '</div>';
+                        // $pemesan = json_decode($row->transaction_order);
+                        // $card = '';
+                        // $card .= '<div class="d-flex align-items-start">';
+                        // $card .=    '<div class="flex-grow-1 align-self-center">';
+                        // $card .=        '<p class="mb-2">Nama</p>';
+                        // $card .=        '<h6 class="mb-0">'.'1. '.$pemesan->first_name.' '.$pemesan->last_name.'</h6>';
+                        // $card .=        '<p class="mb-2 mt-3">No.Telp / Whatsapp</p>';
+                        // $card .=        '<h6 class="mb-0">'.'2. '.$pemesan->phone.'</h6>';
+                        // $card .=    '</div>';
+                        // $card .= '</div>';
 
-                        return $card;
+                        // return $card;
+                        return $row->users->name;
                     })
                     ->addColumn('qty', function($row){
                         return $row->transaction_qty;
@@ -84,12 +85,34 @@ class TransactionController extends Controller
                     //     }
                     // })
                     ->addColumn('action', function($row){
-
+                        $btn = '<div class="btn-group">';
+                        $btn .= '<a href='.route('b.transaction.detail',['id' => $row->id]).' target="_blank" class="btn btn-xs btn-success"><i class="uil-file-alt"></i> Detail</a>';
+                        $btn .= '<a href='.route('b.transaction.invoice',['id' => $row->id]).' target="_blank" class="btn btn-xs btn-primary"><i class="uil-file-alt"></i> Invoice</a>';
+                        $btn .= '</div>';
+                        return $btn;
                     })
                     ->rawColumns(['action','pemesan','kode_order'])
                     ->make(true);
         }
         return view('backend.transaction.index');
+    }
+
+    public function detail($id)
+    {
+        $data['transaction'] = $this->transaction->find($id);
+        if (empty($data['transaction'])) {
+            return redirect()->back();
+        }
+        return view('backend.transaction.detail',$data);
+    }
+
+    public function invoice($id)
+    {
+        $data['transaction'] = $this->transaction->find($id);
+        if (empty($data['transaction'])) {
+            return redirect()->back();
+        }
+        return view('backend.transaction.invoice',$data);
     }
 
     public function transaction(

@@ -38,24 +38,29 @@ Route::domain(parse_url(env('APP_URL'), PHP_URL_HOST))->group(function () {
 
     Route::group(['middleware' => 'auth'], function () {
         Route::get('checkout/bromo/{id}', [App\Http\Controllers\FrontendController::class, 'bromo_checkout'])->name('frontend.bromo_checkout');
+        Route::post('checkout/bromo/{id}/buy', [App\Http\Controllers\FrontendController::class, 'bromo_payment'])->name('frontend.bromo_payment');
 
-        Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->middleware('verified')->name('home');
-        Route::prefix('bromo')->group(function(){
-            Route::get('/', [App\Http\Controllers\v1\BromoController::class, 'b_index'])->middleware('verified')->name('bromo.b_index');
-            Route::post('simpan', [App\Http\Controllers\v1\BromoController::class, 'b_simpan'])->middleware('verified')->name('bromo.b_b_simpan');
-            Route::post('reupload/simpan', [App\Http\Controllers\v1\BromoController::class, 'b_reupload_simpan'])->middleware('verified')->name('bromo.reupload_simpan');
+        Route::prefix('b')->group(function(){
+            Route::get('home', [App\Http\Controllers\HomeController::class, 'index'])->middleware('verified')->name('home');
+            Route::prefix('bromo')->group(function(){
+                Route::get('/', [App\Http\Controllers\v1\BromoController::class, 'b_index'])->middleware('verified')->name('bromo.b_index');
+                Route::post('simpan', [App\Http\Controllers\v1\BromoController::class, 'b_simpan'])->middleware('verified')->name('bromo.b_b_simpan');
+                Route::post('reupload/simpan', [App\Http\Controllers\v1\BromoController::class, 'b_reupload_simpan'])->middleware('verified')->name('bromo.reupload_simpan');
+            });
+            Route::prefix('transaction')->group(function(){
+                Route::get('/', [App\Http\Controllers\v1\TransactionController::class, 'index'])->name('b.transaction')->middleware('verified');
+                Route::get('{id}', [App\Http\Controllers\v1\TransactionController::class, 'detail'])->name('b.transaction.detail')->middleware('verified');
+                Route::get('{id}/invoice', [App\Http\Controllers\v1\TransactionController::class, 'invoice'])->name('b.transaction.invoice')->middleware('verified');
+                // Route::get('bukti_pembayaran/{kode_transaksi}', [App\Http\Controllers\v1\TransactionController::class, 'detail_bukti_pembayaran'])->name('b.transaction.detail_bukti_pembayaran')->middleware('verified');
+                // Route::post('bukti_pembayaran/simpan', [App\Http\Controllers\v1\TransactionController::class, 'bukti_pembayaran_simpan'])->name('b.transaction.bukti_pembayaran.simpan')->middleware('verified');
+            });
+            Route::prefix('permissions')->group(function(){
+                Route::get('/', [App\Http\Controllers\v1\PermissionsController::class, 'index'])->name('permissions')->middleware('verified');
+                Route::post('simpan', [App\Http\Controllers\v1\PermissionsController::class, 'simpan'])->name('permissions.simpan')->middleware('verified');
+            });
+            Route::resource('users', App\Http\Controllers\v1\UsersController::class)->middleware('verified');
+            Route::resource('roles', App\Http\Controllers\v1\RolesController::class)->middleware('verified');
         });
-        Route::prefix('transaction')->group(function(){
-            Route::get('/', [App\Http\Controllers\v1\TransactionController::class, 'index'])->name('b.transaction')->middleware('verified');
-            // Route::get('bukti_pembayaran/{kode_transaksi}', [App\Http\Controllers\v1\TransactionController::class, 'detail_bukti_pembayaran'])->name('b.transaction.detail_bukti_pembayaran')->middleware('verified');
-            // Route::post('bukti_pembayaran/simpan', [App\Http\Controllers\v1\TransactionController::class, 'bukti_pembayaran_simpan'])->name('b.transaction.bukti_pembayaran.simpan')->middleware('verified');
-        });
-        Route::prefix('permissions')->group(function(){
-            Route::get('/', [App\Http\Controllers\v1\PermissionsController::class, 'index'])->name('permissions')->middleware('verified');
-            Route::post('simpan', [App\Http\Controllers\v1\PermissionsController::class, 'simpan'])->name('permissions.simpan')->middleware('verified');
-        });
-        Route::resource('users', App\Http\Controllers\v1\UsersController::class)->middleware('verified');
-        Route::resource('roles', App\Http\Controllers\v1\RolesController::class)->middleware('verified');
     });
 
     Route::get('redirect/{driver}', [App\Http\Controllers\Auth\LoginController::class, 'redirectToProvider'])->name('login_google');

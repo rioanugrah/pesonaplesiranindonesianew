@@ -49,7 +49,7 @@
                 @can('transaction-list')
                 <li>
                     <a href="{{ route('b.transaction') }}">
-                        <i class="uil-user-circle"></i>
+                        <i class="uil-card-atm"></i>
                         <span>Transaction</span>
                     </a>
                 </li>
@@ -57,7 +57,7 @@
                 @can('permission-list')
                 <li>
                     <a href="{{ route('permissions') }}">
-                        <i class="uil-user-circle"></i>
+                        <i class="uil-key-skeleton-alt"></i>
                         <span>Permission</span>
                     </a>
                 </li>

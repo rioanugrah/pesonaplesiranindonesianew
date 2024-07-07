@@ -19,7 +19,6 @@ class Transactions extends Model
         'id',
         'transaction_code',
         'transaction_reference',
-        'transaction_merchant',
         'transaction_unit',
         'transaction_order',
         'transaction_qty',
@@ -32,4 +31,10 @@ class Transactions extends Model
     {
         return $this->belongsTo(\App\Models\VerifikasiTiket::class, 'id', 'transaction_id');
     }
+
+    public function users()
+    {
+        return $this->belongsTo(\App\Models\User::class, 'user', 'generate');
+    }
+
 }
