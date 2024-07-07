@@ -163,7 +163,7 @@
                                         </div>
                                     </li> --}}
                                     <li>
-                                        <a class="vs-btn style7" href="javascript:void()">
+                                        <a class="vs-btn style7" href="javascript:void()" onclick="window.location.href='{{ route('login') }}'">
                                             Login
                                             <i>
                                                 <svg width="5" height="8" viewBox="0 0 5 8"
