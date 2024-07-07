@@ -47,6 +47,19 @@ Pesona Plesiran Indonesia adalah Platform Digital Marketing milenial yang menyed
                     </div>
                 </div>
             </div>
+            <div class="hero-slide" data-bg-src="{{ $asset }}/assets/posting/kawah_ijen1.webp">
+                <div class="container">
+                    <div class="row align-items-center justify-content-end">
+                        <div class="col-lg-7">
+                            <div class="hero-content">
+                                <span class="hero-subtitle">Let’s Go Now</span>
+                                <h1 class="hero-title">Kawah Ijen</h1>
+                                <a href="javascript:void()" class="vs-btn style5">Read More</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
         <div>
             <button class="icon-btn prev-btn" data-slick-prev=".hero-slider2"><i
