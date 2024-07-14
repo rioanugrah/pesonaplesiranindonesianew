@@ -46,7 +46,7 @@
                         </div>
                         <div class="info">
                             <span class="title">Email</span>
-                            <p><a href="mailto:business@plesiranindonesia.com">business@plesiranindonesia.com</a></p>
+                            <p><a href="mailto:contact@plesiranindonesia.com">contact@plesiranindonesia.com</a></p>
                         </div>
                     </div>
                 </div>
