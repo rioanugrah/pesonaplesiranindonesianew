@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Transactions;
+
+use \Carbon\Carbon;
 
 class HomeController extends Controller
 {
@@ -11,9 +14,12 @@ class HomeController extends Controller
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(
+        Transactions $transaction
+    )
     {
-        $this->middleware('auth');
+        $this->transaction = $transaction;
+        // $this->middleware('auth');
     }
 
     /**
@@ -23,6 +29,14 @@ class HomeController extends Controller
      */
     public function index()
     {
-        return view('backend.dashboard');
+        if (auth()->user()->getRoleNames()->first() == 'Administrator') {
+            $data['total_penjualan_year'] = $this->transaction->whereYear('created_at',Carbon::now())->sum('transaction_price');
+            $data['total_penjualan_month'] = $this->transaction->whereMonth('created_at',Carbon::now())->sum('transaction_price');
+        }else{
+            $data['total_penjualan_year'] = $this->transaction->whereYear('created_at',Carbon::now())->where('user',auth()->user()->generate)->sum('transaction_price');
+            $data['total_penjualan_month'] = $this->transaction->whereMonth('created_at',Carbon::now())->where('user',auth()->user()->generate)->sum('transaction_price');
+        }
+        // dd($data);
+        return view('backend.dashboard',$data);
     }
 }

@@ -36,6 +36,7 @@
                     </a>
                 </li>
                 {{-- @endcan --}}
+                @can('paket wisata-list')
                 <li class="{{ request()->is('bromo*') ? 'mm-active' : null }}">
                     <a href="javascript: void(0);" class="has-arrow waves-effect">
                         <i class="uil-home-alt"></i>
@@ -46,6 +47,7 @@
                         <li><a href="#">Tour</a></li>
                     </ul>
                 </li>
+                @endcan
                 @can('transaction-list')
                 <li>
                     <a href="{{ route('b.transaction') }}">
@@ -55,6 +57,7 @@
                 </li>
                 @endcan
                 @can('permission-list')
+                <li class="menu-title">User Management</li>
                 <li>
                     <a href="{{ route('permissions') }}">
                         <i class="uil-key-skeleton-alt"></i>

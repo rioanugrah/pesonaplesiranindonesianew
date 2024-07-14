@@ -31,7 +31,11 @@ class TransactionController extends Controller
     public function index(Request $request)
     {
         if ($request->ajax()) {
-            $data = $this->transaction->where('user',auth()->user()->generate)->orderBy('created_at','desc')->get();
+            if (auth()->user()->getRoleNames()->first() == 'Administrator') {
+                $data = $this->transaction->orderBy('created_at','desc')->get();
+            }else{
+                $data = $this->transaction->where('user',auth()->user()->generate)->orderBy('created_at','desc')->get();
+            }
             return DataTables::of($data)
                     ->addIndexColumn()
                     ->addColumn('nama_order', function($row){
