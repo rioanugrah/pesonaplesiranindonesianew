@@ -40,12 +40,25 @@ Route::domain(parse_url(env('APP_URL'), PHP_URL_HOST))->group(function () {
         Route::get('checkout/bromo/{id}', [App\Http\Controllers\FrontendController::class, 'bromo_checkout'])->name('frontend.bromo_checkout');
         Route::post('checkout/bromo/{id}/buy', [App\Http\Controllers\FrontendController::class, 'bromo_payment'])->name('frontend.bromo_payment');
 
+        // Route::get('open_payment', [App\Http\Controllers\Payment\TripayController::class, 'handle_open_payment']);
+
         Route::prefix('b')->group(function(){
             Route::get('home', [App\Http\Controllers\HomeController::class, 'index'])->middleware('verified')->name('home');
             Route::prefix('bromo')->group(function(){
                 Route::get('/', [App\Http\Controllers\v1\BromoController::class, 'b_index'])->middleware('verified')->name('bromo.b_index');
                 Route::post('simpan', [App\Http\Controllers\v1\BromoController::class, 'b_simpan'])->middleware('verified')->name('bromo.b_b_simpan');
                 Route::post('reupload/simpan', [App\Http\Controllers\v1\BromoController::class, 'b_reupload_simpan'])->middleware('verified')->name('bromo.reupload_simpan');
+            });
+            Route::prefix('emails')->group(function(){
+                Route::prefix('template')->group(function(){
+                    Route::get('/', [App\Http\Controllers\EmailMarketingController::class, 'b_template_index'])->middleware('verified')->name('emails.b_template');
+                    Route::get('create', [App\Http\Controllers\EmailMarketingController::class, 'b_template_create'])->middleware('verified')->name('emails.b_template.create');
+                    Route::post('simpan', [App\Http\Controllers\EmailMarketingController::class, 'b_template_simpan'])->middleware('verified')->name('emails.b_template.simpan');
+                    Route::get('{id}/edit', [App\Http\Controllers\EmailMarketingController::class, 'b_template_edit'])->middleware('verified')->name('emails.b_template.edit');
+                    Route::post('{id}/update', [App\Http\Controllers\EmailMarketingController::class, 'b_template_update'])->middleware('verified')->name('emails.b_template.update');
+                });
+                Route::get('/', [App\Http\Controllers\EmailMarketingController::class, 'b_email_index'])->middleware('verified')->name('emails.b_email');
+                Route::get('create', [App\Http\Controllers\EmailMarketingController::class, 'b_email_create'])->middleware('verified')->name('emails.b_email.create');
             });
             Route::prefix('transaction')->group(function(){
                 Route::get('/', [App\Http\Controllers\v1\TransactionController::class, 'index'])->name('b.transaction')->middleware('verified');

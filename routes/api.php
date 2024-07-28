@@ -24,5 +24,6 @@ Route::domain(parse_url(env('APP_URL'), PHP_URL_HOST))->group(function () {
             Route::get('/', [App\Http\Controllers\v1\BromoController::class, 'api_index'])->name('api.bromo');
         });
     });
+    // Route::post('open_payment', [App\Http\Controllers\Payment\TripayController::class, 'handle_open_payment']);
     Route::post('callback', [App\Http\Controllers\Payment\TripayController::class, 'handle']);
 });

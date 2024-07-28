@@ -56,6 +56,19 @@
                     </a>
                 </li>
                 @endcan
+                @can('marketing-list')
+                <li class="menu-title">Marketing</li>
+                <li class="{{ request()->is('emails*') ? 'mm-active' : null }}">
+                    <a href="javascript: void(0);" class="has-arrow waves-effect">
+                        <i class="uil-home-alt"></i>
+                        <span>Email</span>
+                    </a>
+                    <ul class="sub-menu" aria-expanded="false">
+                        <li class="{{ request()->is('emails/template*') ? 'active' : null }}"><a href="{{ route('emails.b_template') }}">Template</a></li>
+                        <li class="{{ request()->is('emails*') ? 'active' : null }}"><a href="{{ route('emails.b_email') }}">Email</a></li>
+                    </ul>
+                </li>
+                @endcan
                 @can('permission-list')
                 <li class="menu-title">User Management</li>
                 <li>
