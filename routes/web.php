@@ -54,11 +54,13 @@ Route::domain(parse_url(env('APP_URL'), PHP_URL_HOST))->group(function () {
                     Route::get('/', [App\Http\Controllers\EmailMarketingController::class, 'b_template_index'])->middleware('verified')->name('emails.b_template');
                     Route::get('create', [App\Http\Controllers\EmailMarketingController::class, 'b_template_create'])->middleware('verified')->name('emails.b_template.create');
                     Route::post('simpan', [App\Http\Controllers\EmailMarketingController::class, 'b_template_simpan'])->middleware('verified')->name('emails.b_template.simpan');
+                    Route::get('{id}', [App\Http\Controllers\EmailMarketingController::class, 'b_template_detail'])->middleware('verified')->name('emails.b_template.detail');
                     Route::get('{id}/edit', [App\Http\Controllers\EmailMarketingController::class, 'b_template_edit'])->middleware('verified')->name('emails.b_template.edit');
                     Route::post('{id}/update', [App\Http\Controllers\EmailMarketingController::class, 'b_template_update'])->middleware('verified')->name('emails.b_template.update');
                 });
                 Route::get('/', [App\Http\Controllers\EmailMarketingController::class, 'b_email_index'])->middleware('verified')->name('emails.b_email');
                 Route::get('create', [App\Http\Controllers\EmailMarketingController::class, 'b_email_create'])->middleware('verified')->name('emails.b_email.create');
+                Route::post('simpan', [App\Http\Controllers\EmailMarketingController::class, 'b_email_simpan'])->middleware('verified')->name('emails.b_email.simpan');
             });
             Route::prefix('transaction')->group(function(){
                 Route::get('/', [App\Http\Controllers\v1\TransactionController::class, 'index'])->name('b.transaction')->middleware('verified');

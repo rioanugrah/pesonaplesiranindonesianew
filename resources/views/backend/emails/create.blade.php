@@ -4,6 +4,7 @@
 @endsection
 @section('css')
 <link href="{{ URL::asset('backend/libs/toastr/toastr.min.css') }}" rel="stylesheet" type="text/css">
+<link href="{{ URL::asset('backend/libs/sweetalert2/sweetalert2.min.css') }}" rel="stylesheet" type="text/css" />
 @endsection
 @section('content')
     <div class="row">
@@ -34,12 +35,22 @@
                         @csrf
                         <div class="mb-3">
                             <label>Title</label>
-                            <input type="text" name="title" class="form-control" placeholder="Title" id="">
+                            <input type="text" name="subject" class="form-control" placeholder="Title" id="">
                         </div>
                         <div class="mb-3">
-                            <label>Description</label>
-                            <textarea name="description" class="form-control" id="classic-editor" cols="30" rows="10"></textarea>
+                            <label>To</label>
+                            <input type="email" name="to" class="form-control" placeholder="To" id="">
                         </div>
+                        <div class="mb-3">
+                            <label>Email Template</label>
+                            <select name="email_template" class="form-control" id="email_template">
+                                <option value="">-- Pilih Email Template --</option>
+                                @foreach ($email_templates as $email_template)
+                                <option value="{{ $email_template->id }}">{{ $email_template->title }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="mb-3" id="description"></div>
                         <div class="mb-3">
                             <button type="submit" class="btn btn-success">Submit</button>
                         </div>
@@ -52,12 +63,50 @@
 @section('script')
 <script src="{{ URL::asset('backend/libs/toastr/toastr.min.js') }}"></script>
     <script src="{{ URL::asset('backend/libs/ckeditor/ckeditor.min.js') }}"></script>
+    <script src="{{ URL::asset('backend/libs/sweetalert2/sweetalert2.min.js') }}"></script>
     <script>
-        ClassicEditor
-            .create(document.querySelector('#classic-editor'))
-            .catch(error => {
-                console.error(error);
-            });
+        // ClassicEditor
+        //     .create(document.querySelector('#classic-editor'))
+        //     .catch(error => {
+        //         console.error(error);
+        //     });
+
+        $('#email_template').on('change',function(){
+            $.ajax({
+                type: 'GET',
+                url: "{{ url('b/emails/template/') }}"+'/'+$('#email_template').val(),
+                contentType: "application/json;  charset=utf-8",
+                cache: false,
+                success: function(result){
+                    if (result.success = true) {
+                        document.getElementById('description').innerHTML = result.data.descriptions;
+                        // $('.description').val(result.data.descriptions);
+                    }else{
+
+                    }
+                },
+                error: function (request, status, error) {
+                    toastr["error"](error);
+                    toastr.options = {
+                        "closeButton": false,
+                        "debug": false,
+                        "newestOnTop": false,
+                        "progressBar": true,
+                        "positionClass": "toast-top-right",
+                        "preventDuplicates": false,
+                        "onclick": null,
+                        "showDuration": 300,
+                        "hideDuration": 1000,
+                        "timeOut": 5000,
+                        "extendedTimeOut": 1000,
+                        "showEasing": "swing",
+                        "hideEasing": "linear",
+                        "showMethod": "fadeIn",
+                        "hideMethod": "fadeOut"
+                    }
+                }
+            })
+        });
 
         $('#form-simpan').submit(function(e) {
             // alert('coba');
@@ -66,30 +115,61 @@
             // $('#image-input-error').text('');
             $.ajax({
                 type: 'POST',
-                url: "{{ route('emails.b_template.simpan') }}",
+                url: "{{ route('emails.b_email.simpan') }}",
                 data: formData,
                 contentType: false,
                 processData: false,
+                beforeSend: function(){
+                    var timerInterval;
+                    Swal.fire({
+                        title: 'Waiting!',
+                        html: 'Sedang Proses Mengirim, Silahkan Tunggu',
+                        // timer: 2000,
+                        showConfirmButton: false,
+                        confirmButtonColor: "#5b73e8",
+                        onBeforeOpen: function onBeforeOpen() {
+                        Swal.showLoading();
+                        timerInterval = setInterval(function () {
+                            Swal.getContent().querySelector('strong').textContent = Swal.getTimerLeft();
+                        }, 100);
+                        },
+                        onClose: function onClose() {
+                        clearInterval(timerInterval);
+                        }
+                    }).then(function (result) {
+                        if ( // Read more about handling dismissals
+                        result.dismiss === Swal.DismissReason.timer) {
+                        console.log('I was closed by the timer');
+                        }
+                    });
+                },
                 success: (result) => {
                     if (result.success != false) {
-                        toastr["success"](result.message_content);
-                        toastr.options = {
-                            "closeButton": false,
-                            "debug": false,
-                            "newestOnTop": false,
-                            "progressBar": true,
-                            "positionClass": "toast-top-right",
-                            "preventDuplicates": false,
-                            "onclick": null,
-                            "showDuration": 300,
-                            "hideDuration": 1000,
-                            "timeOut": 5000,
-                            "extendedTimeOut": 1000,
-                            "showEasing": "swing",
-                            "hideEasing": "linear",
-                            "showMethod": "fadeIn",
-                            "hideMethod": "fadeOut"
-                        };
+                        // toastr["success"](result.message_content);
+                        // toastr.options = {
+                        //     "closeButton": false,
+                        //     "debug": false,
+                        //     "newestOnTop": false,
+                        //     "progressBar": true,
+                        //     "positionClass": "toast-top-right",
+                        //     "preventDuplicates": false,
+                        //     "onclick": null,
+                        //     "showDuration": 300,
+                        //     "hideDuration": 1000,
+                        //     "timeOut": 5000,
+                        //     "extendedTimeOut": 1000,
+                        //     "showEasing": "swing",
+                        //     "hideEasing": "linear",
+                        //     "showMethod": "fadeIn",
+                        //     "hideMethod": "fadeOut"
+                        // };
+                        Swal.fire({
+                            title: "Berhasil",
+                            text: result.message_content,
+                            icon: 'success',
+                            // confirmButtonColor: '#5b73e8',
+                            showConfirmButton: false
+                        });
                         setTimeout(() => {
                             window.location.href='{{ route('emails.b_email') }}';
                         }, 3000);

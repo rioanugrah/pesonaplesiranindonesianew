@@ -67,6 +67,9 @@
                                     <li>
                                         <a href="javascript:void()">Tour Wisata</a>
                                     </li>
+                                    <li>
+                                        <a href="{{ route('frontend.contact') }}">Kontak Kami</a>
+                                    </li>
                                     {{-- <li class="menu-item-has-children">
                                         <a href="#">Destinations</a>
                                         <ul class="sub-menu">

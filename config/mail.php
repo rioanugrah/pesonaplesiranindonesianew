@@ -56,6 +56,17 @@ return [
             'auth_mode' => null,
         ],
 
+        'marketing' => [
+            'transport' => 'smtp',
+            'host' => env('MAIL_HOST_MARKETING', 'smtp.mailgun.org'),
+            'port' => env('MAIL_PORT_MARKETING', 587),
+            'encryption' => env('MAIL_ENCRYPTION_MARKETING', 'tls'),
+            'username' => env('MAIL_USERNAME_MARKETING'),
+            'password' => env('MAIL_PASSWORD_MARKETING'),
+            'timeout' => null,
+            'auth_mode' => null,
+        ],
+
         'ses' => [
             'transport' => 'ses',
         ],

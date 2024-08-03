@@ -4,12 +4,15 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use App\Mail\EmailMarketings;
+
 use App\Models\EmailTemplate;
 use App\Models\EmailMarketing;
 
 use \Carbon\Carbon;
 use \Carbon\CarbonPeriod;
 
+use Mail;
 use DataTables;
 use Notification;
 use Validator;
@@ -137,6 +140,23 @@ class EmailMarketingController extends Controller
         ]);
     }
 
+    public function b_template_detail($id)
+    {
+        $email_template = $this->email_template->where('id',$id)->where('status','aktif')->first();
+        if (empty($email_template)) {
+            return response()->json([
+                'success' => false,
+                'message_title' => 'Gagal',
+                'message_content' => 'Email Template Tidak Ditemukan'
+            ]);
+        }
+
+        return response()->json([
+            'success' => true,
+            'data' => $email_template
+        ]);
+    }
+
     public function b_email_index(Request $request)
     {
         if ($request->ajax()) {
@@ -158,6 +178,54 @@ class EmailMarketingController extends Controller
 
     public function b_email_create()
     {
-        return view('backend.emails.create');
+        $data['email_templates'] = $this->email_template->where('status','aktif')->get();
+        return view('backend.emails.create',$data);
+    }
+
+    public function b_email_simpan(Request $request)
+    {
+        $rules = [
+            'subject'  => 'required',
+            'to'  => 'required',
+        ];
+
+        $messages = [
+            'subject.required'   => 'Subject wajib diisi.',
+            'to.required'   => 'Email Pengirim wajib diisi.',
+        ];
+
+        $validator = Validator::make($request->all(), $rules, $messages);
+        if ($validator->passes()) {
+            $check_email_template = $this->email_template->find($request->email_template);
+            $input['id'] = Str::uuid()->toString();
+            $input['subject'] = $request->subject;
+            $input['to'] = $request->to;
+            $input['descriptions'] = $check_email_template->descriptions;
+            $input['status'] = 'Aktif';
+            $email_marketing = $this->email_marketing->create($input);
+            if ($email_marketing) {
+                Mail::mailer('marketing')->to($input['to'])
+                                        ->send(new EmailMarketings([
+                                            'subject' => $input['subject'],
+                                            'data' => $input['descriptions']
+                                        ]));
+                $message_title="Berhasil !";
+                $message_content="Email Berhasil Terkirim";
+                $message_type="success";
+                $message_succes = true;
+            }
+            $array_message = array(
+                'success' => $message_succes,
+                'message_title' => $message_title,
+                'message_content' => $message_content,
+                'message_type' => $message_type,
+            );
+
+            return $array_message;
+        }
+        return response()->json([
+            'success' => false,
+            'error' => $validator->errors()->all()
+        ]);
     }
 }
