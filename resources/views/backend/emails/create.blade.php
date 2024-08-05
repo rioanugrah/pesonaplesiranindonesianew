@@ -50,8 +50,6 @@
                                 @endforeach
                             </select>
                         </div>
-                        <input type="file" name="attachment1" class="form-control"
-                                                        id="">
                         <div class="mb-3" id="description"></div>
                         <div class="mb-3 outer-repeater">
                             <div data-repeater-list="outer_group" class="outer">
