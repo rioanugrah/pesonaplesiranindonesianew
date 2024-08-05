@@ -3,8 +3,8 @@
     Create Email
 @endsection
 @section('css')
-<link href="{{ URL::asset('backend/libs/toastr/toastr.min.css') }}" rel="stylesheet" type="text/css">
-<link href="{{ URL::asset('backend/libs/sweetalert2/sweetalert2.min.css') }}" rel="stylesheet" type="text/css" />
+    <link href="{{ URL::asset('backend/libs/toastr/toastr.min.css') }}" rel="stylesheet" type="text/css">
+    <link href="{{ URL::asset('backend/libs/sweetalert2/sweetalert2.min.css') }}" rel="stylesheet" type="text/css" />
 @endsection
 @section('content')
     <div class="row">
@@ -46,11 +46,36 @@
                             <select name="email_template" class="form-control" id="email_template">
                                 <option value="">-- Pilih Email Template --</option>
                                 @foreach ($email_templates as $email_template)
-                                <option value="{{ $email_template->id }}">{{ $email_template->title }}</option>
+                                    <option value="{{ $email_template->id }}">{{ $email_template->title }}</option>
                                 @endforeach
                             </select>
                         </div>
+                        <input type="file" name="attachment1" class="form-control"
+                                                        id="">
                         <div class="mb-3" id="description"></div>
+                        <div class="mb-3 outer-repeater">
+                            <div data-repeater-list="outer_group" class="outer">
+                                <div data-repeater-item class="outer">
+                                    <div class="inner-repeater mb-4">
+                                        <div data-repeater-list="attachment_group" class="inner form-group">
+                                            <label class="form-label">Attachment :</label>
+                                            <div data-repeater-item class="inner mb-3 row">
+                                                <div class="col-md-10 col-8">
+                                                    <input type="file" name="attachment" class="form-control"
+                                                        id="">
+                                                </div>
+                                                <div class="col-md-2 col-4 d-grid">
+                                                    <input data-repeater-delete type="button"
+                                                        class="btn btn-danger btn-block inner" value="Delete" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <input data-repeater-create type="button" class="btn btn-success inner"
+                                            value="Add" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                         <div class="mb-3">
                             <button type="submit" class="btn btn-success">Submit</button>
                         </div>
@@ -61,9 +86,11 @@
     </div>
 @endsection
 @section('script')
-<script src="{{ URL::asset('backend/libs/toastr/toastr.min.js') }}"></script>
+    <script src="{{ URL::asset('backend/libs/toastr/toastr.min.js') }}"></script>
     <script src="{{ URL::asset('backend/libs/ckeditor/ckeditor.min.js') }}"></script>
     <script src="{{ URL::asset('backend/libs/sweetalert2/sweetalert2.min.js') }}"></script>
+    <script src="{{ URL::asset('backend/libs/jquery-repeater/jquery-repeater.min.js') }}"></script>
+    <script src="{{ URL::asset('backend/js/pages/form-repeater.int.js') }}"></script>
     <script>
         // ClassicEditor
         //     .create(document.querySelector('#classic-editor'))
@@ -71,21 +98,21 @@
         //         console.error(error);
         //     });
 
-        $('#email_template').on('change',function(){
+        $('#email_template').on('change', function() {
             $.ajax({
                 type: 'GET',
-                url: "{{ url('b/emails/template/') }}"+'/'+$('#email_template').val(),
+                url: "{{ url('b/emails/template/') }}" + '/' + $('#email_template').val(),
                 contentType: "application/json;  charset=utf-8",
                 cache: false,
-                success: function(result){
+                success: function(result) {
                     if (result.success = true) {
                         document.getElementById('description').innerHTML = result.data.descriptions;
                         // $('.description').val(result.data.descriptions);
-                    }else{
+                    } else {
 
                     }
                 },
-                error: function (request, status, error) {
+                error: function(request, status, error) {
                     toastr["error"](error);
                     toastr.options = {
                         "closeButton": false,
@@ -119,7 +146,7 @@
                 data: formData,
                 contentType: false,
                 processData: false,
-                beforeSend: function(){
+                beforeSend: function() {
                     var timerInterval;
                     Swal.fire({
                         title: 'Waiting!',
@@ -128,18 +155,19 @@
                         showConfirmButton: false,
                         confirmButtonColor: "#5b73e8",
                         onBeforeOpen: function onBeforeOpen() {
-                        Swal.showLoading();
-                        timerInterval = setInterval(function () {
-                            Swal.getContent().querySelector('strong').textContent = Swal.getTimerLeft();
-                        }, 100);
+                            Swal.showLoading();
+                            timerInterval = setInterval(function() {
+                                Swal.getContent().querySelector('strong')
+                                    .textContent = Swal.getTimerLeft();
+                            }, 100);
                         },
                         onClose: function onClose() {
-                        clearInterval(timerInterval);
+                            clearInterval(timerInterval);
                         }
-                    }).then(function (result) {
+                    }).then(function(result) {
                         if ( // Read more about handling dismissals
-                        result.dismiss === Swal.DismissReason.timer) {
-                        console.log('I was closed by the timer');
+                            result.dismiss === Swal.DismissReason.timer) {
+                            console.log('I was closed by the timer');
                         }
                     });
                 },
@@ -171,7 +199,7 @@
                             showConfirmButton: false
                         });
                         setTimeout(() => {
-                            window.location.href='{{ route('emails.b_email') }}';
+                            window.location.href = '{{ route('emails.b_email') }}';
                         }, 3000);
                     } else {
                         toastr["error"](result.error);

@@ -12,6 +12,7 @@ use App\Models\EmailMarketing;
 use \Carbon\Carbon;
 use \Carbon\CarbonPeriod;
 
+use File;
 use Mail;
 use DataTables;
 use Notification;
@@ -184,6 +185,8 @@ class EmailMarketingController extends Controller
 
     public function b_email_simpan(Request $request)
     {
+        // dd($request->attachment1->getClientOriginalName());
+        ini_set('max_execution_time', -1);
         $rules = [
             'subject'  => 'required',
             'to'  => 'required',
@@ -201,14 +204,39 @@ class EmailMarketingController extends Controller
             $input['subject'] = $request->subject;
             $input['to'] = $request->to;
             $input['descriptions'] = $check_email_template->descriptions;
-            $input['status'] = 'Aktif';
+            $input['status'] = 'Send';
+            $data["email"] = $input['to'];
+            $data["title"] = $input['subject'];
+            $data["description"] = $input['descriptions'];
+
+            $path = public_path('berkas_email');
+            if(!File::isDirectory($path)){
+                File::makeDirectory($path, 0777, true, true);
+            }
+            $inputFile = array();
+            Mail::send('mails.email_marketing', $data, function($message)use($data, $request) {
+                $message->to($data["email"], $data["email"])
+                        ->subject($data["title"]);
+                foreach ($request->outer_group[0]['attachment_group'] as $key => $file){
+                    // dd($file['attachment']->getClientOriginalName());
+                    // $message->attach($file['attachment']->getClientOriginalName());
+                    $input_file = $file['attachment'];
+                    // dd($input_file);
+                    $input_file->move(public_path('berkas_email/'),$input_file->getClientOriginalName());
+                    $message->attach(public_path('berkas_email/'.$input_file->getClientOriginalName()));
+                    $inputData['attachment'] = $input_file->getClientOriginalName();
+                    $inputFile[$key] = $inputData;
+                    // File::delete(public_path('berkas_email/'.$input_file->getClientOriginalName()));
+                    // $message->attach($file->getRealPath(),[
+                    //     'as' => $file->getClientOriginalName(),
+                    //     'mime' => $file->getMimeType(),
+                    // ]);
+                }
+            });
+            $input['attachment'] = json_encode($inputFile);
             $email_marketing = $this->email_marketing->create($input);
             if ($email_marketing) {
-                Mail::mailer('marketing')->to($input['to'])
-                                        ->send(new EmailMarketings([
-                                            'subject' => $input['subject'],
-                                            'data' => $input['descriptions']
-                                        ]));
+
                 $message_title="Berhasil !";
                 $message_content="Email Berhasil Terkirim";
                 $message_type="success";
