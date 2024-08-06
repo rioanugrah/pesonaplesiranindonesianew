@@ -48,7 +48,33 @@
                     </ul>
                 </li>
                 @endcan
+                <li class="menu-title">Camping</li>
+                <li>
+                    <a href="{{ route('b.camping_category_index') }}">
+                        <i class="uil-notebooks"></i>
+                        <span>Category</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#">
+                        <i class="uil-newspaper"></i>
+                        <span>Pricelist</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#">
+                        <i class="uil-backpack"></i>
+                        <span>Reservation</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#">
+                        <i class="uil-shopping-cart-alt"></i>
+                        <span>Order</span>
+                    </a>
+                </li>
                 @can('transaction-list')
+                <li class="menu-title">Transaction</li>
                 <li>
                     <a href="{{ route('b.transaction') }}">
                         <i class="uil-card-atm"></i>

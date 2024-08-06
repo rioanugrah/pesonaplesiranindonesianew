@@ -23,8 +23,8 @@ class CreateCampingTable extends Migration
 
         Schema::create('camping_pricelist', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->string('nama_barang');
             $table->uuid('camping_category_id');
+            $table->string('nama_barang');
             $table->string('price');
             $table->integer('stock');
             $table->string('status',100);
@@ -60,6 +60,7 @@ class CreateCampingTable extends Migration
             $table->uuid('id')->primary();
             $table->uuid('camping_reservation_id');
             $table->date('return_date');
+            $table->string('status',100);
             $table->timestamps();
             $table->softDeletes();
         });
@@ -67,8 +68,10 @@ class CreateCampingTable extends Migration
         Schema::create('camping_order', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->uuid('camping_reservation_id');
+            $table->string('kode_order');
             $table->text('order');
             $table->string('total');
+            $table->string('status',100);
             $table->timestamps();
             $table->softDeletes();
         });

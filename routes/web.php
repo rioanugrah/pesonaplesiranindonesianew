@@ -73,12 +73,20 @@ Route::domain(parse_url(env('APP_URL'), PHP_URL_HOST))->group(function () {
                 Route::get('/', [App\Http\Controllers\v1\PermissionsController::class, 'index'])->name('permissions')->middleware('verified');
                 Route::post('simpan', [App\Http\Controllers\v1\PermissionsController::class, 'simpan'])->name('permissions.simpan')->middleware('verified');
             });
+
+            Route::prefix('camping')->group(function(){
+                Route::prefix('category')->group(function(){
+                    Route::get('/', [App\Http\Controllers\CampingController::class, 'camping_category_index'])->name('b.camping_category_index')->middleware('verified');
+                    Route::post('simpan', [App\Http\Controllers\CampingController::class, 'camping_categori_simpan'])->name('b.camping_categori_simpan')->middleware('verified');
+                });
+            });
+
             Route::resource('users', App\Http\Controllers\v1\UsersController::class)->middleware('verified');
             Route::resource('roles', App\Http\Controllers\v1\RolesController::class)->middleware('verified');
         });
     });
 
-    Route::get('test_email', [App\Http\Controllers\TestController::class, 'testEmail']);
+    // Route::get('test_email', [App\Http\Controllers\TestController::class, 'testEmail']);
 
     Route::get('redirect/{driver}', [App\Http\Controllers\Auth\LoginController::class, 'redirectToProvider'])->name('login_google');
     Route::get('{driver}/callback', [App\Http\Controllers\Auth\LoginController::class, 'handleProviderCallback'])->name('login.callback');
