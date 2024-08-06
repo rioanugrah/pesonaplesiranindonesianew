@@ -186,6 +186,7 @@ class EmailMarketingController extends Controller
     public function b_email_simpan(Request $request)
     {
         // dd($request->attachment1->getClientOriginalName());
+
         ini_set('max_execution_time', -1);
         $rules = [
             'subject'  => 'required',
@@ -214,8 +215,8 @@ class EmailMarketingController extends Controller
                 File::makeDirectory($path, 0777, true, true);
             }
             $inputFile = array();
-            Mail::send('mails.email_marketing', $data, function($message)use($data, $request) {
-                $message->to($data["email"], $data["email"])
+            Mail::mailer('marketing')->send('mails.email_marketing', $data, function($message)use($data, $request) {
+                $message->to($data["email"])
                         ->subject($data["title"]);
                 foreach ($request->outer_group[0]['attachment_group'] as $key => $file){
                     // dd($file['attachment']->getClientOriginalName());
@@ -224,13 +225,8 @@ class EmailMarketingController extends Controller
                     // dd($input_file);
                     $input_file->move(public_path('berkas_email/'),$input_file->getClientOriginalName());
                     $message->attach(public_path('berkas_email/'.$input_file->getClientOriginalName()));
-                    $inputData['attachment'] = $input_file->getClientOriginalName();
+                    $inputData['attachment'][] = $input_file->getClientOriginalName();
                     $inputFile[$key] = $inputData;
-                    // File::delete(public_path('berkas_email/'.$input_file->getClientOriginalName()));
-                    // $message->attach($file->getRealPath(),[
-                    //     'as' => $file->getClientOriginalName(),
-                    //     'mime' => $file->getMimeType(),
-                    // ]);
                 }
             });
             $input['attachment'] = json_encode($inputFile);
