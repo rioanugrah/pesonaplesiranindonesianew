@@ -43,6 +43,8 @@ class CampingController extends Controller
                     ->addIndexColumn()
                     ->addColumn('action', function($row){
                         $btn = '<div class="btn-group">';
+                        $btn .= '<a href="javascript:void(0)" onclick="edit(`'.$row->id.'`)" class="btn btn-xs btn-warning"><i class="uil-edit"></i> Edit</a>';
+                        $btn .= '<a href="javascript:void(0)" onclick="hapus(`'.$row->id.'`)" class="btn btn-xs btn-danger"><i class="uil-trash"></i> Delete</a>';
                         // $btn .= '<a href='.route('emails.b_template.edit',['id' => $row->id]).' class="btn btn-xs btn-warning"><i class="uil-edit"></i> Edit</a>';
                         // $btn .= '<a href='.route('b.transaction.invoice',['id' => $row->id]).' target="_blank" class="btn btn-xs btn-primary"><i class="uil-file-alt"></i> Invoice</a>';
                         $btn .= '</div>';
@@ -75,6 +77,152 @@ class CampingController extends Controller
             if ($camping_category) {
                 $message_title="Berhasil !";
                 $message_content=$input['nama_kategori']." Berhasil Dibuat";
+                $message_type="success";
+                $message_succes = true;
+            }
+            $array_message = array(
+                'success' => $message_succes,
+                'message_title' => $message_title,
+                'message_content' => $message_content,
+                'message_type' => $message_type,
+            );
+
+            return $array_message;
+        }
+        return response()->json([
+            'success' => false,
+            'error' => $validator->errors()->all()
+        ]);
+    }
+
+    public function camping_category_show($id)
+    {
+        $camping_campers = $this->camping_category->find($id);
+        if (empty($camping_campers)) {
+            return response()->json([
+                'success' => false,
+                'message_title' => 'Gagal',
+                'message_content' => 'Kategori Tidak Ditemukan'
+            ]);
+        }
+        return response()->json([
+            'success' => true,
+            'data' => $camping_campers
+        ]);
+    }
+
+    public function camping_categori_update(Request $request)
+    {
+        $rules = [
+            'edit_nama_kategori'  => 'required',
+            'edit_status'  => 'required',
+        ];
+
+        $messages = [
+            'edit_nama_kategori.required'   => 'Kategori wajib diisi.',
+            'edit_status.required'   => 'Status Kategori wajib diisi.',
+        ];
+
+        $validator = Validator::make($request->all(), $rules, $messages);
+        if ($validator->passes()) {
+            $input['nama_kategori'] = $request->edit_nama_kategori;
+            $input['status'] = $request->edit_status;
+            $camping_category = $this->camping_category->find($request->edit_id)->update($input);
+            if ($camping_category) {
+                $message_title="Berhasil !";
+                $message_content=$input['nama_kategori']." Berhasil Diupdate";
+                $message_type="success";
+                $message_succes = true;
+            }
+            $array_message = array(
+                'success' => $message_succes,
+                'message_title' => $message_title,
+                'message_content' => $message_content,
+                'message_type' => $message_type,
+            );
+
+            return $array_message;
+        }
+        return response()->json([
+            'success' => false,
+            'error' => $validator->errors()->all()
+        ]);
+    }
+
+    public function camping_category_delete($id)
+    {
+        // dd($id);
+        $camping_campers = $this->camping_category->find($id);
+        if (empty($camping_campers)) {
+            return response()->json([
+                'success' => false,
+                'message_title' => 'Gagal',
+                'message_content' => 'Kategori Tidak Ditemukan'
+            ]);
+        }
+        $camping_campers->delete();
+        return response()->json([
+            'success' => true,
+            'message_title' => 'Berhasil',
+            'message_content' => 'Kategori Berhasil Dihapus'
+        ]);
+    }
+
+    public function camping_pricelist_index(Request $request)
+    {
+        if ($request->ajax()) {
+            $data = $this->camping_pricelist->all();
+            return DataTables::of($data)
+                    ->addIndexColumn()
+                    ->addColumn('action', function($row){
+                        $btn = '<div class="btn-group">';
+                        // $btn .= '<a href="javascript:void(0)" onclick="edit(`'.$row->id.'`)" class="btn btn-xs btn-warning"><i class="uil-edit"></i> Edit</a>';
+                        // $btn .= '<a href="javascript:void(0)" onclick="hapus(`'.$row->id.'`)" class="btn btn-xs btn-danger"><i class="uil-trash"></i> Delete</a>';
+                        $btn .= '</div>';
+                        return $btn;
+                    })
+                    ->rawColumns(['action'])
+                    ->make(true);
+        }
+        return view('backend.campings.pricelist.index');
+    }
+
+    public function camping_pricelist_create()
+    {
+        $data['camping_categorys'] = $this->camping_category->all();
+        return view('backend.campings.pricelist.create',$data);
+    }
+
+    public function camping_pricelist_simpan(Request $request)
+    {
+        $rules = [
+            'camping_categori_id'  => 'required',
+            'nama_barang'  => 'required',
+            'price'  => 'required',
+            'stock'  => 'required',
+            'status'  => 'required',
+        ];
+
+        $messages = [
+            'camping_categori_id.required'   => 'Kategori Camping wajib diisi.',
+            'nama_barang.required'   => 'Nama Barang wajib diisi.',
+            'price.required'   => 'Harga Barang wajib diisi.',
+            'stock.required'   => 'Stock Barang wajib diisi.',
+            'status.required'   => 'Status Barang wajib diisi.',
+        ];
+
+        $validator = Validator::make($request->all(), $rules, $messages);
+        if ($validator->passes()) {
+            $input['id'] = Str::uuid()->toString();
+            $input['camping_categori_id'] = $request->camping_categori_id;
+            $input['nama_barang'] = $request->nama_barang;
+            $input['price'] = $request->price;
+            $input['stock'] = $request->stock;
+            $input['status'] = $request->status;
+            $camping_pricelist = $this->camping_pricelist->create($input);
+            if ($camping_pricelist) {
+                $message_title="Berhasil !";
+                $message_content=$input['nama_barang']." Berhasil Dibuat";
                 $message_type="success";
                 $message_succes = true;
             }

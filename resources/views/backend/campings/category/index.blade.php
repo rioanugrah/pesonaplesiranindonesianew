@@ -9,7 +9,8 @@
 @endsection
 
 @section('content')
-@include('backend.campings.category.modalBuat')
+    @include('backend.campings.category.modalBuat')
+    @include('backend.campings.category.modalEdit')
     <div class="row">
         <div class="col-md-12">
             <div class="card">
@@ -48,8 +49,7 @@
             processing: true,
             serverSide: true,
             ajax: "{{ route('b.camping_category_index') }}",
-            columns: [
-                {
+            columns: [{
                     data: 'nama_kategori',
                     name: 'nama_kategori'
                 },
@@ -70,19 +70,148 @@
             $('#buat').modal('show');
         }
 
+        function edit(id) {
+            $.ajax({
+                type: 'GET',
+                url: "{{ url('b/camping/category/') }}" + '/' + id,
+                contentType: false,
+                processData: false,
+                success: (result) => {
+                    if (result.success != false) {
+                        $('#edit_id').val(result.data.id);
+                        $('#edit_nama_kategori').val(result.data.nama_kategori);
+                        $('#edit_status').val(result.data.status);
+                        $('#edit').modal('show');
+                    } else {
+                        toastr["error"](result.error);
+                        toastr.options = {
+                            "closeButton": false,
+                            "debug": false,
+                            "newestOnTop": false,
+                            "progressBar": false,
+                            "positionClass": "toast-top-center",
+                            "preventDuplicates": false,
+                            "onclick": null,
+                            "showDuration": 300,
+                            "hideDuration": 1000,
+                            "timeOut": 5000,
+                            "extendedTimeOut": 1000,
+                            "showEasing": "swing",
+                            "hideEasing": "linear",
+                            "showMethod": "fadeIn",
+                            "hideMethod": "fadeOut"
+                        }
+                    }
+                },
+                error: function(request, status, error) {
+                    toastr["error"](error);
+                    toastr.options = {
+                        "closeButton": false,
+                        "debug": false,
+                        "newestOnTop": false,
+                        "progressBar": false,
+                        "positionClass": "toast-top-center",
+                        "preventDuplicates": false,
+                        "onclick": null,
+                        "showDuration": 300,
+                        "hideDuration": 1000,
+                        "timeOut": 5000,
+                        "extendedTimeOut": 1000,
+                        "showEasing": "swing",
+                        "hideEasing": "linear",
+                        "showMethod": "fadeIn",
+                        "hideMethod": "fadeOut"
+                    }
+                }
+            });
+        }
+
+        function hapus(id) {
+            $.ajax({
+                type: 'DELETE',
+                url: "{{ url('b/camping/category/') }}" + '/' + id + '/delete',
+                data: {"id": id , _method: 'delete'},
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                contentType: false,
+                processData: false,
+                success: (result) => {
+                    if (result.success != false) {
+                        toastr["success"](result.message_content);
+                        toastr.options = {
+                            "closeButton": false,
+                            "debug": false,
+                            "newestOnTop": false,
+                            "progressBar": true,
+                            "positionClass": "toast-top-right",
+                            "preventDuplicates": false,
+                            "onclick": null,
+                            "showDuration": 300,
+                            "hideDuration": 1000,
+                            "timeOut": 5000,
+                            "extendedTimeOut": 1000,
+                            "showEasing": "swing",
+                            "hideEasing": "linear",
+                            "showMethod": "fadeIn",
+                            "hideMethod": "fadeOut"
+                        }
+                        table.ajax.reload(null, false);
+                    } else {
+                        toastr["error"](result.error);
+                        toastr.options = {
+                            "closeButton": false,
+                            "debug": false,
+                            "newestOnTop": false,
+                            "progressBar": false,
+                            "positionClass": "toast-top-center",
+                            "preventDuplicates": false,
+                            "onclick": null,
+                            "showDuration": 300,
+                            "hideDuration": 1000,
+                            "timeOut": 5000,
+                            "extendedTimeOut": 1000,
+                            "showEasing": "swing",
+                            "hideEasing": "linear",
+                            "showMethod": "fadeIn",
+                            "hideMethod": "fadeOut"
+                        }
+                    }
+                },
+                error: function(request, status, error) {
+                    toastr["error"](error);
+                    toastr.options = {
+                        "closeButton": false,
+                        "debug": false,
+                        "newestOnTop": false,
+                        "progressBar": false,
+                        "positionClass": "toast-top-center",
+                        "preventDuplicates": false,
+                        "onclick": null,
+                        "showDuration": 300,
+                        "hideDuration": 1000,
+                        "timeOut": 5000,
+                        "extendedTimeOut": 1000,
+                        "showEasing": "swing",
+                        "hideEasing": "linear",
+                        "showMethod": "fadeIn",
+                        "hideMethod": "fadeOut"
+                    }
+                }
+            });
+        }
+
         $('#upload-form').submit(function(e) {
-            // alert('coba');
             e.preventDefault();
             let formData = new FormData(this);
-            // $('#image-input-error').text('');
             $.ajax({
-                type:'POST',
+                type: 'POST',
                 url: "{{ route('b.camping_categori_simpan') }}",
                 data: formData,
                 contentType: false,
                 processData: false,
                 success: (result) => {
-                    if(result.success != false){
+                    if (result.success != false) {
                         toastr["success"](result.message_content);
                         toastr.options = {
                             "closeButton": false,
@@ -104,7 +233,7 @@
                         this.reset();
                         $('#buat').modal('hide');
                         table.ajax.reload(null, false);
-                    }else{
+                    } else {
                         toastr["error"](result.error);
                         toastr.options = {
                             "closeButton": false,
@@ -125,7 +254,83 @@
                         }
                     }
                 },
-                error: function (request, status, error) {
+                error: function(request, status, error) {
+                    toastr["error"](error);
+                    toastr.options = {
+                        "closeButton": false,
+                        "debug": false,
+                        "newestOnTop": false,
+                        "progressBar": true,
+                        "positionClass": "toast-top-right",
+                        "preventDuplicates": false,
+                        "onclick": null,
+                        "showDuration": 300,
+                        "hideDuration": 1000,
+                        "timeOut": 5000,
+                        "extendedTimeOut": 1000,
+                        "showEasing": "swing",
+                        "hideEasing": "linear",
+                        "showMethod": "fadeIn",
+                        "hideMethod": "fadeOut"
+                    }
+                }
+            });
+        });
+
+        $('#edit-form').submit(function(e) {
+            e.preventDefault();
+            let formData = new FormData(this);
+            $.ajax({
+                type: 'POST',
+                url: "{{ route('b.camping_categori_update') }}",
+                data: formData,
+                contentType: false,
+                processData: false,
+                success: (result) => {
+                    if (result.success != false) {
+                        toastr["success"](result.message_content);
+                        toastr.options = {
+                            "closeButton": false,
+                            "debug": false,
+                            "newestOnTop": false,
+                            "progressBar": true,
+                            "positionClass": "toast-top-right",
+                            "preventDuplicates": false,
+                            "onclick": null,
+                            "showDuration": 300,
+                            "hideDuration": 1000,
+                            "timeOut": 5000,
+                            "extendedTimeOut": 1000,
+                            "showEasing": "swing",
+                            "hideEasing": "linear",
+                            "showMethod": "fadeIn",
+                            "hideMethod": "fadeOut"
+                        }
+                        this.reset();
+                        $('#edit').modal('hide');
+                        table.ajax.reload(null, false);
+                    } else {
+                        toastr["error"](result.error);
+                        toastr.options = {
+                            "closeButton": false,
+                            "debug": false,
+                            "newestOnTop": false,
+                            "progressBar": true,
+                            "positionClass": "toast-top-right",
+                            "preventDuplicates": false,
+                            "onclick": null,
+                            "showDuration": 300,
+                            "hideDuration": 1000,
+                            "timeOut": 5000,
+                            "extendedTimeOut": 1000,
+                            "showEasing": "swing",
+                            "hideEasing": "linear",
+                            "showMethod": "fadeIn",
+                            "hideMethod": "fadeOut"
+                        }
+                    }
+                },
+                error: function(request, status, error) {
                     toastr["error"](error);
                     toastr.options = {
                         "closeButton": false,

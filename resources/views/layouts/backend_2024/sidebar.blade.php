@@ -56,7 +56,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="#">
+                    <a href="{{ route('b.camping_pricelist_index') }}">
                         <i class="uil-newspaper"></i>
                         <span>Pricelist</span>
                     </a>

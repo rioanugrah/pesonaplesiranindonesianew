@@ -78,6 +78,14 @@ Route::domain(parse_url(env('APP_URL'), PHP_URL_HOST))->group(function () {
                 Route::prefix('category')->group(function(){
                     Route::get('/', [App\Http\Controllers\CampingController::class, 'camping_category_index'])->name('b.camping_category_index')->middleware('verified');
                     Route::post('simpan', [App\Http\Controllers\CampingController::class, 'camping_categori_simpan'])->name('b.camping_categori_simpan')->middleware('verified');
+                    Route::post('update', [App\Http\Controllers\CampingController::class, 'camping_categori_update'])->name('b.camping_categori_update')->middleware('verified');
+                    Route::get('{id}', [App\Http\Controllers\CampingController::class, 'camping_category_show'])->name('b.camping_category_show')->middleware('verified');
+                    Route::delete('{id}/delete', [App\Http\Controllers\CampingController::class, 'camping_category_delete'])->name('b.camping_category_delete')->middleware('verified');
+                });
+                Route::prefix('pricelist')->group(function(){
+                    Route::get('/', [App\Http\Controllers\CampingController::class, 'camping_pricelist_index'])->name('b.camping_pricelist_index')->middleware('verified');
+                    Route::get('create', [App\Http\Controllers\CampingController::class, 'camping_pricelist_create'])->name('b.camping_pricelist_create')->middleware('verified');
+                    Route::post('simpan', [App\Http\Controllers\CampingController::class, 'camping_pricelist_simpan'])->name('b.camping_pricelist_simpan')->middleware('verified');
                 });
             });
 
