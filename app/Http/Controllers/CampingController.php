@@ -41,6 +41,21 @@ class CampingController extends Controller
             $data = $this->camping_category->all();
             return DataTables::of($data)
                     ->addIndexColumn()
+                    ->addColumn('status', function($row){
+                        switch ($row->status) {
+                            case 'Aktif':
+                                return '<span class="badge bg-success">Aktif</span>';
+                                break;
+
+                            case 'Non Aktif':
+                                return '<span class="badge bg-danger">Non Aktif</span>';
+                                break;
+
+                            default:
+                                # code...
+                                break;
+                        }
+                    })
                     ->addColumn('action', function($row){
                         $btn = '<div class="btn-group">';
                         $btn .= '<a href="javascript:void(0)" onclick="edit(`'.$row->id.'`)" class="btn btn-xs btn-warning"><i class="uil-edit"></i> Edit</a>';
@@ -50,7 +65,7 @@ class CampingController extends Controller
                         $btn .= '</div>';
                         return $btn;
                     })
-                    ->rawColumns(['action'])
+                    ->rawColumns(['action','status'])
                     ->make(true);
         }
         return view('backend.campings.category.index');

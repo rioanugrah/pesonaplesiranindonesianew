@@ -25,6 +25,7 @@
                         <thead>
                             <tr>
                                 <th>Nama Kategori</th>
+                                <th>Status</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -49,9 +50,14 @@
             processing: true,
             serverSide: true,
             ajax: "{{ route('b.camping_category_index') }}",
-            columns: [{
+            columns: [
+                {
                     data: 'nama_kategori',
                     name: 'nama_kategori'
+                },
+                {
+                    data: 'status',
+                    name: 'status'
                 },
                 {
                     data: 'action',
