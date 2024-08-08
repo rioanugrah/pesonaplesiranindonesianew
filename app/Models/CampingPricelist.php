@@ -24,4 +24,9 @@ class CampingPricelist extends Model
         'stock',
         'status',
     ];
+
+    public function camping_category()
+    {
+        return $this->belongsTo(\App\Models\CampingCategory::class, 'camping_category_id', 'id');
+    }
 }

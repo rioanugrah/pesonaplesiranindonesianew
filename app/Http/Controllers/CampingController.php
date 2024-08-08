@@ -174,14 +174,35 @@ class CampingController extends Controller
             $data = $this->camping_pricelist->all();
             return DataTables::of($data)
                     ->addIndexColumn()
+                    ->addColumn('camping_category_id', function($row){
+                        return $row->camping_category->nama_kategori;
+                    })
+                    ->addColumn('price', function($row){
+                        return 'Rp. '.number_format($row->price,0,',','.');
+                    })
+                    ->addColumn('status', function($row){
+                        switch ($row->status) {
+                            case 'Ready':
+                                return '<span class="badge bg-success">Ready</span>';
+                                break;
+
+                            case 'Sold Out':
+                                return '<span class="badge bg-danger">Sold Out</span>';
+                                break;
+
+                            default:
+                                # code...
+                                break;
+                        }
+                    })
                     ->addColumn('action', function($row){
                         $btn = '<div class="btn-group">';
-                        // $btn .= '<a href="javascript:void(0)" onclick="edit(`'.$row->id.'`)" class="btn btn-xs btn-warning"><i class="uil-edit"></i> Edit</a>';
-                        // $btn .= '<a href="javascript:void(0)" onclick="hapus(`'.$row->id.'`)" class="btn btn-xs btn-danger"><i class="uil-trash"></i> Delete</a>';
+                        $btn .= '<a href="javascript:void(0)" onclick="window.location.href=`'.route('b.camping_pricelist_edit',['id' => $row->id]).'`" class="btn btn-xs btn-warning"><i class="uil-edit"></i> Edit</a>';
+                        $btn .= '<a href="javascript:void(0)" onclick="hapus(`'.$row->id.'`)" class="btn btn-xs btn-danger"><i class="uil-trash"></i> Delete</a>';
                         $btn .= '</div>';
                         return $btn;
                     })
-                    ->rawColumns(['action'])
+                    ->rawColumns(['action','status'])
                     ->make(true);
         }
         return view('backend.campings.pricelist.index');
@@ -196,7 +217,7 @@ class CampingController extends Controller
     public function camping_pricelist_simpan(Request $request)
     {
         $rules = [
-            'camping_categori_id'  => 'required',
+            'camping_category_id'  => 'required',
             'nama_barang'  => 'required',
             'price'  => 'required',
             'stock'  => 'required',
@@ -204,7 +225,7 @@ class CampingController extends Controller
         ];
 
         $messages = [
-            'camping_categori_id.required'   => 'Kategori Camping wajib diisi.',
+            'camping_category_id.required'   => 'Kategori Camping wajib diisi.',
             'nama_barang.required'   => 'Nama Barang wajib diisi.',
             'price.required'   => 'Harga Barang wajib diisi.',
             'stock.required'   => 'Stock Barang wajib diisi.',
@@ -214,7 +235,7 @@ class CampingController extends Controller
         $validator = Validator::make($request->all(), $rules, $messages);
         if ($validator->passes()) {
             $input['id'] = Str::uuid()->toString();
-            $input['camping_categori_id'] = $request->camping_categori_id;
+            $input['camping_category_id'] = $request->camping_category_id;
             $input['nama_barang'] = $request->nama_barang;
             $input['price'] = $request->price;
             $input['stock'] = $request->stock;
@@ -238,6 +259,82 @@ class CampingController extends Controller
         return response()->json([
             'success' => false,
             'error' => $validator->errors()->all()
+        ]);
+    }
+
+    public function camping_pricelist_edit($id)
+    {
+        $data['camping_pricelist'] = $this->camping_pricelist->find($id);
+        if (empty($data['camping_pricelist'])) {
+            return redirect()->back()->with('error','Data Tidak Ditemukan');
+        }
+        $data['camping_categorys'] = $this->camping_category->all();
+        return view('backend.campings.pricelist.edit',$data);
+    }
+
+    public function camping_pricelist_update(Request $request,$id)
+    {
+        $rules = [
+            'camping_category_id'  => 'required',
+            'nama_barang'  => 'required',
+            'price'  => 'required',
+            'stock'  => 'required',
+            'status'  => 'required',
+        ];
+
+        $messages = [
+            'camping_category_id.required'   => 'Kategori Camping wajib diisi.',
+            'nama_barang.required'   => 'Nama Barang wajib diisi.',
+            'price.required'   => 'Harga Barang wajib diisi.',
+            'stock.required'   => 'Stock Barang wajib diisi.',
+            'status.required'   => 'Status Barang wajib diisi.',
+        ];
+
+        $validator = Validator::make($request->all(), $rules, $messages);
+        if ($validator->passes()) {
+            $input['camping_category_id'] = $request->camping_category_id;
+            $input['nama_barang'] = $request->nama_barang;
+            $input['price'] = $request->price;
+            $input['stock'] = $request->stock;
+            $input['status'] = $request->status;
+            $camping_pricelist = $this->camping_pricelist->find($id)->update($input);
+            if ($camping_pricelist) {
+                $message_title="Berhasil !";
+                $message_content=$input['nama_barang']." Berhasil Diupdate. Silahkan Ditunggu";
+                $message_type="success";
+                $message_succes = true;
+            }
+            $array_message = array(
+                'success' => $message_succes,
+                'message_title' => $message_title,
+                'message_content' => $message_content,
+                'message_type' => $message_type,
+            );
+
+            return $array_message;
+        }
+        return response()->json([
+            'success' => false,
+            'error' => $validator->errors()->all()
+        ]);
+    }
+
+    public function camping_pricelist_delete($id)
+    {
+        // dd($id);
+        $camping_pricelist = $this->camping_pricelist->find($id);
+        if (empty($camping_pricelist)) {
+            return response()->json([
+                'success' => false,
+                'message_title' => 'Gagal',
+                'message_content' => 'Pricelist Tidak Ditemukan'
+            ]);
+        }
+        $camping_pricelist->delete();
+        return response()->json([
+            'success' => true,
+            'message_title' => 'Berhasil',
+            'message_content' => 'Camping Pricelist Berhasil Dihapus'
         ]);
     }
 }

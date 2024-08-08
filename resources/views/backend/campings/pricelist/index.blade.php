@@ -53,12 +53,12 @@
             ajax: "{{ route('b.camping_pricelist_index') }}",
             columns: [
                 {
-                    data: 'camping_category_id',
-                    name: 'camping_category_id'
-                },
-                {
                     data: 'nama_barang',
                     name: 'nama_barang'
+                },
+                {
+                    data: 'camping_category_id',
+                    name: 'camping_category_id'
                 },
                 {
                     data: 'price',
@@ -83,6 +83,81 @@
 
         function reload() {
             table.ajax.reload();
+        }
+
+        function hapus(id) {
+            $.ajax({
+                type: 'DELETE',
+                url: "{{ url('b/camping/pricelist/') }}" + '/' + id + '/delete',
+                data: {"id": id , _method: 'delete'},
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                contentType: false,
+                processData: false,
+                success: (result) => {
+                    if (result.success != false) {
+                        toastr["success"](result.message_content);
+                        toastr.options = {
+                            "closeButton": false,
+                            "debug": false,
+                            "newestOnTop": false,
+                            "progressBar": true,
+                            "positionClass": "toast-top-right",
+                            "preventDuplicates": false,
+                            "onclick": null,
+                            "showDuration": 300,
+                            "hideDuration": 1000,
+                            "timeOut": 5000,
+                            "extendedTimeOut": 1000,
+                            "showEasing": "swing",
+                            "hideEasing": "linear",
+                            "showMethod": "fadeIn",
+                            "hideMethod": "fadeOut"
+                        }
+                        table.ajax.reload(null, false);
+                    } else {
+                        toastr["error"](result.error);
+                        toastr.options = {
+                            "closeButton": false,
+                            "debug": false,
+                            "newestOnTop": false,
+                            "progressBar": false,
+                            "positionClass": "toast-top-center",
+                            "preventDuplicates": false,
+                            "onclick": null,
+                            "showDuration": 300,
+                            "hideDuration": 1000,
+                            "timeOut": 5000,
+                            "extendedTimeOut": 1000,
+                            "showEasing": "swing",
+                            "hideEasing": "linear",
+                            "showMethod": "fadeIn",
+                            "hideMethod": "fadeOut"
+                        }
+                    }
+                },
+                error: function(request, status, error) {
+                    toastr["error"](error);
+                    toastr.options = {
+                        "closeButton": false,
+                        "debug": false,
+                        "newestOnTop": false,
+                        "progressBar": false,
+                        "positionClass": "toast-top-center",
+                        "preventDuplicates": false,
+                        "onclick": null,
+                        "showDuration": 300,
+                        "hideDuration": 1000,
+                        "timeOut": 5000,
+                        "extendedTimeOut": 1000,
+                        "showEasing": "swing",
+                        "hideEasing": "linear",
+                        "showMethod": "fadeIn",
+                        "hideMethod": "fadeOut"
+                    }
+                }
+            });
         }
 
     </script>

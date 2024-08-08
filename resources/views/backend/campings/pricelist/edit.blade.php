@@ -1,6 +1,6 @@
 @extends('layouts.backend_2024.master')
 @section('title')
-    Camping Pricelist Create
+    Edit Pricelist
 @endsection
 
 @section('css')
@@ -11,7 +11,7 @@
     <div class="row">
         <div class="col-md-12">
             <div class="card">
-                <form id="upload-form" method="POST" enctype="multipart/form-data">
+                <form id="update-form" method="POST" enctype="multipart/form-data">
                 @csrf
                 <div class="card-body">
                     <h4 class="card-title mb-3">@yield('title')</h4>
@@ -20,7 +20,7 @@
                             <div class="col-md-4">
                                 <div class="mb-3">
                                     <label>Nama Produk</label>
-                                    <input type="text" name="nama_barang" class="form-control" placeholder="Nama Barang" id="">
+                                    <input type="text" name="nama_barang" class="form-control" placeholder="Nama Barang" value="{{ $camping_pricelist->nama_barang }}" id="">
                                 </div>
                             </div>
                             <div class="col-md-3">
@@ -29,7 +29,7 @@
                                     <select name="camping_category_id" class="form-control" id="">
                                         <option value="">-- Pilih Kategori --</option>
                                         @foreach ($camping_categorys as $camping_category)
-                                            <option value="{{ $camping_category->id }}">{{ $camping_category->nama_kategori }}</option>
+                                            <option value="{{ $camping_category->id }}" {{ $camping_category->id == $camping_pricelist->camping_category_id ? 'selected' : null }}>{{ $camping_category->nama_kategori }}</option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -37,13 +37,13 @@
                             <div class="col-md-2">
                                 <div class="mb-3">
                                     <label>Harga Produk</label>
-                                    <input type="number" name="price" class="form-control" placeholder="Harga Barang" id="">
+                                    <input type="number" name="price" class="form-control" placeholder="Harga Barang" value="{{ $camping_pricelist->price }}" id="">
                                 </div>
                             </div>
                             <div class="col-md-1">
                                 <div class="mb-3">
                                     <label>Stock</label>
-                                    <input type="number" name="stock" class="form-control" placeholder="Stock" id="">
+                                    <input type="number" name="stock" class="form-control" placeholder="Stock" value="{{ $camping_pricelist->stock }}" id="">
                                 </div>
                             </div>
                             <div class="col-md-2">
@@ -51,8 +51,8 @@
                                     <label>Status</label>
                                     <select name="status" class="form-control" id="">
                                         <option value="">-- Pilih Status --</option>
-                                        <option value="Ready">Ready</option>
-                                        <option value="Sold Out">Sold Out</option>
+                                        <option value="Ready" {{ $camping_pricelist->status == 'Ready' ? 'selected' : null }}>Ready</option>
+                                        <option value="Sold Out" {{ $camping_pricelist->status == 'Sold Out' ? 'selected' : null }}>Sold Out</option>
                                     </select>
                                 </div>
                             </div>
@@ -60,7 +60,7 @@
                     </div>
                 </div>
                 <div class="card-footer">
-                    <button type="submit" class="btn btn-success">Submit</button>
+                    <button type="submit" class="btn btn-success">Update</button>
                     <button type="button" onclick="window.location.href='{{ url()->previous() }}'" class="btn btn-secondary">Back</button>
                 </div>
                 </form>
@@ -78,12 +78,12 @@
             }
         });
 
-        $('#upload-form').submit(function(e) {
+        $('#update-form').submit(function(e) {
             e.preventDefault();
             let formData = new FormData(this);
             $.ajax({
                 type: 'POST',
-                url: "{{ route('b.camping_pricelist_simpan') }}",
+                url: "{{ route('b.camping_pricelist_update',['id' => $camping_pricelist->id]) }}",
                 data: formData,
                 contentType: false,
                 processData: false,
@@ -115,9 +115,11 @@
                             title: result.message_title,
                             text: result.message_content,
                             icon: 'success',
-                            // showConfirmButton: false
+                            showConfirmButton: false
                         });
-                        this.reset();
+                        setTimeout(() => {
+                            window.location.href='{{ route("b.camping_pricelist_index") }}';
+                        }, 3000);
                     } else {
                         Swal.fire({
                             title: 'Gagal',
@@ -128,24 +130,12 @@
                     }
                 },
                 error: function(request, status, error) {
-                    toastr["error"](error);
-                    toastr.options = {
-                        "closeButton": false,
-                        "debug": false,
-                        "newestOnTop": false,
-                        "progressBar": true,
-                        "positionClass": "toast-top-right",
-                        "preventDuplicates": false,
-                        "onclick": null,
-                        "showDuration": 300,
-                        "hideDuration": 1000,
-                        "timeOut": 5000,
-                        "extendedTimeOut": 1000,
-                        "showEasing": "swing",
-                        "hideEasing": "linear",
-                        "showMethod": "fadeIn",
-                        "hideMethod": "fadeOut"
-                    }
+                    Swal.fire({
+                        title: 'Error',
+                        text: error,
+                        icon: 'error',
+                        showConfirmButton: false
+                    });
                 }
             });
         });
