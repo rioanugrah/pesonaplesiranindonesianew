@@ -368,6 +368,9 @@ class CampingController extends Controller
             $data = $this->camping_reservation->all();
             return DataTables::of($data)
                     ->addIndexColumn()
+                    ->addColumn('camping_campers_id', function($row){
+                        return $row->camping_campers->first_name.' '.$row->camping_campers->last_name;
+                    })
                     ->addColumn('status', function($row){
                         switch ($row->status) {
                             case 'Reservation':

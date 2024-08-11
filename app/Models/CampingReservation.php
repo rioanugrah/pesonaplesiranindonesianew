@@ -23,4 +23,9 @@ class CampingReservation extends Model
         'resv_night',
         'status',
     ];
+
+    public function camping_campers()
+    {
+        return $this->belongsTo(\App\Models\CampingCampers::class, 'camping_campers_id','id');
+    }
 }
