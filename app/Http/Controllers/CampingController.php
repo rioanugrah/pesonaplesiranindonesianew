@@ -500,6 +500,8 @@ class CampingController extends Controller
 
                     $inputIDTransaction = Str::uuid()->toString();
 
+                    // dd(url('b/transaction/').$inputIDTransaction.'/invoice');
+
                     $payment = $this->tripay_payment->requestTransaction(
                         'Pemesanan Camping - '.$input_order['kode_order'],
                         $request->method,
@@ -509,7 +511,7 @@ class CampingController extends Controller
                         $request->email,
                         $request->no_telp,
                         $input_order['kode_order'],
-                        redirect()->route('b.transaction.invoice',['id' => $inputIDTransaction])
+                        url('b/transaction/').$inputIDTransaction.'/invoice'
                     );
 
                     $this->transaction->create([
