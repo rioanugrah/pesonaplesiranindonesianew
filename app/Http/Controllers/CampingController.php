@@ -421,14 +421,14 @@ class CampingController extends Controller
         ];
 
         $messages = [
-            'first_name.required'   => 'Kategori Camping wajib diisi.',
-            'last_name.required'   => 'Nama Barang wajib diisi.',
-            'email.required'   => 'Harga Barang wajib diisi.',
-            'no_telp.required'   => 'Stock Barang wajib diisi.',
-            'address.required'   => 'Status Barang wajib diisi.',
-            'city.required'   => 'Status Barang wajib diisi.',
-            'state.required'   => 'Status Barang wajib diisi.',
-            'foto_identitas.required'   => 'Status Barang wajib diisi.',
+            'first_name.required'   => 'First Name wajib diisi.',
+            'last_name.required'   => 'Last Name wajib diisi.',
+            'email.required'   => 'Email wajib diisi.',
+            'no_telp.required'   => 'No.Telp wajib diisi.',
+            'address.required'   => 'Alamat wajib diisi.',
+            'city.required'   => 'Kota / Kabupaten wajib diisi.',
+            'state.required'   => 'Provinsi wajib diisi.',
+            'foto_identitas.required'   => 'Foto Identitas wajib diisi.',
             'resv_date.required'   => 'Tanggal Reservasi wajib diisi.',
             'resv_night.required'   => 'Durasi Reservasi wajib diisi.',
             'order.required'   => 'Order Item wajib diisi.',
@@ -511,7 +511,7 @@ class CampingController extends Controller
                         $request->email,
                         $request->no_telp,
                         $input_order['kode_order'],
-                        url('b/transaction/').$inputIDTransaction.'/invoice'
+                        url('b/transaction/').'/'.$inputIDTransaction.'/invoice'
                     );
 
                     $this->transaction->create([
