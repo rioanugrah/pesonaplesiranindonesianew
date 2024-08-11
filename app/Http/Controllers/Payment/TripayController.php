@@ -60,9 +60,14 @@ class TripayController extends Controller
 
     public function requestTransaction(
         $product,
-        $method,$amount,
-        $first_name,$last_name,$email,$phone,
-        $merchantRef,$url
+        $method,
+        $amount,
+        $first_name,
+        $last_name,
+        $email,
+        $phone,
+        $merchantRef,
+        $url
         )
         {
             $apiKey       = $this->tripay_api_key;

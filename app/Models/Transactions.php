@@ -24,6 +24,7 @@ class Transactions extends Model
         'transaction_qty',
         'transaction_price',
         'user',
+        'link_payment',
         'status',
     ];
 

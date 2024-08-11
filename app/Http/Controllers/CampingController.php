@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use App\Http\Controllers\Payment\TripayController;
+
+use App\Models\Transactions;
 use App\Models\CampingCampers;
 use App\Models\CampingCategory;
 use App\Models\CampingOrder;
@@ -11,14 +14,18 @@ use App\Models\CampingPricelist;
 use App\Models\CampingReservation;
 use App\Models\CampingReturn;
 
+use \Carbon\Carbon;
 use DataTables;
 use Notification;
 use Validator;
 use DB;
+use File;
 
 class CampingController extends Controller
 {
     function __construct(
+        TripayController $tripay,
+        Transactions $transaction,
         CampingCampers $camping_campers,
         CampingCategory $camping_category,
         CampingOrder $camping_order,
@@ -27,6 +34,8 @@ class CampingController extends Controller
         CampingReturn $camping_return
     )
     {
+        $this->tripay_payment = $tripay;
+        $this->transaction = $transaction;
         $this->camping_campers = $camping_campers;
         $this->camping_category = $camping_category;
         $this->camping_order = $camping_order;
@@ -350,6 +359,209 @@ class CampingController extends Controller
             'success' => true,
             'message_title' => 'Berhasil',
             'message_content' => 'Camping Pricelist Berhasil Dihapus'
+        ]);
+    }
+
+    public function camping_reservation_index(Request $request)
+    {
+        if ($request->ajax()) {
+            $data = $this->camping_reservation->all();
+            return DataTables::of($data)
+                    ->addIndexColumn()
+                    ->addColumn('status', function($row){
+                        switch ($row->status) {
+                            case 'Reservation':
+                                return '<span class="badge bg-success">Aktif</span>';
+                                break;
+
+                            case 'Non Aktif':
+                                return '<span class="badge bg-danger">Non Aktif</span>';
+                                break;
+
+                            default:
+                                # code...
+                                break;
+                        }
+                    })
+                    ->addColumn('action', function($row){
+                        $btn = '<div class="btn-group">';
+                        $btn .= '<a href="javascript:void(0)" onclick="edit(`'.$row->id.'`)" class="btn btn-xs btn-warning"><i class="uil-edit"></i> Edit</a>';
+                        $btn .= '<a href="javascript:void(0)" onclick="hapus(`'.$row->id.'`)" class="btn btn-xs btn-danger"><i class="uil-trash"></i> Delete</a>';
+                        $btn .= '</div>';
+                        return $btn;
+                    })
+                    ->rawColumns(['action','status'])
+                    ->make(true);
+        }
+        return view('backend.campings.reservations.index');
+    }
+
+    public function camping_reservation_create()
+    {
+        $data['camping_categories'] = $this->camping_category->all();
+        $tripay = $this->tripay_payment;
+        $data['channels'] = json_decode($tripay->getPayment())->data;
+        return view('backend.campings.reservations.create',$data);
+    }
+
+    public function camping_reservation_simpan(Request $request)
+    {
+        $rules = [
+            'first_name'  => 'required',
+            'last_name'  => 'required',
+            'email'  => 'required',
+            'no_telp'  => 'required',
+            'address'  => 'required',
+            'city'  => 'required',
+            'state'  => 'required',
+            'foto_identitas'  => 'required',
+            'resv_date'  => 'required',
+            'resv_night'  => 'required',
+            'order'  => 'required',
+        ];
+
+        $messages = [
+            'first_name.required'   => 'Kategori Camping wajib diisi.',
+            'last_name.required'   => 'Nama Barang wajib diisi.',
+            'email.required'   => 'Harga Barang wajib diisi.',
+            'no_telp.required'   => 'Stock Barang wajib diisi.',
+            'address.required'   => 'Status Barang wajib diisi.',
+            'city.required'   => 'Status Barang wajib diisi.',
+            'state.required'   => 'Status Barang wajib diisi.',
+            'foto_identitas.required'   => 'Status Barang wajib diisi.',
+            'resv_date.required'   => 'Tanggal Reservasi wajib diisi.',
+            'resv_night.required'   => 'Durasi Reservasi wajib diisi.',
+            'order.required'   => 'Order Item wajib diisi.',
+        ];
+
+        $validator = Validator::make($request->all(), $rules, $messages);
+
+        if ($validator->passes()) {
+            $path = public_path('berkas_camping/berkas');
+            if(!File::isDirectory($path)){
+                File::makeDirectory($path, 0777, true, true);
+            }
+
+            $input_identitas['id'] = Str::uuid()->toString();
+            $input_identitas['first_name'] = $request->first_name;
+            $input_identitas['last_name'] = $request->last_name;
+            $input_identitas['email'] = $request->email;
+            $input_identitas['no_telp'] = $request->no_telp;
+            $input_identitas['address'] = $request->address;
+            $input_identitas['city'] = $request->city;
+            $input_identitas['state'] = $request->state;
+            if ($request->file('foto_identitas')) {
+                $image_foto_identitas = $request->file('foto_identitas');
+                $img_foto_identitas = \Image::make($image_foto_identitas->path());
+                $img_foto_identitas = $img_foto_identitas->encode('webp',75);
+                $input_identitas['foto_identitas'] = 'Identitas_'.$input_identitas['first_name'].'_'.time().'.webp';
+                $img_foto_identitas->save(public_path('berkas_camping/berkas/').$input_identitas['foto_identitas']);
+            }
+
+            $input_reservation['id'] = Str::uuid()->toString();
+            $input_reservation['camping_campers_id'] = $input_identitas['id'];
+            $input_reservation['resv_date'] = $request->resv_date;
+            $input_reservation['resv_night'] = $request->resv_night;
+            $input_reservation['status'] = 'Waiting';
+
+            $input_order['id'] = Str::uuid()->toString();
+            $input_order['camping_reservation_id'] = $input_reservation['id'];
+            $input_order['kode_order'] = 'CMP-'.Carbon::now()->format('Ymd').rand(100,999);
+            $total = [];
+            $totalqty = [];
+            foreach ($request->order as $key => $order) {
+                // $items[] = $order['item'];
+                $camping_pricelist = $this->camping_pricelist->find($order['item']);
+                $items[] = [
+                    'name_product' => $camping_pricelist->nama_barang,
+                    'price' => $camping_pricelist->price,
+                    'qty' => $order['qty']
+                ];
+                array_push($total,$camping_pricelist->price*$order['qty']);
+                array_push($totalqty,$order['qty']);
+            }
+            $input_order['order'] = json_encode($items);
+            $input_order['total'] = array_sum($total);
+            $input_order['status'] = 'Unpaid';
+
+            if($input_identitas && $input_reservation && $input_order){
+                $camping_campers = $this->camping_campers->create($input_identitas);
+                $camping_reservation = $this->camping_reservation->create($input_reservation);
+                $camping_order = $this->camping_order->create($input_order);
+
+                if ($camping_campers && $camping_reservation && $camping_order) {
+                    $input['transaction_order'] = json_encode([
+                        'first_name' => $request->first_name,
+                        'last_name' => $request->last_name,
+                        'address' => $request->alamat,
+                        'email' => $request->email,
+                        'phone' => $request->no_telp,
+                    ]);
+
+                    $inputIDTransaction = Str::uuid()->toString();
+
+                    $payment = $this->tripay_payment->requestTransaction(
+                        'Pemesanan Camping - '.$input_order['kode_order'],
+                        $request->method,
+                        array_sum($total),
+                        $request->first_name,
+                        $request->last_name,
+                        $request->email,
+                        $request->no_telp,
+                        $input_order['kode_order'],
+                        redirect()->route('b.transaction.invoice',['id' => $inputIDTransaction])
+                    );
+
+                    $this->transaction->create([
+                        'id' => $inputIDTransaction,
+                        'transaction_code' => $input_order['kode_order'],
+                        'transaction_reference' => json_decode($payment)->data->reference,
+                        'transaction_unit' => 'Pemesanan Camping - '.$input_order['kode_order'],
+                        'transaction_order' => $input['transaction_order'],
+                        'transaction_qty' => array_sum($totalqty),
+                        'transaction_price' => array_sum($total),
+                        'user' => auth()->user()->generate,
+                        'link_payment' => json_decode($payment)->data->checkout_url,
+                        'status' => 'Unpaid'
+                    ]);
+
+                    // $transaction = $this->transaction->transaction(
+                    //     $input_order['kode_order'],
+                    //     'Pemesanan Camping - '.$input_order['kode_order'],
+                    //     $input['transaction_order'],
+                    //     array_sum($totalqty),
+                    //     array_sum($total),
+                    //     $request->first_name,
+                    //     $request->last_name,
+                    //     $request->email,
+                    //     $request->no_telp,
+                    //     $request->method,
+                    //     'Unpaid'
+                    // );
+
+                    $message_title="Berhasil !";
+                    $message_content='Pemesanan Camping - '.$input_order['kode_order']." Berhasil Dibuat. Silahkan tunggu untuk buat proses pembayaran";
+                    $message_type="success";
+                    $message_succes = true;
+                    $link_payment = json_decode($payment)->data->checkout_url;
+                }
+            }
+
+            $array_message = array(
+                'success' => $message_succes,
+                'message_title' => $message_title,
+                'message_content' => $message_content,
+                'message_type' => $message_type,
+                'link_payment' => $link_payment,
+            );
+
+            return $array_message;
+
+            // dd($input_identitas,$input_reservation,$input_order);
+        }
+        return response()->json([
+            'success' => false,
+            'error' => $validator->errors()->all()
         ]);
     }
 }

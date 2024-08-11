@@ -134,22 +134,28 @@ class TransactionController extends Controller
     )
     {
         $input['id'] = Str::uuid()->toString();
+        $payment = $this->tripay_payment->requestTransaction(
+            $transaction_unit,
+            $payment_method,
+            $transaction_price,
+            $billing_first_name,
+            $billing_last_name,
+            $billing_email,
+            $billing_phone,
+            $transaction_code,
+            redirect()->route('b.transaction.invoice',['id' => $input['id']])
+        );
+
+        // dd($payment);
         $input['transaction_code'] = $transaction_code;
+        $input['transaction_reference'] = json_decode($payment)->data->reference;
         $input['transaction_unit'] = $transaction_unit;
         $input['transaction_order'] = $transaction_order;
         $input['transaction_qty'] = $transaction_qty;
         $input['transaction_price'] = $transaction_price;
         $input['user'] = auth()->user()->generate;
+        $input['link_payment'] = json_decode($payment)->data->checkout_url;
         $input['status'] = $status;
-
-        $payment = $this->tripay_payment->requestTransaction(
-            $input['transaction_unit'],
-            $payment_method,
-            $input['transaction_price'],
-            $billing_first_name,$billing_last_name,$billing_email,$billing_phone,
-            $input['transaction_code'],
-            '-'
-        );
 
         if ($payment) {
             $transaction = $this->transaction->create($input);

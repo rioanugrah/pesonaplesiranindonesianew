@@ -90,6 +90,11 @@ Route::domain(parse_url(env('APP_URL'), PHP_URL_HOST))->group(function () {
                     Route::post('{id}/update', [App\Http\Controllers\CampingController::class, 'camping_pricelist_update'])->name('b.camping_pricelist_update')->middleware('verified');
                     Route::delete('{id}/delete', [App\Http\Controllers\CampingController::class, 'camping_pricelist_delete'])->name('b.camping_pricelist_delete')->middleware('verified');
                 });
+                Route::prefix('reservation')->group(function(){
+                    Route::get('/', [App\Http\Controllers\CampingController::class, 'camping_reservation_index'])->name('b.camping_reservation_index')->middleware('verified');
+                    Route::get('create', [App\Http\Controllers\CampingController::class, 'camping_reservation_create'])->name('b.camping_reservation_create')->middleware('verified');
+                    Route::post('simpan', [App\Http\Controllers\CampingController::class, 'camping_reservation_simpan'])->name('b.camping_reservation_simpan')->middleware('verified');
+                });
             });
 
             Route::resource('users', App\Http\Controllers\v1\UsersController::class)->middleware('verified');

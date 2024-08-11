@@ -21,4 +21,9 @@ class CampingCategory extends Model
         'nama_kategori',
         'status',
     ];
+
+    public function camping_pricelist()
+    {
+        return $this->hasMany(\App\Models\CampingPricelist::class, 'camping_category_id','id');
+    }
 }

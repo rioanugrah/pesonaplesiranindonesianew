@@ -62,7 +62,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="#">
+                    <a href="{{ route('b.camping_reservation_index') }}">
                         <i class="uil-backpack"></i>
                         <span>Reservation</span>
                     </a>
