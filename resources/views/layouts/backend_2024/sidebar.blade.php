@@ -68,7 +68,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="#">
+                    <a href="{{ route('b.camping_orders_index') }}">
                         <i class="uil-shopping-cart-alt"></i>
                         <span>Order</span>
                     </a>

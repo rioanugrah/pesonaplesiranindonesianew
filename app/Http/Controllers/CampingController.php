@@ -569,4 +569,49 @@ class CampingController extends Controller
             'error' => $validator->errors()->all()
         ]);
     }
+
+    public function camping_orders_index(Request $request)
+    {
+        if ($request->ajax()) {
+            $data = $this->camping_order->all();
+            return DataTables::of($data)
+                    ->addIndexColumn()
+                    ->addColumn('camping_reservation_id', function($row){
+                        return $row->camping_reservation->camping_campers->first_name.' '.$row->camping_reservation->camping_campers->last_name;
+                        // return $row->camping_campers->first_name.' '.$row->camping_campers->last_name;
+                    })
+                    ->addColumn('total', function($row){
+                        return 'Rp. '.number_format($row->total,0,',','.');
+                        // return $row->camping_campers->first_name.' '.$row->camping_campers->last_name;
+                    })
+                    ->addColumn('status', function($row){
+                        // return empty($row->transactions ?);
+                        if (empty($row->transactions)) {
+                            return '<span class="badge bg-danger">NON FOUND</span>';
+                        }else{
+                            switch ($row->transactions->status) {
+                                case 'Paid':
+                                    return '<span class="badge bg-success">PAID</span>';
+                                    break;
+                                case 'Unpaid':
+                                    return '<span class="badge bg-warning">UNPAID</span>';
+                                    break;
+                                default:
+                                    # code...
+                                    break;
+                            }
+                        }
+                    })
+                    ->addColumn('action', function($row){
+                        $btn = '<div class="btn-group">';
+                        // $btn .= '<a href="javascript:void(0)" onclick="edit(`'.$row->id.'`)" class="btn btn-xs btn-warning"><i class="uil-edit"></i> Edit</a>';
+                        // $btn .= '<a href="javascript:void(0)" onclick="hapus(`'.$row->id.'`)" class="btn btn-xs btn-danger"><i class="uil-trash"></i> Delete</a>';
+                        $btn .= '</div>';
+                        return $btn;
+                    })
+                    ->rawColumns(['action','status'])
+                    ->make(true);
+        }
+        return view('backend.campings.orders.index');
+    }
 }

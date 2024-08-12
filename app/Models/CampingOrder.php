@@ -24,4 +24,14 @@ class CampingOrder extends Model
         'total',
         'status',
     ];
+
+    public function transactions()
+    {
+        return $this->belongsTo(\App\Models\Transactions::class, 'kode_order','transaction_code');
+    }
+
+    public function camping_reservation()
+    {
+        return $this->belongsTo(\App\Models\CampingReservation::class, 'camping_reservation_id','id');
+    }
 }
