@@ -576,6 +576,10 @@ class CampingController extends Controller
             $data = $this->camping_order->all();
             return DataTables::of($data)
                     ->addIndexColumn()
+                    ->addColumn('kode_order', function($row){
+                        return '<span class="badge bg-purple">'.$row->kode_order.'</span>'.'<br>'.$row->created_at->isoFormat('LLLL');
+                        // return $row->camping_campers->first_name.' '.$row->camping_campers->last_name;
+                    })
                     ->addColumn('camping_reservation_id', function($row){
                         return $row->camping_reservation->camping_campers->first_name.' '.$row->camping_reservation->camping_campers->last_name;
                         // return $row->camping_campers->first_name.' '.$row->camping_campers->last_name;
@@ -604,12 +608,15 @@ class CampingController extends Controller
                     })
                     ->addColumn('action', function($row){
                         $btn = '<div class="btn-group">';
+                        if (!empty($row->transactions)) {
+                            $btn .= '<a href="javascript:void(0)" onclick="detail(`'.$row->id.'`)" class="btn btn-xs btn-success"><i class="uil-eye"></i> Detail</a>';
+                        }
                         // $btn .= '<a href="javascript:void(0)" onclick="edit(`'.$row->id.'`)" class="btn btn-xs btn-warning"><i class="uil-edit"></i> Edit</a>';
                         // $btn .= '<a href="javascript:void(0)" onclick="hapus(`'.$row->id.'`)" class="btn btn-xs btn-danger"><i class="uil-trash"></i> Delete</a>';
                         $btn .= '</div>';
                         return $btn;
                     })
-                    ->rawColumns(['action','status'])
+                    ->rawColumns(['kode_order','action','status'])
                     ->make(true);
         }
         return view('backend.campings.orders.index');
