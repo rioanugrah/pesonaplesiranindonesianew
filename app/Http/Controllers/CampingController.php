@@ -385,7 +385,7 @@ class CampingController extends Controller
                         }else{
                             switch ($row->camping_orders->transactions->status) {
                                 case 'Paid':
-                                    return '<span class="badge bg-success">Reservation</span>';
+                                    return '<span class="badge bg-info">Reservation</span>';
                                     break;
                                 case 'Unpaid':
                                     return '<span class="badge bg-warning">Waiting Payment</span>';
