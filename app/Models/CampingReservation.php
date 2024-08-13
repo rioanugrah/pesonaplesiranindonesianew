@@ -28,4 +28,9 @@ class CampingReservation extends Model
     {
         return $this->belongsTo(\App\Models\CampingCampers::class, 'camping_campers_id','id');
     }
+
+    public function camping_orders()
+    {
+        return $this->belongsTo(\App\Models\CampingOrder::class, 'id','camping_reservation_id');
+    }
 }

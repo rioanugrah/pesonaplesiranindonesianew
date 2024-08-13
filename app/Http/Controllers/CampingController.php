@@ -371,25 +371,54 @@ class CampingController extends Controller
                     ->addColumn('camping_campers_id', function($row){
                         return $row->camping_campers->first_name.' '.$row->camping_campers->last_name;
                     })
+                    ->addColumn('resv_date', function($row){
+                        return Carbon::create($row->resv_date)->isoFormat('dddd, DD MMMM YYYY');
+                    })
+                    ->addColumn('resv_return', function($row){
+                        return Carbon::create($row->resv_date)->addDay($row->resv_night+1)->isoFormat('dddd, DD MMMM YYYY');
+                    })
                     ->addColumn('status', function($row){
-                        switch ($row->status) {
-                            case 'Reservation':
-                                return '<span class="badge bg-success">Aktif</span>';
-                                break;
+                        // return $row->camping_orders;
 
-                            case 'Non Aktif':
-                                return '<span class="badge bg-danger">Non Aktif</span>';
-                                break;
-
-                            default:
-                                # code...
-                                break;
+                        if (empty($row->camping_orders->transactions)) {
+                            return '<span class="badge bg-danger">NON FOUND</span>';
+                        }else{
+                            switch ($row->camping_orders->transactions->status) {
+                                case 'Paid':
+                                    return '<span class="badge bg-success">Reservation</span>';
+                                    break;
+                                case 'Unpaid':
+                                    return '<span class="badge bg-warning">Waiting Payment</span>';
+                                    break;
+                                default:
+                                    # code...
+                                    break;
+                            }
                         }
+
+
+                        // switch ($row->status) {
+                        //     case 'Waiting':
+                        //         return '<span class="badge bg-warning">Waiting Payment</span>';
+                        //         break;
+
+                        //     case 'Reservation':
+                        //         return '<span class="badge bg-info">Reservation</span>';
+                        //         break;
+
+                        //     case 'Non Aktif':
+                        //         return '<span class="badge bg-danger">Non Aktif</span>';
+                        //         break;
+
+                        //     default:
+                        //         # code...
+                        //         break;
+                        // }
                     })
                     ->addColumn('action', function($row){
                         $btn = '<div class="btn-group">';
-                        $btn .= '<a href="javascript:void(0)" onclick="edit(`'.$row->id.'`)" class="btn btn-xs btn-warning"><i class="uil-edit"></i> Edit</a>';
-                        $btn .= '<a href="javascript:void(0)" onclick="hapus(`'.$row->id.'`)" class="btn btn-xs btn-danger"><i class="uil-trash"></i> Delete</a>';
+                        // $btn .= '<a href="javascript:void(0)" onclick="edit(`'.$row->id.'`)" class="btn btn-xs btn-warning"><i class="uil-edit"></i> Edit</a>';
+                        // $btn .= '<a href="javascript:void(0)" onclick="hapus(`'.$row->id.'`)" class="btn btn-xs btn-danger"><i class="uil-trash"></i> Delete</a>';
                         $btn .= '</div>';
                         return $btn;
                     })

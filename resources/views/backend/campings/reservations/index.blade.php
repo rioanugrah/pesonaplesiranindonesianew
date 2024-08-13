@@ -25,6 +25,7 @@
                                 <th>Campers Booking</th>
                                 <th>Reservation Date</th>
                                 <th>Reservation Night</th>
+                                <th>Reservation Return</th>
                                 <th>Status</th>
                                 <th>Action</th>
                             </tr>
@@ -62,6 +63,10 @@
                 {
                     data: 'resv_night',
                     name: 'resv_night'
+                },
+                {
+                    data: 'resv_return',
+                    name: 'resv_return'
                 },
                 {
                     data: 'status',

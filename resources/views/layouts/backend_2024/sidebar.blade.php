@@ -49,25 +49,25 @@
                 </li>
                 @endcan
                 <li class="menu-title">Camping</li>
-                <li>
+                <li class="{{ request()->is('b/camping/category*') ? 'mm-active' : null }}">
                     <a href="{{ route('b.camping_category_index') }}">
                         <i class="uil-notebooks"></i>
                         <span>Category</span>
                     </a>
                 </li>
-                <li>
+                <li class="{{ request()->is('b/camping/pricelist*') ? 'mm-active' : null }}">
                     <a href="{{ route('b.camping_pricelist_index') }}">
                         <i class="uil-newspaper"></i>
                         <span>Pricelist</span>
                     </a>
                 </li>
-                <li>
+                <li class="{{ request()->is('b/camping/reservation*') ? 'mm-active' : null }}">
                     <a href="{{ route('b.camping_reservation_index') }}">
                         <i class="uil-backpack"></i>
                         <span>Reservation</span>
                     </a>
                 </li>
-                <li>
+                <li class="{{ request()->is('b/camping/orders*') ? 'mm-active' : null }}">
                     <a href="{{ route('b.camping_orders_index') }}">
                         <i class="uil-shopping-cart-alt"></i>
                         <span>Order</span>
