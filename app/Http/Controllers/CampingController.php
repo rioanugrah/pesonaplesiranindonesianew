@@ -374,6 +374,9 @@ class CampingController extends Controller
                     ->addColumn('resv_date', function($row){
                         return Carbon::create($row->resv_date)->isoFormat('dddd, DD MMMM YYYY');
                     })
+                    ->addColumn('resv_night', function($row){
+                        return $row->resv_night.' Malam';
+                    })
                     ->addColumn('resv_return', function($row){
                         return Carbon::create($row->resv_date)->addDay($row->resv_night+1)->isoFormat('dddd, DD MMMM YYYY');
                     })
@@ -416,7 +419,13 @@ class CampingController extends Controller
                         // }
                     })
                     ->addColumn('action', function($row){
+                        $revs_return_date = Carbon::create($row->resv_date)->addDay($row->resv_night+1)->format('Ymd');
+                        $live_date = Carbon::now()->format('Ymd');
+                        // dd(strtotime($revs_return_date),strtotime($live_date));
                         $btn = '<div class="btn-group">';
+                        if (strtotime($revs_return_date) === strtotime($live_date)) {
+                            $btn .= '<a href="javascript:void(0)" onclick="edit(`'.$row->id.'`)" class="btn btn-xs btn-purple"><i class="uil-edit"></i> Retur</a>';
+                        }
                         // $btn .= '<a href="javascript:void(0)" onclick="edit(`'.$row->id.'`)" class="btn btn-xs btn-warning"><i class="uil-edit"></i> Edit</a>';
                         // $btn .= '<a href="javascript:void(0)" onclick="hapus(`'.$row->id.'`)" class="btn btn-xs btn-danger"><i class="uil-trash"></i> Delete</a>';
                         $btn .= '</div>';
@@ -468,6 +477,7 @@ class CampingController extends Controller
 
         $validator = Validator::make($request->all(), $rules, $messages);
 
+        DB::beginTransaction();
         if ($validator->passes()) {
             $path = public_path('berkas_camping/berkas');
             if(!File::isDirectory($path)){
@@ -504,6 +514,12 @@ class CampingController extends Controller
             foreach ($request->order as $key => $order) {
                 // $items[] = $order['item'];
                 $camping_pricelist = $this->camping_pricelist->find($order['item']);
+                if ($camping_pricelist->stock == 0) {
+                    return response()->json([
+                        'success' => false,
+                        'error' => 'Stock '.$camping_pricelist->nama_barang.' Habis'
+                    ]);
+                }
                 $items[] = [
                     'name_product' => $camping_pricelist->nama_barang,
                     'price' => $camping_pricelist->price,
@@ -511,6 +527,10 @@ class CampingController extends Controller
                 ];
                 array_push($total,$camping_pricelist->price*$order['qty']);
                 array_push($totalqty,$order['qty']);
+                $jumlah_order = $camping_pricelist->stock - $order['qty'];
+                $camping_pricelist->update([
+                    'stock' => $jumlah_order
+                ]);
             }
             $input_order['order'] = json_encode($items);
             $input_order['total'] = array_sum($total);
@@ -589,10 +609,11 @@ class CampingController extends Controller
                 'link_payment' => $link_payment,
             );
 
+            DB::commit();
             return $array_message;
-
             // dd($input_identitas,$input_reservation,$input_order);
         }
+        DB::rollback();
         return response()->json([
             'success' => false,
             'error' => $validator->errors()->all()
