@@ -37,7 +37,7 @@ class HomeController extends Controller
 
         $years = CarbonPeriod::create($year_start, $year_end)->month();
 
-        if (auth()->user()->getRoleNames()->first() == 'Administrator') {
+        if (auth()->user()->getRoleNames()[0] == 'Administrator') {
             $data['total_penjualan_year'] = $this->transaction->whereYear('created_at',Carbon::now())->sum('transaction_price');
             $data['total_penjualan_month'] = $this->transaction->whereMonth('created_at',Carbon::now())->sum('transaction_price');
             foreach ($years as $key => $value) {
@@ -47,6 +47,10 @@ class HomeController extends Controller
         }else{
             $data['total_penjualan_year'] = $this->transaction->whereYear('created_at',Carbon::now())->where('user',auth()->user()->generate)->sum('transaction_price');
             $data['total_penjualan_month'] = $this->transaction->whereMonth('created_at',Carbon::now())->where('user',auth()->user()->generate)->sum('transaction_price');
+            foreach ($years as $key => $value) {
+                $data['sum_penjualan_month'][] = $this->transaction->where('created_at','like','%'.$value->format('Y-m').'%')->where('user',auth()->user()->generate)->sum('transaction_price');
+                $data['years'][] = $value->format('m-Y');
+            }
         }
         // dd($data);
         return view('backend.dashboard',$data);

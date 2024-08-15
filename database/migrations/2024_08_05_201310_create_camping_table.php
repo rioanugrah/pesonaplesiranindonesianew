@@ -42,6 +42,7 @@ class CreateCampingTable extends Migration
             $table->string('city');
             $table->string('state');
             $table->text('foto_identitas');
+            $table->uuid('user_generate');
             $table->timestamps();
             $table->softDeletes();
         });

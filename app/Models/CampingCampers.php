@@ -26,5 +26,6 @@ class CampingCampers extends Model
         'city',
         'state',
         'foto_identitas',
+        'user_generate',
     ];
 }

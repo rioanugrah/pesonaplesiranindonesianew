@@ -48,31 +48,41 @@
                     </ul>
                 </li>
                 @endcan
+                @can('camping-list')
                 <li class="menu-title">Camping</li>
-                <li class="{{ request()->is('b/camping/category*') ? 'mm-active' : null }}">
-                    <a href="{{ route('b.camping_category_index') }}">
-                        <i class="uil-notebooks"></i>
-                        <span>Category</span>
-                    </a>
-                </li>
-                <li class="{{ request()->is('b/camping/pricelist*') ? 'mm-active' : null }}">
-                    <a href="{{ route('b.camping_pricelist_index') }}">
-                        <i class="uil-newspaper"></i>
-                        <span>Pricelist</span>
-                    </a>
-                </li>
-                <li class="{{ request()->is('b/camping/reservation*') ? 'mm-active' : null }}">
-                    <a href="{{ route('b.camping_reservation_index') }}">
-                        <i class="uil-backpack"></i>
-                        <span>Reservation</span>
-                    </a>
-                </li>
-                <li class="{{ request()->is('b/camping/orders*') ? 'mm-active' : null }}">
-                    <a href="{{ route('b.camping_orders_index') }}">
-                        <i class="uil-shopping-cart-alt"></i>
-                        <span>Order</span>
-                    </a>
-                </li>
+                    @can('camping-category')
+                    <li class="{{ request()->is('b/camping/category*') ? 'mm-active' : null }}">
+                        <a href="{{ route('b.camping_category_index') }}">
+                            <i class="uil-notebooks"></i>
+                            <span>Category</span>
+                        </a>
+                    </li>
+                    @endcan
+                    @can('camping-pricelist')
+                    <li class="{{ request()->is('b/camping/pricelist*') ? 'mm-active' : null }}">
+                        <a href="{{ route('b.camping_pricelist_index') }}">
+                            <i class="uil-newspaper"></i>
+                            <span>Pricelist</span>
+                        </a>
+                    </li>
+                    @endcan
+                    @can('camping-reservation')
+                    <li class="{{ request()->is('b/camping/reservation*') ? 'mm-active' : null }}">
+                        <a href="{{ route('b.camping_reservation_index') }}">
+                            <i class="uil-backpack"></i>
+                            <span>Reservation</span>
+                        </a>
+                    </li>
+                    @endcan
+                    @can('camping-order')
+                    <li class="{{ request()->is('b/camping/orders*') ? 'mm-active' : null }}">
+                        <a href="{{ route('b.camping_orders_index') }}">
+                            <i class="uil-shopping-cart-alt"></i>
+                            <span>Order</span>
+                        </a>
+                    </li>
+                    @endcan
+                @endcan
                 @can('transaction-list')
                 <li class="menu-title">Transaction</li>
                 <li>

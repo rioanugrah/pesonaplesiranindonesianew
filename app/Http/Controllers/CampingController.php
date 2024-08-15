@@ -42,6 +42,31 @@ class CampingController extends Controller
         $this->camping_pricelist = $camping_pricelist;
         $this->camping_reservation = $camping_reservation;
         $this->camping_return = $camping_return;
+
+        $this->middleware('permission:camping-category', ['only' => ['camping_category_index']]);
+        $this->middleware('permission:camping-category-create', ['only' => ['camping_categori_simpan']]);
+        $this->middleware('permission:camping-category-detail', ['only' => ['camping_category_show']]);
+        $this->middleware('permission:camping-category-edit', ['only' => ['camping_category_show']]);
+        $this->middleware('permission:camping-category-update', ['only' => ['camping_categori_update']]);
+        $this->middleware('permission:camping-category-delete', ['only' => ['camping_category_delete']]);
+
+        $this->middleware('permission:camping-pricelist', ['only' => ['camping_pricelist_index']]);
+        $this->middleware('permission:camping-pricelist-create', ['only' => ['camping_pricelist_create','camping_pricelist_simpan']]);
+        // $this->middleware('permission:camping-pricelist-detail', ['only' => ['camping_category_show']]);
+        $this->middleware('permission:camping-pricelist-edit', ['only' => ['camping_pricelist_edit']]);
+        $this->middleware('permission:camping-pricelist-update', ['only' => ['camping_pricelist_update']]);
+        $this->middleware('permission:camping-pricelist-delete', ['only' => ['camping_pricelist_delete']]);
+
+        $this->middleware('permission:camping-reservation', ['only' => ['camping_reservation_index']]);
+        $this->middleware('permission:camping-reservation-create', ['only' => ['camping_reservation_create','camping_reservation_simpan']]);
+        $this->middleware('permission:camping-reservation-detail', ['only' => ['camping_category_show']]);
+        $this->middleware('permission:camping-reservation-return', ['only' => ['camping_reservation_return','camping_reservation_return_simpan']]);
+        // $this->middleware('permission:camping-reservation-edit', ['only' => ['camping_pricelist_edit']]);
+        // $this->middleware('permission:camping-reservation-update', ['only' => ['camping_pricelist_update']]);
+        // $this->middleware('permission:camping-reservation-delete', ['only' => ['camping_pricelist_delete']]);
+
+        $this->middleware('permission:camping-order', ['only' => ['camping_orders_index']]);
+
     }
 
     public function camping_category_index(Request $request)
@@ -364,8 +389,16 @@ class CampingController extends Controller
 
     public function camping_reservation_index(Request $request)
     {
+        // dd(auth()->user()->getRoleNames());
         if ($request->ajax()) {
-            $data = $this->camping_reservation->all();
+            if (auth()->user()->getRoleNames()[0] == 'Administrator') {
+                $data = $this->camping_reservation->all();
+            }else{
+                $data = $this->camping_reservation->whereHas('camping_campers',function($query_camping_campers){
+                                                    $query_camping_campers->where('user_generate',auth()->user()->generate);
+                                                })
+                                                ->get();
+            }
             return DataTables::of($data)
                     ->addIndexColumn()
                     ->addColumn('camping_campers_id', function($row){
@@ -382,23 +415,33 @@ class CampingController extends Controller
                     })
                     ->addColumn('status', function($row){
                         // return $row->camping_orders;
+                        switch ($row->status) {
+                            case 'Waiting':
+                                if (empty($row->camping_orders->transactions)) {
+                                    return '<span class="badge bg-danger">NON FOUND</span>';
+                                }else{
+                                    switch ($row->camping_orders->transactions->status) {
+                                        case 'Paid':
+                                            return '<span class="badge bg-info">Reservation</span>';
+                                            break;
+                                        case 'Unpaid':
+                                            return '<span class="badge bg-warning">Waiting Payment</span>';
+                                            break;
+                                        default:
+                                            # code...
+                                            break;
+                                    }
+                                }
+                                break;
 
-                        if (empty($row->camping_orders->transactions)) {
-                            return '<span class="badge bg-danger">NON FOUND</span>';
-                        }else{
-                            switch ($row->camping_orders->transactions->status) {
-                                case 'Paid':
-                                    return '<span class="badge bg-info">Reservation</span>';
-                                    break;
-                                case 'Unpaid':
-                                    return '<span class="badge bg-warning">Waiting Payment</span>';
-                                    break;
-                                default:
-                                    # code...
-                                    break;
-                            }
+                            case 'Selesai':
+                                return '<span class="badge bg-success">Selesai</span>';
+                                break;
+
+                            default:
+                                # code...
+                                break;
                         }
-
 
                         // switch ($row->status) {
                         //     case 'Waiting':
@@ -419,17 +462,26 @@ class CampingController extends Controller
                         // }
                     })
                     ->addColumn('action', function($row){
-                        $revs_return_date = Carbon::create($row->resv_date)->addDay($row->resv_night+1)->format('Ymd');
-                        $live_date = Carbon::now()->format('Ymd');
-                        // dd(strtotime($revs_return_date),strtotime($live_date));
-                        $btn = '<div class="btn-group">';
-                        if (strtotime($revs_return_date) === strtotime($live_date)) {
-                            $btn .= '<a href="javascript:void(0)" onclick="edit(`'.$row->id.'`)" class="btn btn-xs btn-purple"><i class="uil-edit"></i> Retur</a>';
+                        switch ($row->status) {
+                            case 'Waiting':
+                                    $revs_return_date = Carbon::create($row->resv_date)->addDay($row->resv_night+1)->format('Ymd');
+                                    $live_date = Carbon::now()->format('Ymd');
+                                    // dd(strtotime($revs_return_date),strtotime($live_date));
+                                    $btn = '<div class="btn-group">';
+                                    if (strtotime($revs_return_date) >= strtotime($live_date)) {
+                                        $btn .= '<a href='.route('b.camping_reservation_return',['id' => $row->id]).' class="btn btn-xs btn-info"><i class="uil-notes"></i> Return Sewa</a>';
+                                    }
+                                    $btn .= '</div>';
+                                    return $btn;
+                                break;
+
+                            case 'Selesai':
+                                break;
+
+                            default:
+                                # code...
+                                break;
                         }
-                        // $btn .= '<a href="javascript:void(0)" onclick="edit(`'.$row->id.'`)" class="btn btn-xs btn-warning"><i class="uil-edit"></i> Edit</a>';
-                        // $btn .= '<a href="javascript:void(0)" onclick="hapus(`'.$row->id.'`)" class="btn btn-xs btn-danger"><i class="uil-trash"></i> Delete</a>';
-                        $btn .= '</div>';
-                        return $btn;
                     })
                     ->rawColumns(['action','status'])
                     ->make(true);
@@ -492,6 +544,7 @@ class CampingController extends Controller
             $input_identitas['address'] = $request->address;
             $input_identitas['city'] = $request->city;
             $input_identitas['state'] = $request->state;
+            $input_identitas['user_generate'] = auth()->user()->generate;
             if ($request->file('foto_identitas')) {
                 $image_foto_identitas = $request->file('foto_identitas');
                 $img_foto_identitas = \Image::make($image_foto_identitas->path());
@@ -620,10 +673,76 @@ class CampingController extends Controller
         ]);
     }
 
+    public function camping_reservation_return($id)
+    {
+        $data['resv_return'] = $this->camping_reservation->find($id);
+        if (empty($data['resv_return'])) {
+            return redirect()->back()->with('error','Data Reservasi Tidak Ditemukan');
+        }
+
+        return view('backend.campings.reservations.resv_return',$data);
+    }
+
+    public function camping_reservation_return_simpan(Request $request,$id)
+    {
+        $camping_reservation = $this->camping_reservation->find($id);
+        if (empty($camping_reservation)) {
+            return response()->json([
+                'success' => false,
+                'error' => 'Data Tidak Ditemukan'
+            ]);
+        }
+
+        foreach (json_decode($camping_reservation->camping_orders->order) as $key => $item) {
+            $camping_pricelist = $this->camping_pricelist->where('nama_barang',$item->name_product)->first();
+            $camping_pricelist->update([
+                'stock' => $camping_pricelist->stock + $item->qty
+            ]);
+        }
+
+        $camping_reservation->update([
+            'status' => 'Selesai'
+        ]);
+
+        if ($camping_reservation) {
+            $this->camping_return->create([
+                'id' => Str::uuid()->toString(),
+                'camping_reservation_id' => $id,
+                'return_date' => date('Y-m-d'),
+                'status' => 'Return'
+            ]);
+            $message_title="Berhasil !";
+            $message_content='Pengembalian Sewa Berhasil Dibuat';
+            $message_type="success";
+            $message_succes = true;
+
+            $array_message = array(
+                'success' => $message_succes,
+                'message_title' => $message_title,
+                'message_content' => $message_content,
+                'message_type' => $message_type,
+            );
+
+            return $array_message;
+        }
+    }
+
     public function camping_orders_index(Request $request)
     {
         if ($request->ajax()) {
-            $data = $this->camping_order->all();
+            if (auth()->user()->getRoleNames()[0] == 'Administrator') {
+                $data = $this->camping_order->all();
+            }else{
+                $data = $this->camping_order->whereHas('camping_reservation',function($query_camping_reservation){
+                                            $query_camping_reservation->whereHas('camping_campers', function($query_camping_campers){
+                                                $query_camping_campers->where('user_generate',auth()->user()->generate);
+                                            });
+                                        })->get();
+                // $data = $this->camping_reservation->whereHas('camping_campers',function($query_camping_campers){
+                //                                     $query_camping_campers->where('user_generate',auth()->user()->generate);
+                //                                 })
+                //                                 ->get();
+            }
             return DataTables::of($data)
                     ->addIndexColumn()
                     ->addColumn('kode_order', function($row){
