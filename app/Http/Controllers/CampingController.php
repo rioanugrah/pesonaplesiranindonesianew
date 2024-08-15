@@ -572,18 +572,19 @@ class CampingController extends Controller
                         'success' => false,
                         'error' => 'Stock '.$camping_pricelist->nama_barang.' Habis'
                     ]);
+                }elseif($camping_pricelist->stock > 0){
+                    $items[] = [
+                        'name_product' => $camping_pricelist->nama_barang,
+                        'price' => $camping_pricelist->price,
+                        'qty' => $order['qty']
+                    ];
+                    array_push($total,$camping_pricelist->price*$order['qty']);
+                    array_push($totalqty,$order['qty']);
+                    $jumlah_order = $camping_pricelist->stock - $order['qty'];
+                    $camping_pricelist->update([
+                        'stock' => $jumlah_order
+                    ]);
                 }
-                $items[] = [
-                    'name_product' => $camping_pricelist->nama_barang,
-                    'price' => $camping_pricelist->price,
-                    'qty' => $order['qty']
-                ];
-                array_push($total,$camping_pricelist->price*$order['qty']);
-                array_push($totalqty,$order['qty']);
-                $jumlah_order = $camping_pricelist->stock - $order['qty'];
-                $camping_pricelist->update([
-                    'stock' => $jumlah_order
-                ]);
             }
             $input_order['order'] = json_encode($items);
             $input_order['total'] = array_sum($total);

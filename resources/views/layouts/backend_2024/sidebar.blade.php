@@ -105,6 +105,13 @@
                     </ul>
                 </li>
                 @endcan
+                <li class="menu-title">Cooperation</li>
+                <li class="{{ request()->is('b/cooperation*') ? 'mm-active' : null }}">
+                    <a href="javascript:void(0)">
+                        <i class="uil-shopping-cart-alt"></i>
+                        <span>Cooperation</span>
+                    </a>
+                </li>
                 @can('permission-list')
                 <li class="menu-title">User Management</li>
                 <li>
