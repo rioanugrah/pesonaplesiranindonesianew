@@ -20,6 +20,7 @@ class Transactions extends Model
         'transaction_code',
         'transaction_reference',
         'transaction_unit',
+        'transaction_billing',
         'transaction_order',
         'transaction_qty',
         'transaction_price',

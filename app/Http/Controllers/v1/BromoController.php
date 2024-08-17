@@ -85,7 +85,7 @@ class BromoController extends Controller
             $input['transaction_unit'] = $bromo->title.' - Booking Date '.$bromo->tanggal;
             $transaction_price = $bromo->category_trip == 'Publik' ? ($bromo->price - (($bromo->discount/100) * $bromo->price)) * $request->qty : $bromo->price - (($bromo->discount/100) * $bromo->price);
 
-            $input['transaction_order'] = json_encode([
+            $input['transaction_billing'] = json_encode([
                 'first_name' => $request->first_name,
                 'last_name' => $request->last_name,
                 'address' => $request->alamat,

@@ -99,6 +99,7 @@ Route::domain(parse_url(env('APP_URL'), PHP_URL_HOST))->group(function () {
                 });
                 Route::prefix('orders')->group(function(){
                     Route::get('/', [App\Http\Controllers\CampingController::class, 'camping_orders_index'])->name('b.camping_orders_index')->middleware('verified');
+                    Route::get('{id}', [App\Http\Controllers\CampingController::class, 'camping_orders_detail'])->name('b.camping_orders_detail')->middleware('verified');
                 });
             });
 

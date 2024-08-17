@@ -779,7 +779,7 @@ class CampingController extends Controller
                     ->addColumn('action', function($row){
                         $btn = '<div class="btn-group">';
                         if (!empty($row->transactions)) {
-                            $btn .= '<a href="javascript:void(0)" onclick="detail(`'.$row->id.'`)" class="btn btn-xs btn-success"><i class="uil-eye"></i> Detail</a>';
+                            $btn .= '<a href='.route('b.camping_orders_detail',['id' => $row->id]).' class="btn btn-xs btn-success"><i class="uil-eye"></i> Detail</a>';
                         }
                         // $btn .= '<a href="javascript:void(0)" onclick="edit(`'.$row->id.'`)" class="btn btn-xs btn-warning"><i class="uil-edit"></i> Edit</a>';
                         // $btn .= '<a href="javascript:void(0)" onclick="hapus(`'.$row->id.'`)" class="btn btn-xs btn-danger"><i class="uil-trash"></i> Delete</a>';
@@ -790,5 +790,14 @@ class CampingController extends Controller
                     ->make(true);
         }
         return view('backend.campings.orders.index');
+    }
+
+    public function camping_orders_detail($id)
+    {
+        $data['camping_order'] = $this->camping_order->find($id);
+        if (empty($data['camping_order'])) {
+            return redirect()->back()->with('error','Order Tidak Ditemukan');
+        }
+        return view('backend.campings.orders.detail',$data);
     }
 }

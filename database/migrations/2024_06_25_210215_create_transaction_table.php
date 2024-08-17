@@ -18,6 +18,7 @@ class CreateTransactionTable extends Migration
             $table->string('transaction_code');
             $table->string('transaction_reference');
             $table->string('transaction_unit');
+            $table->text('transaction_billing');
             $table->text('transaction_order');
             $table->integer('transaction_qty');
             $table->double('transaction_price');
@@ -27,14 +28,14 @@ class CreateTransactionTable extends Migration
             $table->softDeletes();
         });
 
-        Schema::create('transaction_list', function (Blueprint $table) {
-            $table->id();
-            $table->uuid('transaction_id');
-            $table->text('transaction_order');
-            $table->integer('qty');
-            $table->timestamps();
-            $table->softDeletes();
-        });
+        // Schema::create('transaction_list', function (Blueprint $table) {
+        //     $table->id();
+        //     $table->uuid('transaction_id');
+        //     $table->text('transaction_order');
+        //     $table->integer('qty');
+        //     $table->timestamps();
+        //     $table->softDeletes();
+        // });
     }
 
     /**
@@ -45,6 +46,6 @@ class CreateTransactionTable extends Migration
     public function down()
     {
         Schema::dropIfExists('transaction');
-        Schema::dropIfExists('transaction_list');
+        // Schema::dropIfExists('transaction_list');
     }
 }

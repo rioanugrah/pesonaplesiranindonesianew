@@ -45,6 +45,28 @@
                     @endswitch
                 </label>
             </div>
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <td>No</td>
+                            <td>Item</td>
+                            <td>Price</td>
+                            <td>Qty</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (json_decode($transaction->transaction_order) as$key => $item)
+                            <tr>
+                                <td>{{ $key+1 }}</td>
+                                <td>{{ $item->item }}</td>
+                                <td>{{ 'Rp. '.number_format($item->price,0,',','.') }}</td>
+                                <td>{{ $item->qty }}</td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
         </div>
         <div class="card-footer">
             <button type="button" class="btn btn-secondary" onclick="window.location.href='{{ route('b.transaction') }}'">Back</button>
