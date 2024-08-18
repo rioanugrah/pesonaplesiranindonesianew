@@ -25,6 +25,13 @@ class CooperationController extends Controller
     ){
         $this->kategori_corporate = $kategori_corporate;
         $this->cooperation = $cooperation;
+
+        $this->middleware('permission:cooperation-kategori', ['only' => ['kategori_corporate_index']]);
+        $this->middleware('permission:cooperation-kategori-create', ['only' => ['kategori_corporate_create','kategori_corporate_simpan']]);
+        $this->middleware('permission:cooperation-kategori-edit', ['only' => ['kategori_corporate_edit','kategori_corporate_update']]);
+
+        $this->middleware('permission:cooperation-data', ['only' => ['cooperation']]);
+        $this->middleware('permission:cooperation-data-create', ['only' => ['cooperation_create','cooperation_simpan']]);
     }
 
     public function kategori_corporate_index(Request $request)
@@ -50,7 +57,9 @@ class CooperationController extends Controller
                     })
                     ->addColumn('action', function($row){
                         $btn = '<div class="btn-group">';
-                        $btn .= '<a href='.route('b.kategori_corporate.edit',['id' => $row->id]).' class="btn btn-xs btn-warning"><i class="uil-edit"></i> Edit</a>';
+                        if (auth()->user()->can('cooperation-kategori-edit') == true) {
+                            $btn .= '<a href='.route('b.kategori_corporate.edit',['id' => $row->id]).' class="btn btn-xs btn-warning"><i class="uil-edit"></i> Edit</a>';
+                        }
                         // $btn .= '<a href="javascript:void(0)" onclick="hapus(`'.$row->id.'`)" class="btn btn-xs btn-danger"><i class="uil-trash"></i> Delete</a>';
                         $btn .= '</div>';
                         return $btn;
