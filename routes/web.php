@@ -103,12 +103,33 @@ Route::domain(parse_url(env('APP_URL'), PHP_URL_HOST))->group(function () {
                 });
             });
 
+            Route::prefix('cooperation')->group(function(){
+                Route::get('/', [App\Http\Controllers\v1\CooperationController::class, 'cooperation'])->name('b.cooperation')->middleware('verified');
+                Route::get('create', [App\Http\Controllers\v1\CooperationController::class, 'cooperation_create'])->name('b.cooperation_create')->middleware('verified');
+                Route::post('simpan', [App\Http\Controllers\v1\CooperationController::class, 'cooperation_simpan'])->name('b.cooperation_simpan')->middleware('verified');
+                Route::prefix('kategori')->group(function(){
+                    Route::get('/', [App\Http\Controllers\v1\CooperationController::class, 'kategori_corporate_index'])->name('b.kategori_corporate.index')->middleware('verified');
+                    Route::get('create', [App\Http\Controllers\v1\CooperationController::class, 'kategori_corporate_create'])->name('b.kategori_corporate.create')->middleware('verified');
+                    Route::post('simpan', [App\Http\Controllers\v1\CooperationController::class, 'kategori_corporate_simpan'])->name('b.kategori_corporate.simpan')->middleware('verified');
+                    Route::get('{id}', [App\Http\Controllers\v1\CooperationController::class, 'kategori_corporate_detail'])->name('b.kategori_corporate.detail')->middleware('verified');
+                    Route::get('{id}/edit', [App\Http\Controllers\v1\CooperationController::class, 'kategori_corporate_edit'])->name('b.kategori_corporate.edit')->middleware('verified');
+                    Route::post('{id}/update', [App\Http\Controllers\v1\CooperationController::class, 'kategori_corporate_update'])->name('b.kategori_corporate.update')->middleware('verified');
+                });
+            });
+
             Route::resource('users', App\Http\Controllers\v1\UsersController::class)->middleware('verified');
             Route::resource('roles', App\Http\Controllers\v1\RolesController::class)->middleware('verified');
         });
     });
 
     // Route::get('test_email', [App\Http\Controllers\TestController::class, 'testEmail']);
+    Route::prefix('kab_kota')->group(function(){
+        Route::post('/', [App\Http\Controllers\LocationController::class, 'KabupatenKota'])->name('kota');
+    });
+
+    Route::prefix('kecamatan')->group(function(){
+        Route::post('/', [App\Http\Controllers\LocationController::class, 'Kecamatan'])->name('kecamatan');
+    });
 
     Route::get('redirect/{driver}', [App\Http\Controllers\Auth\LoginController::class, 'redirectToProvider'])->name('login_google');
     Route::get('{driver}/callback', [App\Http\Controllers\Auth\LoginController::class, 'handleProviderCallback'])->name('login.callback');

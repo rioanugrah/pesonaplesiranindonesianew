@@ -106,8 +106,14 @@
                 </li>
                 @endcan
                 <li class="menu-title">Cooperation</li>
+                <li class="{{ request()->is('b/cooperation/kategori*') ? 'mm-active' : null }}">
+                    <a href="{{ route('b.kategori_corporate.index') }}">
+                        <i class="uil-shopping-cart-alt"></i>
+                        <span>Kategori</span>
+                    </a>
+                </li>
                 <li class="{{ request()->is('b/cooperation*') ? 'mm-active' : null }}">
-                    <a href="javascript:void(0)">
+                    <a href="{{ route('b.cooperation') }}">
                         <i class="uil-shopping-cart-alt"></i>
                         <span>Cooperation</span>
                     </a>

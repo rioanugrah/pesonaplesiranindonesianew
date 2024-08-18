@@ -24,6 +24,18 @@ Route::domain(parse_url(env('APP_URL'), PHP_URL_HOST))->group(function () {
             Route::get('/', [App\Http\Controllers\v1\BromoController::class, 'api_index'])->name('api.bromo');
         });
     });
+
+    Route::prefix('provinsi')->group(function(){
+        Route::get('/', [App\Http\Controllers\LocationController::class, 'Provinsi'])->name('api.provinsi');
+    });
+
+    Route::prefix('kab_kota')->group(function(){
+        Route::post('/', [App\Http\Controllers\LocationController::class, 'KabupatenKota'])->name('api.kota');
+    });
+
+    Route::prefix('kecamatan')->group(function(){
+        Route::post('/', [App\Http\Controllers\LocationController::class, 'Kecamatan'])->name('api.kecamatan');
+    });
     // Route::post('open_payment', [App\Http\Controllers\Payment\TripayController::class, 'handle_open_payment']);
     Route::post('callback', [App\Http\Controllers\Payment\TripayController::class, 'handle']);
 });
