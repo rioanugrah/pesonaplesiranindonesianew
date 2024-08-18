@@ -28,7 +28,8 @@ class CooperationController extends Controller
 
         $this->middleware('permission:cooperation-kategori', ['only' => ['kategori_corporate_index']]);
         $this->middleware('permission:cooperation-kategori-create', ['only' => ['kategori_corporate_create','kategori_corporate_simpan']]);
-        $this->middleware('permission:cooperation-kategori-edit', ['only' => ['kategori_corporate_edit','kategori_corporate_update']]);
+        $this->middleware('permission:cooperation-kategori-edit', ['only' => ['kategori_corporate_edit']]);
+        $this->middleware('permission:cooperation-kategori-update', ['only' => ['kategori_corporate_update']]);
 
         $this->middleware('permission:cooperation-data', ['only' => ['cooperation']]);
         $this->middleware('permission:cooperation-data-create', ['only' => ['cooperation_create','cooperation_simpan']]);
