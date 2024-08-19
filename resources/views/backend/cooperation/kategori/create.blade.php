@@ -4,6 +4,8 @@
 @endsection
 @section('css')
 <link href="{{ URL::asset('backend/libs/toastr/toastr.min.css') }}" rel="stylesheet" type="text/css">
+<link rel="stylesheet" href="{{ asset('backend/libs/ckeditor5/ckeditor5.css') }}">
+{{-- <link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/43.0.0/ckeditor5.css"> --}}
 @endsection
 @section('content')
     <div class="row">
@@ -37,6 +39,10 @@
                             <input type="text" name="nama_kategori" class="form-control" placeholder="Title" id="">
                         </div>
                         <div class="mb-3">
+                            <label>Deskripsi</label>
+                            <textarea name="deskripsi" class="form-control" id="editor" cols="30" rows="10"></textarea>
+                        </div>
+                        <div class="mb-3">
                             <label>Status</label>
                             <select name="status" class="form-control" id="">
                                 <option value="">-- Pilih Status --</option>
@@ -55,9 +61,47 @@
 @endsection
 @section('script')
 <script src="{{ URL::asset('backend/libs/toastr/toastr.min.js') }}"></script>
-    <script src="{{ URL::asset('backend/libs/ckeditor/ckeditor.min.js') }}"></script>
+{{-- <script src="{{ asset('backend/libs/ckeditor5/ckeditor5.js') }}"></script> --}}
+    {{-- <script src="{{ URL::asset('backend/libs/ckeditor/ckeditor.min.js') }}"></script> --}}
+    <script type="importmap">
+        {
+            "imports": {
+                "ckeditor5": "{{ asset('backend/libs/ckeditor5/43/ckeditor5.js') }}",
+                "ckeditor5/": "https://cdn.ckeditor.com/ckeditor5/43.0.0/"
+            }
+        }
+    </script>
+    <script type="module">
+        import {
+            ClassicEditor,
+            Essentials,
+            Paragraph,
+            Bold,
+            Italic,
+            Font,
+            Alignment,Table,TableToolbar
+        } from 'ckeditor5';
+        ClassicEditor
+            .create( document.querySelector( '#editor' ), {
+                plugins: [ Essentials, Paragraph, Bold, Italic, Font, Alignment,
+                    Table, TableToolbar
+                 ],
+                toolbar: [
+                    'undo', 'redo', '|', 'bold', 'italic', '|', 'alignment','insertTable',
+                    'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor'
+                ],
+                table: {
+                    contentToolbar: [ 'tableColumn', 'tableRow', 'mergeTableCells' ]
+                }
+            } )
+            .then( editor => {
+                window.editor = editor;
+            } )
+            .catch( error => {
+                console.error( error );
+            } );
+    </script>
     <script>
-
         $('#form-simpan').submit(function(e) {
             // alert('coba');
             e.preventDefault();

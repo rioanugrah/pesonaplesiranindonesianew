@@ -4,6 +4,7 @@
 @endsection
 @section('css')
 <link href="{{ URL::asset('backend/libs/toastr/toastr.min.css') }}" rel="stylesheet" type="text/css">
+<link rel="stylesheet" href="{{ asset('backend/libs/ckeditor5/ckeditor5.css') }}">
 @endsection
 @section('content')
     <div class="row">
@@ -38,7 +39,7 @@
                         </div>
                         <div class="mb-3">
                             <label>Deskripsi</label>
-                            <textarea name="deskripsi" class="form-control" id="classic-editor" cols="30" rows="10">{{ $kategori_corporate->deskripsi }}</textarea>
+                            <textarea name="deskripsi" class="form-control" id="editor" cols="30" rows="10"></textarea>
                         </div>
                         <div class="mb-3">
                             <label>Status</label>
@@ -59,13 +60,54 @@
 @endsection
 @section('script')
 <script src="{{ URL::asset('backend/libs/toastr/toastr.min.js') }}"></script>
-    <script src="{{ URL::asset('backend/libs/ckeditor/ckeditor.min.js') }}"></script>
-    <script>
+    {{-- <script src="{{ URL::asset('backend/libs/ckeditor/ckeditor.min.js') }}"></script> --}}
+    <script type="importmap">
+        {
+            "imports": {
+                "ckeditor5": "{{ asset('backend/libs/ckeditor5/43/ckeditor5.js') }}",
+                "ckeditor5/": "https://cdn.ckeditor.com/ckeditor5/43.0.0/"
+            }
+        }
+    </script>
+    <script type="module">
+        import {
+            ClassicEditor,
+            Essentials,
+            Paragraph,
+            Bold,
+            Italic,
+            Font,
+            Alignment,Table,TableToolbar,
+            Autoformat,List
+        } from 'ckeditor5';
         ClassicEditor
-            .create(document.querySelector('#classic-editor'))
-            .catch(error => {
-                console.error(error);
-            });
+            .create( document.querySelector( '#editor' ), {
+                plugins: [ Essentials, Paragraph, Bold, Italic, Font, Alignment,
+                    Table, TableToolbar, Autoformat, List
+                 ],
+                toolbar: [
+                    'undo', 'redo', '|', 'bold', 'italic', '|', 'alignment','insertTable',
+                    'bulletedList', 'numberedList',
+                    'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor'
+                ],
+                table: {
+                    contentToolbar: [ 'tableColumn', 'tableRow', 'mergeTableCells' ]
+                }
+            } )
+            .then( editor => {
+                // window.editor = editor;
+                editor.setData('{!! $kategori_corporate->deskripsi !!}')
+            } )
+            .catch( error => {
+                console.error( error );
+            } );
+    </script>
+    <script>
+        // ClassicEditor
+        //     .create(document.querySelector('#classic-editor'))
+        //     .catch(error => {
+        //         console.error(error);
+        //     });
 
         $('#form-simpan').submit(function(e) {
             // alert('coba');

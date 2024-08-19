@@ -16,6 +16,7 @@ class CreateCooperationTable extends Migration
         Schema::create('kategori_corporate', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->string('nama_kategori');
+            $table->text('deskripsi');
             $table->string('status');
             $table->timestamps();
             $table->softDeletes();

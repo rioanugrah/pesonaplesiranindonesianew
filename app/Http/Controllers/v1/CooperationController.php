@@ -81,19 +81,19 @@ class CooperationController extends Controller
     {
         $rules = [
             'nama_kategori'  => 'required',
-            // 'deskripsi'  => 'required',
+            'deskripsi'  => 'required',
         ];
 
         $messages = [
             'nama_kategori.required'   => 'Nama Kategori wajib diisi.',
-            // 'deskripsi.required'   => 'Deskripsi Dibuat wajib diisi.',
+            'deskripsi.required'   => 'Deskripsi Dibuat wajib diisi.',
         ];
 
         $validator = Validator::make($request->all(), $rules, $messages);
         if ($validator->passes()) {
             $input['id'] = Str::uuid()->toString();
             $input['nama_kategori'] = $request->nama_kategori;
-            // $input['deskripsi'] = $request->deskripsi;
+            $input['deskripsi'] = $request->deskripsi;
             $input['status'] = $request->status;
             $email_template = $this->kategori_corporate->create($input);
             if ($email_template) {
@@ -158,8 +158,8 @@ class CooperationController extends Controller
             $input['nama_kategori'] = $request->nama_kategori;
             $input['deskripsi'] = $request->deskripsi;
             $input['status'] = $request->status;
-            $email_template = $this->kategori_corporate->find($id)->update($input);
-            if ($email_template) {
+            $kategori_corporate = $this->kategori_corporate->find($id)->update($input);
+            if ($kategori_corporate) {
                 $message_title="Berhasil !";
                 $message_content=$input['nama_kategori']." Berhasil Diupdate";
                 $message_type="success";
@@ -206,7 +206,7 @@ class CooperationController extends Controller
                     })
                     ->addColumn('action', function($row){
                         $btn = '<div class="btn-group">';
-                        // $btn .= '<a href='.route('b.kategori_corporate.edit',['id' => $row->id]).' class="btn btn-xs btn-warning"><i class="uil-edit"></i> Edit</a>';
+                        $btn .= '<a href='.route('b.cooperation_detail',['id' => $row->id]).' class="btn btn-xs btn-success"><i class="uil-eye"></i> Detail</a>';
                         // $btn .= '<a href="javascript:void(0)" onclick="hapus(`'.$row->id.'`)" class="btn btn-xs btn-danger"><i class="uil-trash"></i> Delete</a>';
                         $btn .= '</div>';
                         return $btn;
@@ -279,5 +279,14 @@ class CooperationController extends Controller
             'success' => false,
             'error' => $validator->errors()->all()
         ]);
+    }
+
+    public function cooperation_detail($id)
+    {
+        $data['cooperation'] = $this->cooperation->find($id);
+        if (empty($data['cooperation'])) {
+            return redirect()->back();
+        }
+        return view('backend.cooperation.detail',$data);
     }
 }

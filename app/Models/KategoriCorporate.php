@@ -19,6 +19,7 @@ class KategoriCorporate extends Model
     public $fillable = [
         'id',
         'nama_kategori',
+        'deskripsi',
         'status',
     ];
 }
