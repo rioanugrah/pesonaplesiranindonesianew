@@ -108,6 +108,8 @@ Route::domain(parse_url(env('APP_URL'), PHP_URL_HOST))->group(function () {
                 Route::get('create', [App\Http\Controllers\v1\CooperationController::class, 'cooperation_create'])->name('b.cooperation_create')->middleware('verified');
                 Route::post('simpan', [App\Http\Controllers\v1\CooperationController::class, 'cooperation_simpan'])->name('b.cooperation_simpan')->middleware('verified');
                 Route::get('{id}', [App\Http\Controllers\v1\CooperationController::class, 'cooperation_detail'])->name('b.cooperation_detail')->middleware('verified');
+                Route::get('{id}/validasi', [App\Http\Controllers\v1\CooperationController::class, 'cooperation_validasi'])->name('b.cooperation_validasi')->middleware('verified');
+                Route::post('{id}/validasi/simpan', [App\Http\Controllers\v1\CooperationController::class, 'cooperation_validasi_simpan'])->name('b.cooperation_validasi_simpan')->middleware('verified');
             });
             Route::prefix('kategori/cooperation')->group(function(){
                 Route::get('/', [App\Http\Controllers\v1\CooperationController::class, 'kategori_corporate_index'])->name('b.kategori_corporate.index')->middleware('verified');

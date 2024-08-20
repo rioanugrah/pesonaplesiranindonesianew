@@ -40,4 +40,19 @@ class Cooperation extends Model
     {
         return $this->belongsTo(\App\Models\KategoriCorporate::class, 'kategori_corporate_id','id');
     }
+
+    public function kecamatan()
+    {
+        return $this->belongsTo(\App\Models\Kecamatan::class, 'kecamatan_id','id');
+    }
+
+    public function kota()
+    {
+        return $this->belongsTo(\App\Models\KabupatenKota::class, 'kota_id','id');
+    }
+
+    public function provinsi()
+    {
+        return $this->belongsTo(\App\Models\Provinsi::class, 'provinsi_id','id');
+    }
 }

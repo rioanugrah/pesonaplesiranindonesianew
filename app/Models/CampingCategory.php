@@ -18,6 +18,7 @@ class CampingCategory extends Model
 
     public $fillable = [
         'id',
+        'cooperation_id',
         'nama_kategori',
         'status',
     ];

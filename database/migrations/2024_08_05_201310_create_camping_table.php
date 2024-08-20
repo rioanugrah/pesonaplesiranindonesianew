@@ -15,6 +15,7 @@ class CreateCampingTable extends Migration
     {
         Schema::create('camping_category', function (Blueprint $table) {
             $table->uuid('id')->primary();
+            $table->uuid('cooperation_id')->nullable();
             $table->string('nama_kategori');
             $table->string('status',100);
             $table->timestamps();

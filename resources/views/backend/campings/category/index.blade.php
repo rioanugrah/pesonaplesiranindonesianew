@@ -25,6 +25,7 @@
                         <thead>
                             <tr>
                                 <th>Nama Kategori</th>
+                                <th>Company ID</th>
                                 <th>Status</th>
                                 <th>Action</th>
                             </tr>
@@ -54,6 +55,10 @@
                 {
                     data: 'nama_kategori',
                     name: 'nama_kategori'
+                },
+                {
+                    data: 'cooperation_id',
+                    name: 'cooperation_id'
                 },
                 {
                     data: 'status',

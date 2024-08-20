@@ -10,12 +10,15 @@ use App\Models\KategoriCorporate;
 use App\Models\Cooperation;
 use App\Models\Provinsi;
 
+use App\Mail\CooperationMail;
+
 use \Carbon\Carbon;
 use DataTables;
 use Notification;
 use Validator;
 use DB;
 use File;
+use Mail;
 
 class CooperationController extends Controller
 {
@@ -186,6 +189,10 @@ class CooperationController extends Controller
             $data = $this->cooperation->all();
             return DataTables::of($data)
                     ->addIndexColumn()
+                    ->addColumn('kode_corporate', function($row){
+                        return $row->kode_corporate.'<br>'.
+                                $row->created_at->isoFormat('LLLL');
+                    })
                     ->addColumn('kategori_corporate_id', function($row){
                         return $row->kategori_corporate->nama_kategori;
                     })
@@ -207,11 +214,19 @@ class CooperationController extends Controller
                     ->addColumn('action', function($row){
                         $btn = '<div class="btn-group">';
                         $btn .= '<a href='.route('b.cooperation_detail',['id' => $row->id]).' class="btn btn-xs btn-success"><i class="uil-eye"></i> Detail</a>';
+                        switch ($row->status) {
+                            case 'Waiting':
+                                $btn .= '<a href='.route('b.cooperation_validasi',['id' => $row->id]).' class="btn btn-xs btn-primary"><i class="fas fa-edit"></i> Validasi</a>';
+                                break;
+                            default:
+                                # code...
+                                break;
+                        }
                         // $btn .= '<a href="javascript:void(0)" onclick="hapus(`'.$row->id.'`)" class="btn btn-xs btn-danger"><i class="uil-trash"></i> Delete</a>';
                         $btn .= '</div>';
                         return $btn;
                     })
-                    ->rawColumns(['action','status'])
+                    ->rawColumns(['kode_corporate','action','status'])
                     ->make(true);
         }
 
@@ -288,5 +303,58 @@ class CooperationController extends Controller
             return redirect()->back();
         }
         return view('backend.cooperation.detail',$data);
+    }
+
+    public function cooperation_validasi($id)
+    {
+        $data['cooperation'] = $this->cooperation->where('id',$id)->where('status','Waiting')->first();
+        if (empty($data['cooperation'])) {
+            return redirect()->back();
+        }
+        return view('backend.cooperation.validasi',$data);
+    }
+
+    public function cooperation_validasi_simpan(Request $request,$id)
+    {
+        $rules = [
+            'status'  => 'required',
+        ];
+
+        $messages = [
+            'status.required'   => 'Status Validasi wajib diisi.',
+        ];
+
+        $validator = Validator::make($request->all(), $rules, $messages);
+        if ($validator->passes()) {
+            $cooperation = $this->cooperation->find($id);
+            $input['status'] = $request->status;
+            $cooperation->update($input);
+            if ($cooperation) {
+                Mail::to($cooperation->email)
+                    ->send(new CooperationMail([
+                        'subject' => 'Validasi Partner',
+                        'data' => [
+                            'nama_usaha' => $cooperation->nama_usaha,
+                            'status' => $input['status']
+                        ]
+                    ]));
+                $message_title="Berhasil !";
+                $message_content="Berhasil Divalidasi";
+                $message_type="success";
+                $message_succes = true;
+            }
+            $array_message = array(
+                'success' => $message_succes,
+                'message_title' => $message_title,
+                'message_content' => $message_content,
+                'message_type' => $message_type,
+            );
+
+            return $array_message;
+        }
+        return response()->json([
+            'success' => false,
+            'error' => $validator->errors()->all()
+        ]);
     }
 }
