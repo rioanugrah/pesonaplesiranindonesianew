@@ -32,13 +32,17 @@ Route::domain(parse_url(env('APP_URL'), PHP_URL_HOST))->group(function () {
     //     return view('frontend.index');
     // })->name('frontend');
     Route::get('/', [App\Http\Controllers\FrontendController::class, 'index'])->name('frontend');
+    Route::prefix('bromo')->group(function(){
+        Route::get('/', [App\Http\Controllers\FrontendController::class, 'bromo'])->name('frontend.bromo');
+        Route::get('{id}', [App\Http\Controllers\FrontendController::class, 'bromo_list'])->name('frontend.bromo_list');
+    });
     Route::get('about-us', [App\Http\Controllers\FrontendController::class, 'about'])->name('frontend.about');
     Route::get('contact-us', [App\Http\Controllers\FrontendController::class, 'contact'])->name('frontend.contact');
     Route::post('contact-us/send-mail', [App\Http\Controllers\FrontendController::class, 'contact_send_mail'])->name('frontend.contact_send_mail');
 
     Route::group(['middleware' => 'auth'], function () {
-        Route::get('checkout/bromo/{id}', [App\Http\Controllers\FrontendController::class, 'bromo_checkout'])->name('frontend.bromo_checkout');
-        Route::post('checkout/bromo/{id}/buy', [App\Http\Controllers\FrontendController::class, 'bromo_payment'])->name('frontend.bromo_payment');
+        Route::get('bromo/{id}/{id_list}/checkout', [App\Http\Controllers\FrontendController::class, 'bromo_checkout'])->name('frontend.bromo_checkout');
+        Route::post('bromo/{id}/{id_list}/checkout/buy', [App\Http\Controllers\FrontendController::class, 'bromo_payment'])->name('frontend.bromo_payment');
 
         // Route::get('open_payment', [App\Http\Controllers\Payment\TripayController::class, 'handle_open_payment']);
 
@@ -46,8 +50,20 @@ Route::domain(parse_url(env('APP_URL'), PHP_URL_HOST))->group(function () {
             Route::get('home', [App\Http\Controllers\HomeController::class, 'index'])->middleware('verified')->name('home');
             Route::prefix('bromo')->group(function(){
                 Route::get('/', [App\Http\Controllers\v1\BromoController::class, 'b_index'])->middleware('verified')->name('bromo.b_index');
+                Route::get('create', [App\Http\Controllers\v1\BromoController::class, 'b_create'])->middleware('verified')->name('bromo.b_create');
                 Route::post('simpan', [App\Http\Controllers\v1\BromoController::class, 'b_simpan'])->middleware('verified')->name('bromo.b_b_simpan');
-                Route::post('reupload/simpan', [App\Http\Controllers\v1\BromoController::class, 'b_reupload_simpan'])->middleware('verified')->name('bromo.reupload_simpan');
+                Route::get('{id}', [App\Http\Controllers\v1\BromoController::class, 'b_bromo_detail'])->middleware('verified')->name('bromo.b_bromo_detail');
+                Route::get('{id}/list', [App\Http\Controllers\v1\BromoController::class, 'b_bromo_list'])->middleware('verified')->name('bromo.b_bromo_list');
+                Route::post('{id}/list/simpan', [App\Http\Controllers\v1\BromoController::class, 'b_bromo_list_simpan'])->middleware('verified')->name('bromo.b_bromo_list_simpan');
+                Route::get('{id}/list/{id_bromo}/edit', [App\Http\Controllers\v1\BromoController::class, 'b_bromo_list_edit'])->middleware('verified')->name('bromo.b_bromo_list_edit');
+                Route::post('{id}/list/{id_bromo}/update', [App\Http\Controllers\v1\BromoController::class, 'b_bromo_list_update'])->middleware('verified')->name('bromo.b_bromo_list_update');
+                Route::get('{id}/list/{id_bromo}/delete', [App\Http\Controllers\v1\BromoController::class, 'b_bromo_list_delete'])->middleware('verified')->name('bromo.b_bromo_list_delete');
+                // Route::post('reupload/simpan', [App\Http\Controllers\v1\BromoController::class, 'b_reupload_simpan'])->middleware('verified')->name('bromo.reupload_simpan');
+                // Route::post('upload_file', [App\Http\Controllers\v1\BromoController::class, 'b_upload_image'])->middleware('verified')->name('bromo.b_upload_image');
+                // Route::get('get_all_file', function(){
+                //     $files = \File::allFiles(public_path('backend/images/bromo/'));
+                //     return $files;
+                // });
             });
             Route::prefix('emails')->group(function(){
                 Route::prefix('template')->group(function(){

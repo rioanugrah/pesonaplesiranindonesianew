@@ -18,21 +18,15 @@
                     <h4 class="card-title">@yield('title')</h4>
                     <div class="btn-group mt-2 mb-2 pull-right">
                         {{-- <a href="{{ route('tour.create') }}" class="btn btn-primary">Tambah</a> --}}
-                        <button onclick="buat()" class="btn btn-primary"><i class="fas fa-plus"></i> Buat Paket</button>
+                        <button onclick="window.location.href='{{ route('bromo.b_create') }}'" class="btn btn-primary"><i class="fas fa-plus"></i> Buat Paket</button>
                         <button onclick="reload()" class="btn btn-primary">Reload</button>
                     </div>
                     <table id="datatable" class="table table-bordered dt-responsive nowrap"
                         style="border-collapse: collapse; border-spacing: 0; width: 100%;">
                         <thead>
                             <tr>
-                                <th>Status</th>
-                                <th>Tanggal Dibuka</th>
-                                <th>Nama Paket</th>
-                                <th>Jenis Travel</th>
-                                <th>Meeting Point</th>
-                                <th>Kuota</th>
-                                <th>Harga</th>
-                                <th>Action</th>
+                                <th style="width: 80%">Data Bromo</th>
+                                <th style="width: 20%">Action</th>
                             </tr>
                         </thead>
                         <tbody></tbody>
@@ -59,32 +53,8 @@
             ajax: "{{ route('bromo.b_index') }}",
             columns: [
                 {
-                    data: 'status',
-                    name: 'status'
-                },
-                {
-                    data: 'tanggal',
-                    name: 'tanggal'
-                },
-                {
-                    data: 'title',
-                    name: 'title'
-                },
-                {
-                    data: 'category_trip',
-                    name: 'category_trip'
-                },
-                {
-                    data: 'meeting_point',
-                    name: 'meeting_point'
-                },
-                {
-                    data: 'quota',
-                    name: 'quota'
-                },
-                {
-                    data: 'price',
-                    name: 'price'
+                    data: 'data_bromo',
+                    name: 'data_bromo'
                 },
                 {
                     data: 'action',
@@ -93,11 +63,11 @@
                     searchable: false
                 },
             ],
-            order: [1,'desc']
+            // order: [1,'desc']
         });
 
         function reload() {
-            table.ajax.reload();
+            table.ajax.reload(null,false);
         }
 
         function buat() {
@@ -193,89 +163,6 @@
                         }
                         // this.reset();
                         $('#buat').modal('hide');
-                        table.ajax.reload(null, false);
-                    }else{
-                        toastr["error"](result.error);
-                        toastr.options = {
-                            "closeButton": false,
-                            "debug": false,
-                            "newestOnTop": false,
-                            "progressBar": true,
-                            "positionClass": "toast-top-right",
-                            "preventDuplicates": false,
-                            "onclick": null,
-                            "showDuration": 300,
-                            "hideDuration": 1000,
-                            "timeOut": 5000,
-                            "extendedTimeOut": 1000,
-                            "showEasing": "swing",
-                            "hideEasing": "linear",
-                            "showMethod": "fadeIn",
-                            "hideMethod": "fadeOut"
-                        }
-                        // alert('test');
-                        // iziToast.error({
-                        //     title: result.success,
-                        //     message: result.error
-                        // });
-                    }
-                },
-                error: function (request, status, error) {
-                    toastr["error"](error);
-                    toastr.options = {
-                        "closeButton": false,
-                        "debug": false,
-                        "newestOnTop": false,
-                        "progressBar": true,
-                        "positionClass": "toast-top-right",
-                        "preventDuplicates": false,
-                        "onclick": null,
-                        "showDuration": 300,
-                        "hideDuration": 1000,
-                        "timeOut": 5000,
-                        "extendedTimeOut": 1000,
-                        "showEasing": "swing",
-                        "hideEasing": "linear",
-                        "showMethod": "fadeIn",
-                        "hideMethod": "fadeOut"
-                    }
-                }
-            });
-        });
-
-        $('#reupload-form').submit(function(e) {
-            // alert('coba');
-            e.preventDefault();
-            let formData = new FormData(this);
-            // $('#image-input-error').text('');
-            $.ajax({
-                type:'POST',
-                url: "{{ route('bromo.reupload_simpan') }}",
-                data: formData,
-                contentType: false,
-                processData: false,
-                success: (result) => {
-                    if(result.success != false){
-                        toastr["success"](result.message_content);
-                        toastr.options = {
-                            "closeButton": false,
-                            "debug": false,
-                            "newestOnTop": false,
-                            "progressBar": true,
-                            "positionClass": "toast-top-right",
-                            "preventDuplicates": false,
-                            "onclick": null,
-                            "showDuration": 300,
-                            "hideDuration": 1000,
-                            "timeOut": 5000,
-                            "extendedTimeOut": 1000,
-                            "showEasing": "swing",
-                            "hideEasing": "linear",
-                            "showMethod": "fadeIn",
-                            "hideMethod": "fadeOut"
-                        }
-                        // this.reset();
-                        $('#reupload_paket').modal('hide');
                         table.ajax.reload(null, false);
                     }else{
                         toastr["error"](result.error);

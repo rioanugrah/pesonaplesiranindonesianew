@@ -15,18 +15,17 @@ class Bromo extends Model
 
     public $fillable = [
         'id',
-        'tanggal',
         'slug',
         'title',
-        'meeting_point',
+        'descriptions',
         'category_trip',
-        'quota',
-        'max_quota',
-        'destination',
-        'include',
-        'exclude',
-        'price',
-        'discount',
+        'meeting_point',
         'images',
+        'images_all',
     ];
+
+    public function bromo_list()
+    {
+        return $this->hasMany(\App\Models\BromoList::class, 'bromo_id','id')->orderBy('departure_date','desc');
+    }
 }

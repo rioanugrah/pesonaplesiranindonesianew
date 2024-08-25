@@ -19,7 +19,7 @@
             </div>
         </div>
     </div>
-    <form action="{{ route('frontend.bromo_payment',['id' => $bromo->id]) }}" method="post" enctype="multipart/form-data">
+    <form action="{{ route('frontend.bromo_payment',['id' => $bromo->bromo_id, 'id_list' => $bromo->id]) }}" method="post" enctype="multipart/form-data">
         @csrf
         <section class="vs-checkout-wrapper space">
             <div class="container">
@@ -59,11 +59,11 @@
                         <tbody>
                             <tr class="cart_item">
                                 <td data-title="Product">
-                                    <a class="cart-productimage" href="shop-details.html"><img width="91" height="91"
-                                            src="{{ asset('frontend/new_1/assets/posting/bromo.webp') }}"></a>
+                                    <a class="cart-productimage"><img width="91" height="91"
+                                            src="{{ asset('backend/images/bromo/'.$bromo->bromo->images) }}"></a>
                                 </td>
                                 <td data-title="Name">
-                                    <a class="cart-productname">{{ $bromo->title . ' - Departure Date ' . $bromo->tanggal }}</a>
+                                    <a class="cart-productname">{{ $bromo->bromo->title . ' - Departure Date ' . \Carbon\Carbon::create($bromo->departure_date)->isoFormat('LLLL')}}</a>
                                 </td>
                                 <td data-title="Price">
                                     <span class="amount"><bdi><span>Rp. </span>{{ number_format($bromo->price, 0, ',', '.') }}
@@ -114,7 +114,7 @@
 @section('script')
     <script>
         $('#qty').change(function() {
-            if ('{{ $bromo->category_trip }}' == 'Publik') {
+            if ('{{ $bromo->bromo->category_trip }}' == 'Publik') {
                 var price = {{ $bromo->price - ($bromo->discount / 100) * $bromo->price }};
                 var jumlah = parseInt($('#qty').val());
                 var penjumlahan = jumlah * price;
@@ -136,8 +136,8 @@
                 document.getElementById('subtotal').innerHTML = 'Rp. ' + rupiah;
                 document.getElementById('total').innerHTML = 'Rp. ' + rupiah;
                 // $('#order_total').val(penjumlahan);
-            } else if ('{{ $bromo->category_trip }}' == 'Private') {
-                if (($('#qty').val() + parseInt(1)) > '{{ $bromo->max_quota }}') {
+            } else if ('{{ $bromo->bromo->category_trip }}' == 'Private') {
+                if (($('#qty').val()) >= parseInt('{{ $bromo->max_quota }}')) {
                     alert('Jumlah anggota maksimal ' + {{ $bromo->max_quota }} + ' orang');
                     $('#qty').val('');
                 } else {
