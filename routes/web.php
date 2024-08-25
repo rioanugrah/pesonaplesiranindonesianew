@@ -53,6 +53,8 @@ Route::domain(parse_url(env('APP_URL'), PHP_URL_HOST))->group(function () {
                 Route::get('create', [App\Http\Controllers\v1\BromoController::class, 'b_create'])->middleware('verified')->name('bromo.b_create');
                 Route::post('simpan', [App\Http\Controllers\v1\BromoController::class, 'b_simpan'])->middleware('verified')->name('bromo.b_b_simpan');
                 Route::get('{id}', [App\Http\Controllers\v1\BromoController::class, 'b_bromo_detail'])->middleware('verified')->name('bromo.b_bromo_detail');
+                Route::get('{id}/edit', [App\Http\Controllers\v1\BromoController::class, 'b_bromo_edit'])->middleware('verified')->name('bromo.b_bromo_edit');
+                Route::post('{id}/edit/update', [App\Http\Controllers\v1\BromoController::class, 'b_bromo_update'])->middleware('verified')->name('bromo.b_bromo_update');
                 Route::get('{id}/list', [App\Http\Controllers\v1\BromoController::class, 'b_bromo_list'])->middleware('verified')->name('bromo.b_bromo_list');
                 Route::post('{id}/list/simpan', [App\Http\Controllers\v1\BromoController::class, 'b_bromo_list_simpan'])->middleware('verified')->name('bromo.b_bromo_list_simpan');
                 Route::get('{id}/list/{id_bromo}/edit', [App\Http\Controllers\v1\BromoController::class, 'b_bromo_list_edit'])->middleware('verified')->name('bromo.b_bromo_list_edit');

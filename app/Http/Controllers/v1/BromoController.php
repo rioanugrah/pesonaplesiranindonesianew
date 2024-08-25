@@ -170,7 +170,7 @@ class BromoController extends Controller
                         $btn = '<div class="btn-group">';
                         $btn .=     '<a href='.route('bromo.b_bromo_list',['id' => $row->id]).' class="btn btn-primary">Tambah List</a>';
                         $btn .=     '<a href='.route('bromo.b_bromo_detail',['id' => $row->id]).' class="btn btn-success">Detail</a>';
-                        $btn .=     '<button class="btn btn-warning">Edit</button>';
+                        $btn .=     '<a href='.route('bromo.b_bromo_edit',['id' => $row->id]).' class="btn btn-warning">Edit</a>';
                         $btn .=     '<button class="btn btn-danger">Delete</button>';
                         // $btn .= '<button onclick="reupload(`'.$row->id.'`)" class="btn btn-info btn-xs"><i class="fas fa-file"></i> Re-upload</button>';
                         // $btn .= '<a href='.route('tour.edit',['id' => $row->id]).' class="btn btn-warning btn-xs"><i class="fas fa-edit"></i></a>';
@@ -192,68 +192,6 @@ class BromoController extends Controller
 
     public function b_simpan(Request $request)
     {
-        // $rules = [
-        //     'tanggal'  => 'required',
-        //     'title'  => 'required',
-        //     'meeting_point'  => 'required',
-        //     'category_trip'  => 'required',
-        //     'quota'  => 'required',
-        //     'max_quota'  => 'required',
-        //     'price'  => 'required',
-        //     'discount'  => 'required',
-        //     'group_destination'  => 'required',
-        //     'group_include'  => 'required',
-        //     'group_exclude'  => 'required',
-        // ];
-
-        // $messages = [
-        //     'tanggal.required'   => 'Tanggal Dibuat wajib diisi.',
-        //     'title.required'   => 'Judul wajib diisi.',
-        //     'meeting_point.required'   => 'Meeting Point wajib diisi.',
-        //     'category_trip.required'  => 'Kategori Trip wajib diisi.',
-        //     'quota.required'   => 'Kuota wajib diisi.',
-        //     'max_quota.required'   => 'Maksimal Kuota wajib diisi.',
-        //     'price.required'   => 'Harga wajib diisi.',
-        //     'discount.required'   => 'Diskon wajib diisi.',
-        //     'group_destination.required'   => 'Destination wajib diisi.',
-        //     'group_include.required'   => 'Include wajib diisi.',
-        //     'group_exlude.required'   => 'Exclude wajib diisi.',
-        // ];
-
-        // $validator = Validator::make($request->all(), $rules, $messages);
-        // if ($validator->passes()) {
-        //     $input['id'] = Str::uuid()->toString();
-        //     $input['slug'] = Str::slug($request->title);
-        //     $input['tanggal'] = $request->tanggal;
-        //     $input['title'] = $request->title;
-        //     $input['meeting_point'] = $request->meeting_point;
-        //     $input['category_trip'] = $request->category_trip;
-        //     $input['quota'] = $request->quota;
-        //     $input['max_quota'] = $request->max_quota;
-        //     $input['destination'] = json_encode($request->group_destination);
-        //     $input['include'] = json_encode($request->group_include);
-        //     $input['exclude'] = json_encode($request->group_exclude);
-        //     $input['price'] = $request->price;
-        //     $input['discount'] = $request->discount;
-
-        //     $bromo = $this->bromo->create($input);
-        //     if ($bromo) {
-        //         $message_title="Berhasil !";
-        //         $message_content="Paket Bromo Berhasil Dibuat";
-        //         $message_type="success";
-        //         $message_succes = true;
-        //     }
-
-        //     $array_message = array(
-        //         'success' => $message_succes,
-        //         'message_title' => $message_title,
-        //         'message_content' => $message_content,
-        //         'message_type' => $message_type,
-        //     );
-
-        //     return $array_message;
-        // }
-
         $rules = [
             'title'  => 'required',
             'meeting_point'  => 'required',
@@ -336,6 +274,88 @@ class BromoController extends Controller
             return redirect()->back();
         }
         return view('backend.paket_wisata.bromo.detail',$data);
+    }
+
+    public function b_bromo_edit($id)
+    {
+        $data['bromo'] = $this->bromo->find($id);
+        if (empty($data['bromo'])) {
+            return redirect()->back();
+        }
+        return view('backend.paket_wisata.bromo.edit',$data);
+    }
+
+    public function b_bromo_update(Request $request,$id)
+    {
+        $rules = [
+            'title'  => 'required',
+            'meeting_point'  => 'required',
+            'category_trip'  => 'required',
+            'descriptions'  => 'required',
+            // 'upload_cover'  => 'required',
+            // 'upload_image'  => 'required',
+        ];
+
+        $messages = [
+            'title.required'   => 'Judul wajib diisi.',
+            'meeting_point.required'   => 'Meeting Point wajib diisi.',
+            'category_trip.required'  => 'Kategori Trip wajib diisi.',
+            'descriptions.required'   => 'Deskripsi wajib diisi.',
+            // 'upload_cover.required'   => 'Upload Cover Kuota wajib diisi.',
+            // 'upload_image.required'   => 'Upload Image wajib diisi.',
+        ];
+
+        $validator = Validator::make($request->all(), $rules, $messages);
+
+        if ($validator->passes()){
+            $input['slug'] = Str::slug($request->title);
+            $input['title'] = $request->title;
+            $input['descriptions'] = $request->descriptions;
+            $input['meeting_point'] = $request->meeting_point;
+            $input['category_trip'] = $request->category_trip;
+
+            if ($request->file('upload_cover')) {
+                $image_upload_cover = $request->file('upload_cover');
+                $img_upload_cover = \Image::make($image_upload_cover->path());
+                $img_upload_cover = $img_upload_cover->encode('webp',65);
+                $input['images'] = 'UploadCover'.time().'.webp';
+                $img_upload_cover->save(public_path('backend/images/bromo/').$input['images']);
+            }
+
+            if ($request->upload_image) {
+                $input_upload_image = [];
+                foreach ($request->upload_image as $key => $upload_image) {
+                    $img_upload_image = \Image::make($upload_image->path());
+                    $img_upload_image = $img_upload_image->encode('webp',65);
+                    $input['images_all'] = 'UploadImage'.time().'.webp';
+                    $img_upload_image->save(public_path('backend/images/bromo/').$input['images_all']);
+                    $input_upload_image[$key] = $input['images_all'];
+                }
+                $input['body'] = json_encode($input['images_all']);
+            }
+            $bromo = $this->bromo->find($id)->update($input);
+
+            if ($bromo) {
+                $message_title="Berhasil !";
+                $message_content="Paket Bromo Berhasil Diupdate";
+                $message_type="success";
+                $message_succes = true;
+            }
+
+            $array_message = array(
+                'success' => $message_succes,
+                'message_title' => $message_title,
+                'message_content' => $message_content,
+                'message_type' => $message_type,
+            );
+
+            return $array_message;
+        }
+
+        return response()->json([
+            'success' => false,
+            'error' => $validator->errors()->all()
+        ]);
     }
 
     public function b_bromo_list(Request $request, $id)
