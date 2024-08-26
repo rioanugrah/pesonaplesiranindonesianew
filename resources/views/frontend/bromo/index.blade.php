@@ -20,8 +20,8 @@
                     </div>
                 </div>
             </div>
-            <div class="row vs-carousel" data-slide-show="2" data-arrows="false" data-lg-slide-show="2"
-                data-md-slide-show="2" data-sm-slide-show="1">
+            <div class="row vs-carousel" data-slide-show="4" data-arrows="false" data-lg-slide-show="4"
+                data-md-slide-show="4" data-sm-slide-show="1">
                 @forelse ($bromos as $bromo)
                 <div class="col-xl-3 col-lg-6 col-sm-6">
                     <div class="package-style3">

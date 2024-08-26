@@ -137,12 +137,12 @@ class BromoController extends Controller
                         $list = '<div class="accordion" id="accordionExample">';
                         $list .=    '<div class="accordion-item">';
                         $list .=        '<h2 class="accordion-header" id="heading'.$row->id.'">';
-                        $list .=            '<button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse'.$row->id.'" aria-expanded="false" aria-controls="collapse'.$row->id.'">'.$row->title.'</button>';
+                        $list .=            '<button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse'.$row->id.'" aria-expanded="false" aria-controls="collapse'.$row->id.'">'.$row->title.' <br> Meeting Point : '.$row->meeting_point.'</button>';
                         $list .=        '</h2>';
                         $list .=        '<div id="collapse'.$row->id.'" class="accordion-collapse collapse" aria-labelledby="heading'.$row->id.'" data-bs-parent="#accordionExample" style="">';
                         $list .=            '<div class="accordion-body">';
                         $list .=                '<div>Meeting Point : '.$row->meeting_point.'</div>';
-                        $list .=                $row->descriptions;
+                        $list .=                '<div style="word-wrap: break-word">'.$row->descriptions.'</div>';
                         $list .=                '<table class="table">';
                         $list .=                    '<tr>';
                         $list .=                        '<td class="text-center">Tanggal Berangkat</td>';
@@ -152,7 +152,7 @@ class BromoController extends Controller
                         $list .=                    '</tr>';
                                                     foreach ($row->bromo_list as $key => $bromo_list) {
                         $list .=                    '<tr>';
-                        $list .=                        '<td class="text-center">'.$bromo_list->departure_date.'</td>';
+                        $list .=                        '<td class="text-center">'.Carbon::create($bromo_list->departure_date)->isoFormat('LLLL').'</td>';
                         $list .=                        '<td class="text-center">'.$bromo_list->quota.'</td>';
                         $list .=                        '<td class="text-center">'.$bromo_list->max_quota.'</td>';
                         $list .=                        '<td class="text-center">'.$bromo_list->discount.'</td>';
@@ -165,6 +165,9 @@ class BromoController extends Controller
                         $list .= '</div>';
 
                         return $list;
+                    })
+                    ->addColumn('created_at', function($row){
+                        return $row->created_at->isoFormat('LLLL');
                     })
                     ->addColumn('action', function($row){
                         $btn = '<div class="btn-group">';

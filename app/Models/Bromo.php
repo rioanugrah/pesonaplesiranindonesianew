@@ -26,6 +26,6 @@ class Bromo extends Model
 
     public function bromo_list()
     {
-        return $this->hasMany(\App\Models\BromoList::class, 'bromo_id','id')->orderBy('departure_date','desc');
+        return $this->hasMany(\App\Models\BromoList::class, 'bromo_id','id')->orderBy('departure_date','desc')->limit(14);
     }
 }

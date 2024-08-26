@@ -25,7 +25,8 @@
                         style="border-collapse: collapse; border-spacing: 0; width: 100%;">
                         <thead>
                             <tr>
-                                <th style="width: 80%">Data Bromo</th>
+                                <th style="width: 60%">Data Bromo</th>
+                                <th style="width: 20%">Tanggal Dibuat</th>
                                 <th style="width: 20%">Action</th>
                             </tr>
                         </thead>
@@ -57,13 +58,17 @@
                     name: 'data_bromo'
                 },
                 {
+                    data: 'created_at',
+                    name: 'created_at'
+                },
+                {
                     data: 'action',
                     name: 'action',
                     orderable: false,
                     searchable: false
                 },
             ],
-            // order: [1,'desc']
+            order: [1,'desc']
         });
 
         function reload() {

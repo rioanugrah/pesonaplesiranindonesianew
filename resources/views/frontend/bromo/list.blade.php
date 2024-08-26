@@ -77,6 +77,10 @@
                                         </thead>
                                         <tbody>
                                             @foreach ($bromo->bromo_list as $key => $bromo_list)
+                                            @php
+                                                $live_date = strtotime(\Carbon\Carbon::now());
+                                                $departure_date = strtotime($bromo_list->departure_date);
+                                            @endphp
                                             <tr>
                                                 <td class="text-center">{{ $key+1 }}</td>
                                                 <td class="text-center">{{ \Carbon\Carbon::create($bromo_list->departure_date)->isoFormat('LLLL') }}</td>
@@ -84,7 +88,11 @@
                                                 <td class="text-center">{{ $bromo_list->max_quota }}</td>
                                                 <td class="text-center">{{ 'Rp. '.number_format($bromo_list->price,0,',','.') }}</td>
                                                 <td class="text-center">
+                                                    @if ($live_date >= $departure_date)
                                                     <a href="{{ route('frontend.bromo_checkout',['id' => $bromo_list->bromo_id, 'id_list' => $bromo_list->id]) }}" class="vs-btn style4 w-100">Booking</a>
+                                                    @else
+                                                    <a class="vs-btn style3 w-100">Closed</a>
+                                                    @endif
                                                 </td>
                                             </tr>
                                             @endforeach

@@ -270,7 +270,7 @@
                 }
             } )
             .then( editor => {
-                editor.setData('{!! $bromo->descriptions !!}')
+                editor.setData("{!! $bromo->descriptions !!}")
             } )
             .catch( error => {
                 console.error( error );
