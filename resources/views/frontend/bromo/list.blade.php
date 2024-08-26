@@ -89,9 +89,9 @@
                                                 <td class="text-center">{{ 'Rp. '.number_format($bromo_list->price,0,',','.') }}</td>
                                                 <td class="text-center">
                                                     @if ($live_date >= $departure_date)
-                                                    <a href="{{ route('frontend.bromo_checkout',['id' => $bromo_list->bromo_id, 'id_list' => $bromo_list->id]) }}" class="vs-btn style4 w-100">Booking</a>
-                                                    @else
                                                     <a class="vs-btn style3 w-100">Closed</a>
+                                                    @else
+                                                    <a href="{{ route('frontend.bromo_checkout',['id' => $bromo_list->bromo_id, 'id_list' => $bromo_list->id]) }}" class="vs-btn style4 w-100">Booking</a>
                                                     @endif
                                                 </td>
                                             </tr>
