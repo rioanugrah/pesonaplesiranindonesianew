@@ -39,6 +39,7 @@ Route::domain(parse_url(env('APP_URL'), PHP_URL_HOST))->group(function () {
     Route::get('about-us', [App\Http\Controllers\FrontendController::class, 'about'])->name('frontend.about');
     Route::get('contact-us', [App\Http\Controllers\FrontendController::class, 'contact'])->name('frontend.contact');
     Route::post('contact-us/send-mail', [App\Http\Controllers\FrontendController::class, 'contact_send_mail'])->name('frontend.contact_send_mail');
+    Route::get('sitemap', [App\Http\Controllers\SitemapController::class, 'index']);
 
     Route::group(['middleware' => 'auth'], function () {
         Route::get('bromo/{id}/{id_list}/checkout', [App\Http\Controllers\FrontendController::class, 'bromo_checkout'])->name('frontend.bromo_checkout');
