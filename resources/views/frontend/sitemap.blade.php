@@ -5,7 +5,7 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
     @foreach ($posts as $post)
         <url>
             <loc>{{ url($post['url']) }}</loc>
-            <lastmod>{{ $post['updated_at'] }}</lastmod>
+            <lastmod>{{ \Carbon\Carbon::create($post['updated_at'])->tz('Asia/Jakarta')->toAtomString() }}</lastmod>
             @if ($post['freq'] != '-')
             <changefreq>{{ $post['freq'] }}</changefreq>
             @endif
