@@ -24,6 +24,7 @@
                                 <th>Subject</th>
                                 <th>To</th>
                                 <th>Status</th>
+                                <th>Tanggal Pengiriman</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -61,13 +62,17 @@
                     name: 'status'
                 },
                 {
+                    data: 'created_at',
+                    name: 'created_at'
+                },
+                {
                     data: 'action',
                     name: 'action',
                     orderable: false,
                     searchable: false
                 },
             ],
-            // order: [1, 'desc']
+            order: [3, 'desc']
         });
 
         function reload() {

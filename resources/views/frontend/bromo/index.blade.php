@@ -2,13 +2,16 @@
 @section('title')
     Paket Bromo
 @endsection
+@section('description')
+    Pesona Plesiran Indonesia adalah Platform Digital Marketing milenial yang menyediakan kemudahan dalam mendapat informasi
+    dan pemesanan Akomodasi, Destinasi, Restoran, Transportasi, Travel dan MICE se-Indonesia.
+@endsection
 @section('keywords')
     tour, trip, travel, agency, life, vacation, climbing, wisata, pesona, plesiran, indonesia, pesona plesiran indonesia,
     pesona indonesia
 @endsection
-@section('canonical')
-    {{ route('frontend.bromo') }}
-@endsection
+@section('canonical'){{ route('frontend.bromo') }}@endsection
+@section('url'){{ route('frontend.bromo') }}@endsection
 @section('content')
     <section class="tour--layout4 space space-extra-bottom shape-mockup-wrap">
         <div class="container ">

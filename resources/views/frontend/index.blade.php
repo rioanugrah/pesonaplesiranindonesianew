@@ -10,9 +10,8 @@
     tour, trip, travel, agency, life, vacation, climbing, wisata, pesona, plesiran, indonesia, pesona plesiran indonesia,
     pesona indonesia
 @endsection
-@section('canonical')
-    {{ url('/') }}
-@endsection
+@section('canonical'){{ url('/') }}@endsection
+@section('url'){{ url('/') }}@endsection
 @section('content')
     @php
         $asset = asset('frontend/new_1/');

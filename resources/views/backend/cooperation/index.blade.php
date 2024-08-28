@@ -82,6 +82,7 @@
                     searchable: false
                 },
             ],
+            order: [0, 'desc']
         });
 
         function reload() {

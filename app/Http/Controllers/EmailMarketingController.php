@@ -164,6 +164,9 @@ class EmailMarketingController extends Controller
             $data = $this->email_marketing->all();
             return DataTables::of($data)
                     ->addIndexColumn()
+                    ->addColumn('created_at', function($row){
+                        return $row->created_at->isoFormat('LLLL');
+                    })
                     ->addColumn('action', function($row){
                         $btn = '<div class="btn-group">';
                         // $btn .= '<a href='.route('emails.b_template.edit',['id' => $row->id]).' class="btn btn-xs btn-warning"><i class="uil-edit"></i> Edit</a>';

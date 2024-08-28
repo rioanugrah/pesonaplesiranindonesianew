@@ -60,7 +60,7 @@
                             <tr>
                                 <td>{{ $key+1 }}</td>
                                 <td>{{ $item->item }}</td>
-                                <td>{{ 'Rp. '.number_format($item->price,0,',','.') }}</td>
+                                <td style="text-align: right">{{ 'Rp. '.number_format($item->price,0,',','.') }}</td>
                                 <td>{{ $item->qty }}</td>
                             </tr>
                         @endforeach

@@ -2,6 +2,16 @@
 @section('title')
     Kontak Kami
 @endsection
+@section('description')
+    Pesona Plesiran Indonesia adalah Platform Digital Marketing milenial yang menyediakan kemudahan dalam mendapat informasi
+    dan pemesanan Akomodasi, Destinasi, Restoran, Transportasi, Travel dan MICE se-Indonesia.
+@endsection
+@section('keywords')
+    tour, trip, travel, agency, life, vacation, climbing, wisata, pesona, plesiran, indonesia, pesona plesiran indonesia,
+    pesona indonesia
+@endsection
+@section('canonical'){{ route('frontend.contact') }}@endsection
+@section('url'){{ route('frontend.contact') }}@endsection
 @section('content')
     <section class="space contact-box_wrapper">
         <div class="outer-wrap">

@@ -7,19 +7,27 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <meta name="google-site-verification" content="-agNXAZvJ7uHctHQlEr7t7q9VoOHxdpZJIDOv9womR4">
     <meta name="author" content="Pesona Plesiran Indonesia">
+    <title>@yield('title')</title>
+    <meta name="title" content="@yield('title')">
     <meta name="description" content="@yield('description')">
     <meta name="robots" content="follow, index, max-snippet:-1, max-video-preview:-1, max-image-preview:standard">
     <meta name="theme-color" content="#ff7b00">
     <meta name="keywords" content="@yield('keywords')">
-    <link rel="canonical" href="@yield('canonical')">
-    <link rel="shortlink" href="{{ url('/') }}">
+
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="@yield('url')">
+    <meta property="og:title" content="@yield('title')">
+    <meta property="og:description" content="@yield('description')">
     <meta property="og:locale" content="{{ str_replace('_', '-', app()->getLocale()) }}">
     <meta property="og:locale:alternate" content="{{ str_replace('_', '-', app()->getLocale()) }}">
-    <meta property="og:type" content="Biro Perjalanan">
-    <meta property="og:title" content="@yield('title')">
-    <meta property="og:url" content="{{ url('/') }}">
-    <meta property="og:site_name" content="Pesona Plesiran Indonesia">
-    <meta property="og:description" content="@yield('description')">
+    <meta property="og:image" content="{{ asset('backend/images/LogoPpiJpeg.jpg') }}">
+
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="@yield('url')">
+    <meta property="twitter:title" content="@yield('title')">
+    <meta property="twitter:description" content="@yield('description')">
+    <meta property="twitter:image" content="{{ asset('backend/images/LogoPpiJpeg.jpg') }}">
+
     <link href="{{ asset('frontend/logo/favicon.png') }}" rel="shortcut icon">
     @php
         $asset = asset('frontend/new_1/');
@@ -53,7 +61,6 @@
     </script>
     {!! Adsense::javascript() !!}
     @yield('css')
-    <title>@yield('title')</title>
 </head>
 
 <body>
