@@ -30,7 +30,7 @@
                     <div class="package-style3">
                         <div class="package-img">
                             <a href="{{ route('frontend.bromo_list',['id' => $bromo->id]) }}"><img class="w-100" src="{{ asset('backend/images/bromo/'.$bromo->images) }}"
-                                    alt="{{ $bromo->title }}"></a>
+                                    alt="{{ $bromo->title }}" style="width: 300px;height: 300px;object-fit: cover;"></a>
                         </div>
                         <div class="package-content">
                             <p class="package-text">Meeting Point : {{ $bromo->meeting_point }}</p>

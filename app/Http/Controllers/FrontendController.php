@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use App\Http\Controllers\Payment\TripayController;
 use App\Models\User;
+use App\Models\Slider;
 use App\Models\Bromo;
 use App\Models\BromoList;
 use App\Models\Transactions;
@@ -19,11 +20,13 @@ class FrontendController extends Controller
     function __construct(
         TripayController $tripay,
         Transactions $transactions,
+        Slider $slider,
         Bromo $bromo,
         BromoList $bromo_list
     )
     {
         $this->tripay = $tripay;
+        $this->slider = $slider;
         $this->bromo = $bromo;
         $this->bromo_list = $bromo_list;
         $this->transactions = $transactions;
@@ -31,7 +34,8 @@ class FrontendController extends Controller
     }
     public function index()
     {
-        return view('frontend.index');
+        $data['sliders'] = $this->slider->where('status','Y')->orderBy('created_at','desc')->get();
+        return view('frontend.index',$data);
     }
 
     public function about()

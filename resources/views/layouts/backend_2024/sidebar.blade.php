@@ -124,6 +124,13 @@
                     </li>
                     @endcan
                 @endcan
+                <li class="menu-title">Slider</li>
+                <li class="{{ request()->is('b/slider*') ? 'mm-active' : null }}">
+                    <a href="{{ route('slider') }}">
+                        <i class="uil-home-alt"></i>
+                        <span>Slider</span>
+                    </a>
+                </li>
                 @can('permission-list')
                 <li class="menu-title">User Management</li>
                 <li>

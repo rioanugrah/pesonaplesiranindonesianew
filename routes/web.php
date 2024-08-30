@@ -93,6 +93,12 @@ Route::domain(parse_url(env('APP_URL'), PHP_URL_HOST))->group(function () {
                 Route::post('simpan', [App\Http\Controllers\v1\PermissionsController::class, 'simpan'])->name('permissions.simpan')->middleware('verified');
             });
 
+            Route::prefix('slider')->group(function(){
+                Route::get('/', [App\Http\Controllers\SliderController::class, 'index'])->middleware('verified')->name('slider');
+                Route::get('create', [App\Http\Controllers\SliderController::class, 'create'])->middleware('verified')->name('slider.create');
+                Route::post('simpan', [App\Http\Controllers\SliderController::class, 'simpan'])->middleware('verified')->name('slider.simpan');
+            });
+
             Route::prefix('camping')->group(function(){
                 Route::prefix('category')->group(function(){
                     Route::get('/', [App\Http\Controllers\CampingController::class, 'camping_category_index'])->name('b.camping_category_index')->middleware('verified');

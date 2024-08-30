@@ -20,45 +20,21 @@
     <section class="hero-layout5">
         <div class="position-relative">
             <div class="vs-carousel hero-slider2" data-slide-show="1" data-fade="true">
-                <div class="hero-slide" data-bg-src="{{ $asset }}/assets/posting/bromo.webp">
+                @foreach ($sliders as $slider)
+                <div class="hero-slide" data-bg-src="{{ asset('backend/images/slider/'.$slider->images) }}">
                     <div class="container">
                         <div class="row align-items-center justify-content-end">
                             <div class="col-lg-7">
                                 <div class="hero-content">
                                     <span class="hero-subtitle">Let’s Go Now</span>
-                                    <h1 class="hero-title">Gunung Bromo</h1>
-                                    <a href="javascript:void()" class="vs-btn style5">Read More</a>
+                                    <h1 class="hero-title">{{ $slider->title }}</h1>
+                                    {{-- <a href="javascript:void()" class="vs-btn style5">Read More</a> --}}
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="hero-slide" data-bg-src="{{ $asset }}/assets/posting/kelingking-beach.webp">
-                    <div class="container">
-                        <div class="row align-items-center justify-content-end">
-                            <div class="col-lg-7">
-                                <div class="hero-content">
-                                    <span class="hero-subtitle">Let’s Go Now</span>
-                                    <h1 class="hero-title">Pantai Kelingking</h1>
-                                    <a href="javascript:void()" class="vs-btn style5">Read More</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="hero-slide" data-bg-src="{{ $asset }}/assets/posting/kawah_ijen1.webp">
-                    <div class="container">
-                        <div class="row align-items-center justify-content-end">
-                            <div class="col-lg-7">
-                                <div class="hero-content">
-                                    <span class="hero-subtitle">Let’s Go Now</span>
-                                    <h1 class="hero-title">Kawah Ijen</h1>
-                                    <a href="javascript:void()" class="vs-btn style5">Read More</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                @endforeach
             </div>
             <div>
                 <button class="icon-btn prev-btn" data-slick-prev=".hero-slider2"><i

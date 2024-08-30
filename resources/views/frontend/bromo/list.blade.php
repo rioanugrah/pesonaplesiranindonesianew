@@ -35,7 +35,7 @@
                             <div class="filter-active tour-booking-active">
                                 <div class="filter-item tab-content1">
                                     <div class="info-image">
-                                        <img src="{{ asset('backend/images/bromo/'.$bromo->images) }}" alt="{{ $bromo->title }}">
+                                        <img src="{{ asset('backend/images/bromo/'.$bromo->images) }}" alt="{{ $bromo->title }}" style="width: 100%;height: 500px;object-fit: cover;">
                                     </div>
                                     {{-- <div class="tour-review">
                                         <ul>
