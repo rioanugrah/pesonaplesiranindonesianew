@@ -124,7 +124,7 @@
                                                                 <span
                                                                     class="package-price">{{ 'Rp. ' . number_format($bromo_list->price, 0, ',', '.') }}</span>
                                                             </div>
-                                                            @if ($live_date >= $departure_date)
+                                                            @if ($live_date <= $departure_date)
                                                             <div class="package-icon">
                                                                 <a href="{{ route('frontend.bromo_checkout', ['id' => $bromo_list->bromo_id, 'id_list' => $bromo_list->id]) }}">
                                                                     <i class="far fa-arrow-right"></i>
