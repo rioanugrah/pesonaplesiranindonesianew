@@ -35,7 +35,8 @@
                             <div class="filter-active tour-booking-active">
                                 <div class="filter-item tab-content1">
                                     <div class="info-image">
-                                        <img src="{{ asset('backend/images/bromo/'.$bromo->images) }}" alt="{{ $bromo->title }}" style="width: 100%;height: 500px;object-fit: cover;">
+                                        <img src="{{ asset('backend/images/bromo/' . $bromo->images) }}"
+                                            alt="{{ $bromo->title }}" style="width: 100%;height: 500px;object-fit: cover;">
                                     </div>
                                     {{-- <div class="tour-review">
                                         <ul>
@@ -54,17 +55,21 @@
                                         {{-- {{ dd($bromo->bromo_list) }} --}}
                                         <div class="col-auto">
                                             @if ($bromo->bromo_list->isEmpty())
-                                            <p class="tour-price"><strong>{{ 'Rp. '.number_format(0,0,',','.') }}</strong> / Per Pax</p>
+                                                <p class="tour-price">
+                                                    <strong>{{ 'Rp. ' . number_format(0, 0, ',', '.') }}</strong> / Per Pax
+                                                </p>
                                             @else
-                                            <p class="tour-price"><strong>{{ 'Rp. '.number_format($bromo->bromo_list[0]->price,0,',','.') }}</strong> / Per Pax</p>
+                                                <p class="tour-price">
+                                                    <strong>{{ 'Rp. ' . number_format($bromo->bromo_list[0]->price, 0, ',', '.') }}</strong>
+                                                    / Per Pax
+                                                </p>
                                             @endif
                                         </div>
                                     </div>
                                     <div>Meeting Point : {{ $bromo->meeting_point }}</div>
                                     {!! $bromo->descriptions !!}
                                     <hr>
-                                    <h2 class="text-center">Jadwal Trip Bromo</h2>
-                                    <table class="table">
+                                    {{-- <table class="table">
                                         <thead>
                                             <tr>
                                                 <th class="text-center">No</th>
@@ -97,7 +102,74 @@
                                             </tr>
                                             @endforeach
                                         </tbody>
-                                    </table>
+                                    </table> --}}
+                                    <div class="space package-layout1">
+                                        <h2 class="text-center">Jadwal Trip Bromo</h2>
+
+                                        @foreach ($bromo->bromo_list as $key => $bromo_list)
+                                            @php
+                                                $live_date = strtotime(\Carbon\Carbon::now());
+                                                $departure_date = strtotime($bromo_list->departure_date);
+                                            @endphp
+                                            <div class="package-style2">
+                                                <div class="row gx-5 align-items-center">
+                                                    <div class="col-lg-4">
+                                                        <div class="package-img">
+                                                            <a href="tour-booking.html">
+                                                                <img src="{{ asset('backend/images/bromo/' . $bromo->images) }}"
+                                                                    style="width: 100%;height: 150px;object-fit: cover;">
+                                                            </a>
+                                                            <div class="price-box">
+                                                                {{-- <p class="price-text">Form</p> --}}
+                                                                <span
+                                                                    class="package-price">{{ 'Rp. ' . number_format($bromo_list->price, 0, ',', '.') }}</span>
+                                                            </div>
+                                                            @if ($live_date >= $departure_date)
+                                                            <div class="package-icon">
+                                                                <a href="{{ route('frontend.bromo_checkout', ['id' => $bromo_list->bromo_id, 'id_list' => $bromo_list->id]) }}">
+                                                                    <i class="far fa-arrow-right"></i>
+                                                                </a>
+                                                            </div>
+                                                            @endif
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-lg-4">
+                                                        <div class="package-content">
+                                                            <div>Tanggal Berangkat</div>
+                                                            <h3 class="package-title"><a>{{ \Carbon\Carbon::create($bromo_list->departure_date)->isoFormat('LLLL') }}</a>
+                                                            </h3>
+                                                            @if ($live_date >= $departure_date)
+                                                                <a class="vs-btn style3 w-100">Closed</a>
+                                                            @else
+                                                                <a href="{{ route('frontend.bromo_checkout', ['id' => $bromo_list->bromo_id, 'id_list' => $bromo_list->id]) }}"
+                                                                    class="vs-btn style4 w-100">Booking</a>
+                                                            @endif
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-lg-4">
+                                                        <div class="package-meta">
+                                                            <ul>
+                                                                <li>
+                                                                    <a href="#"><i
+                                                                            class="fas fa-user-friends"></i><strong>Kuota:</strong>{{ $bromo_list->quota }}</a>
+                                                                </li>
+                                                                <li>
+                                                                    <a href="#"><i
+                                                                            class="fas fa-user-friends"></i><strong>Max
+                                                                            Kuota:</strong>{{ $bromo_list->max_quota }}</a>
+                                                                </li>
+                                                                <li>
+                                                                    <a href="#"><i
+                                                                            class="fas fa-map-marker-alt"></i><strong>Meeting
+                                                                            Point:</strong>{{ $bromo->meeting_point }}</a>
+                                                                </li>
+                                                            </ul>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        @endforeach
+                                    </div>
                                 </div>
                             </div>
                         </div>
