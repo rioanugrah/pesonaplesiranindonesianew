@@ -32,13 +32,21 @@ Route::domain(parse_url(env('APP_URL'), PHP_URL_HOST))->group(function () {
     //     return view('frontend.index');
     // })->name('frontend');
     Route::get('/', [App\Http\Controllers\FrontendController::class, 'index'])->name('frontend');
+
     Route::prefix('bromo')->group(function(){
         Route::get('/', [App\Http\Controllers\FrontendController::class, 'bromo'])->name('frontend.bromo');
         Route::get('{id}', [App\Http\Controllers\FrontendController::class, 'bromo_list'])->name('frontend.bromo_list');
     });
+
     Route::get('about-us', [App\Http\Controllers\FrontendController::class, 'about'])->name('frontend.about');
-    Route::get('contact-us', [App\Http\Controllers\FrontendController::class, 'contact'])->name('frontend.contact');
-    Route::post('contact-us/send-mail', [App\Http\Controllers\FrontendController::class, 'contact_send_mail'])->name('frontend.contact_send_mail');
+
+    Route::prefix('contact-us')->group(function(){
+        Route::get('/', [App\Http\Controllers\FrontendController::class, 'contact'])->name('frontend.contact');
+        Route::post('send-mail', [App\Http\Controllers\FrontendController::class, 'contact_send_mail'])->name('frontend.contact_send_mail');
+    });
+
+    Route::get('kebijakan_privasi', [App\Http\Controllers\FrontendController::class, 'kebijakan_privasi'])->name('frontend.kebijakan_privasi');
+
     Route::get('sitemap', [App\Http\Controllers\SitemapController::class, 'index']);
 
     Route::group(['middleware' => 'auth'], function () {

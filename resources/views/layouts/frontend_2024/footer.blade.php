@@ -15,6 +15,7 @@
                             <p class="footer-text">Pesona Plesiran Indonesia adalah Platform Digital Marketing milenial yang menyediakan kemudahan dalam mendapat informasi dan pemesanan Akomodasi, Destinasi, Restoran, Transportasi, Travel dan MICE se-Indonesia.</p>
                             <div class="social-style1">
                                 <a href="https://www.instagram.com/pesonaplesiranid.official/" target="_blank"><i class="fab fa-instagram"></i></a>
+                                <a href="https://www.instagram.com/plesiranmalang.id/" target="_blank"><i class="fab fa-instagram"></i></a>
                             </div>
                         </div>
                     </div>
@@ -26,19 +27,19 @@
                             <ul class="menu">
                                 <li><a href="{{ route('frontend.about') }}">Tentang Kami</a></li>
                                 <li><a href="{{ route('frontend.contact') }}">Kontak Kami</a></li>
-                                <li><a href="javascript:void()">Kebijakan Privasi</a></li>
+                                <li><a href="{{ route('frontend.kebijakan_privasi') }}">Kebijakan Privasi</a></li>
                             </ul>
                         </div>
                     </div>
                 </div>
                 <div class="col-md-6 col-xl-4">
-                    <div class="widget footer-widget">
+                    {{-- <div class="widget footer-widget">
                         <h4 class="widget_title">Our Email</h4>
                         <form class="newsletter-form">
                             <input class="form-control" type="email" placeholder="Your Email Address" />
                             <button type="submit" class="vs-btn">Subscribe</button>
                         </form>
-                    </div>
+                    </div> --}}
                 </div>
             </div>
         </div>
@@ -56,18 +57,18 @@
                         @else
                             2021 - {{ date('Y') }}
                         @endif
-                        <a href="javascript:void()">Pesona Plesiran Indonesia</a>.
+                        <a href="{{ route('frontend') }}">Pesona Plesiran Indonesia</a>.
                         All Rights Reserved.
                     </p>
                 </div>
-                <div class="col-auto d-none d-lg-block">
+                {{-- <div class="col-auto d-none d-lg-block">
                     <div class="copyright-menu">
                         <ul class="list-unstyled">
                             <li><a href="javascript:void()">Privacy</a></li>
                             <li><a href="javascript:void()">Terms & Conditions</a></li>
                         </ul>
                     </div>
-                </div>
+                </div> --}}
             </div>
         </div>
     </div>

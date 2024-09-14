@@ -69,6 +69,11 @@ class FrontendController extends Controller
         ]);
     }
 
+    public function kebijakan_privasi()
+    {
+        return view('frontend.kebijakan_privasi');
+    }
+
     public function bromo()
     {
         $data['bromos'] = $this->bromo->all();
