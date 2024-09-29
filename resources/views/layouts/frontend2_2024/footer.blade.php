@@ -39,7 +39,7 @@
                         <a href="#">Kebijakan Privasi</a>
                     </li>
                     <li>
-                        <a href="#">Kontak Kami</a>
+                        <a href="{{ route('frontend.contact') }}">Kontak Kami</a>
                     </li>
                     <li>
                         <a href="#">Tim Kami</a>

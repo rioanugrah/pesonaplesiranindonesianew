@@ -60,7 +60,7 @@
                                                         <li><a href="#">Bromo</a></li>
                                                     </ul>
                                                 </li>
-                                                <li><a href="#">Contact</a></li>
+                                                <li><a href="{{ route('frontend.contact') }}">Contact</a></li>
                                             </ul>
                                         </div>
                                     </nav>
