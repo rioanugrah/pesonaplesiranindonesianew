@@ -31,7 +31,10 @@ Route::domain(parse_url(env('APP_URL'), PHP_URL_HOST))->group(function () {
     // Route::get('/', function(){
     //     return view('frontend.index');
     // })->name('frontend');
-    Route::get('/', [App\Http\Controllers\FrontendController::class, 'index'])->name('frontend');
+
+    Route::get('/', [App\Http\Controllers\v2\FrontendController::class, 'index'])->name('frontend');
+
+    // Route::get('/', [App\Http\Controllers\FrontendController::class, 'index'])->name('frontend');
 
     Route::prefix('bromo')->group(function(){
         Route::get('/', [App\Http\Controllers\FrontendController::class, 'bromo'])->name('frontend.bromo');
@@ -48,6 +51,10 @@ Route::domain(parse_url(env('APP_URL'), PHP_URL_HOST))->group(function () {
     Route::get('kebijakan_privasi', [App\Http\Controllers\FrontendController::class, 'kebijakan_privasi'])->name('frontend.kebijakan_privasi');
 
     Route::get('sitemap', [App\Http\Controllers\SitemapController::class, 'index']);
+
+    Route::get('testing_web', function(){
+        return view('frontend2.index');
+    });
 
     Route::group(['middleware' => 'auth'], function () {
         Route::get('bromo/{id}/{id_list}/checkout', [App\Http\Controllers\FrontendController::class, 'bromo_checkout'])->name('frontend.bromo_checkout');
