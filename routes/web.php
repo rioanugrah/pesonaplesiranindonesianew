@@ -32,9 +32,9 @@ Route::domain(parse_url(env('APP_URL'), PHP_URL_HOST))->group(function () {
     //     return view('frontend.index');
     // })->name('frontend');
 
-    Route::get('/', [App\Http\Controllers\v2\FrontendController::class, 'index'])->name('frontend');
+    // Route::get('/', [App\Http\Controllers\v2\FrontendController::class, 'index'])->name('frontend');
 
-    // Route::get('/', [App\Http\Controllers\FrontendController::class, 'index'])->name('frontend');
+    Route::get('/', [App\Http\Controllers\FrontendController::class, 'index'])->name('frontend');
 
     Route::prefix('bromo')->group(function(){
         Route::get('/', [App\Http\Controllers\FrontendController::class, 'bromo'])->name('frontend.bromo');

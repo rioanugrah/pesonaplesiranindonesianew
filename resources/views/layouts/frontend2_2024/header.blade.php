@@ -57,7 +57,8 @@
                                                 <li class="dropdown2">
                                                     <a href="#">Wisata</a>
                                                     <ul>
-                                                        <li><a href="#">Bromo</a></li>
+                                                        <li><a href="{{ route('frontend.bromo') }}">Bromo</a></li>
+                                                        <li><a href="#">Kawah Ijen</a></li>
                                                     </ul>
                                                 </li>
                                                 <li><a href="{{ route('frontend.contact') }}">Contact</a></li>
