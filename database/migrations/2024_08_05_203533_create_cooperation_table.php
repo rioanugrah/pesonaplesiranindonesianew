@@ -13,23 +13,24 @@ class CreateCooperationTable extends Migration
      */
     public function up()
     {
-        Schema::create('kategori_corporate', function (Blueprint $table) {
-            $table->uuid('id')->primary();
-            $table->string('nama_kategori');
-            $table->text('deskripsi');
-            $table->string('status');
-            $table->timestamps();
-            $table->softDeletes();
-        });
+        // Schema::create('kategori_corporate', function (Blueprint $table) {
+        //     $table->uuid('id')->primary();
+        //     $table->string('nama_kategori');
+        //     $table->text('deskripsi');
+        //     $table->string('status');
+        //     $table->timestamps();
+        //     $table->softDeletes();
+        // });
 
         Schema::create('cooperation', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->string('kode_corporate');
+            $table->string('nik');
             $table->string('nama');
             $table->string('email');
             $table->string('nama_usaha');
             $table->string('logo_usaha')->nullable();
-            $table->uuid('kategori_corporate_id');
+            // $table->uuid('kategori_corporate_id');
             // $table->enum('kategori', ['Pribadi', 'Bisnis'])->nullable();
             $table->text('alamat_usaha');
             $table->integer('kecamatan_id');
@@ -53,7 +54,7 @@ class CreateCooperationTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('kategori_corporate');
+        // Schema::dropIfExists('kategori_corporate');
         Schema::dropIfExists('cooperation');
     }
 }

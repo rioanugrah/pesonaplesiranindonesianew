@@ -164,6 +164,9 @@ class EmailMarketingController extends Controller
             $data = $this->email_marketing->all();
             return DataTables::of($data)
                     ->addIndexColumn()
+                    ->addColumn('status', function($row){
+                        return '<span class="badge bg-success">Terkirim</span>';
+                    })
                     ->addColumn('created_at', function($row){
                         return $row->created_at->isoFormat('LLLL');
                     })
@@ -174,7 +177,7 @@ class EmailMarketingController extends Controller
                         $btn .= '</div>';
                         return $btn;
                     })
-                    ->rawColumns(['action'])
+                    ->rawColumns(['status','action'])
                     ->make(true);
         }
         return view('backend.emails.index');

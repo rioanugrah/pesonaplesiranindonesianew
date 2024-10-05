@@ -16,7 +16,11 @@
                     <form id="form-simpan" method="post" enctype="multipart/form-data">
                     @csrf
                     <div class="row">
-                        <div class="col-md-3 mb-3">
+                        <div class="col-md-2 mb-3">
+                            <label>NIK KTP</label>
+                            <input type="text" name="nik" class="form-control" placeholder="NIK KTP" id="">
+                        </div>
+                        <div class="col-md-2 mb-3">
                             <label>Nama</label>
                             <input type="text" name="nama" class="form-control" placeholder="Nama" id="">
                         </div>
@@ -28,7 +32,7 @@
                             <label>Nama Usaha</label>
                             <input type="text" name="nama_usaha" class="form-control" placeholder="Nama Usaha" id="">
                         </div>
-                        <div class="col-md-3 mb-3">
+                        <div class="col-md-2 mb-3">
                             <label>No.Telp</label>
                             <input type="number" name="no_telp" class="form-control" placeholder="No.Telp" id="">
                         </div>
@@ -62,7 +66,7 @@
                                 <option value="Indonesia">Indonesia</option>
                             </select>
                         </div>
-                        <div class="col-md-3 mb-3">
+                        {{-- <div class="col-md-3 mb-3">
                             <label>Kategori Usaha</label>
                             <select name="kategori_corporate_id" class="form-control" id="kategori_corporate">
                                 <option value="">-- Kategori Usaha --</option>
@@ -70,7 +74,7 @@
                                     <option value="{{ $kategori_corporate->id }}">{{ $kategori_corporate->nama_kategori }}</option>
                                 @endforeach
                             </select>
-                        </div>
+                        </div> --}}
                     </div>
                     <button type="submit" class="btn btn-success">Submit</button>
                     </form>

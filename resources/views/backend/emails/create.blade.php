@@ -102,6 +102,11 @@
                 url: "{{ url('b/emails/template/') }}" + '/' + $('#email_template').val(),
                 contentType: "application/json;  charset=utf-8",
                 cache: false,
+                beforeSend: function(){
+                    document.getElementById('description').innerHTML = '<div class="spinner-border text-info m-1" role="status">'+
+                                                                            '<span class="sr-only">Loading...</span>'+
+                                                                        '</div>';
+                },
                 success: function(result) {
                     if (result.success = true) {
                         document.getElementById('description').innerHTML = result.data.descriptions;

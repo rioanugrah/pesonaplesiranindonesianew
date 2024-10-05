@@ -13,6 +13,7 @@ use App\Models\Provinsi;
 use App\Mail\CooperationMail;
 
 use \Carbon\Carbon;
+use PDF;
 use DataTables;
 use Notification;
 use Validator;
@@ -193,8 +194,11 @@ class CooperationController extends Controller
                         return $row->kode_corporate.'<br>'.
                                 $row->created_at->isoFormat('LLLL');
                     })
-                    ->addColumn('kategori_corporate_id', function($row){
-                        return $row->kategori_corporate->nama_kategori;
+                    // ->addColumn('kategori_corporate_id', function($row){
+                    //     return $row->kategori_corporate->nama_kategori;
+                    // })
+                    ->addColumn('dokumen', function($row){
+                        return '<a href='.route('b.cooperation_pdf_perjanjian',['id' => $row->id]).' class="btn btn-primary" target="_blank">Perjanjian Kerjasama</a>';
                     })
                     ->addColumn('status', function($row){
                         switch ($row->status) {
@@ -226,7 +230,7 @@ class CooperationController extends Controller
                         $btn .= '</div>';
                         return $btn;
                     })
-                    ->rawColumns(['kode_corporate','action','status'])
+                    ->rawColumns(['kode_corporate','dokumen','action','status'])
                     ->make(true);
         }
 
@@ -243,6 +247,7 @@ class CooperationController extends Controller
     public function cooperation_simpan(Request $request)
     {
         $rules = [
+            'nik'  => 'required|unique:cooperation,nik',
             'nama'  => 'required',
             'email'  => 'required',
             'nama_usaha'  => 'required',
@@ -252,10 +257,12 @@ class CooperationController extends Controller
             'kota_id'  => 'required',
             'kecamatan_id'  => 'required',
             'negara'  => 'required',
-            'kategori_corporate_id'  => 'required',
+            // 'kategori_corporate_id'  => 'required',
         ];
 
         $messages = [
+            'nik.required'   => 'NIK KTP wajib diisi.',
+            'nik.unique'   => 'NIK KTP sudah ada.',
             'nama.required'   => 'Nama wajib diisi.',
             'email.required'   => 'Email wajib diisi.',
             'nama_usaha.required'   => 'Nama Usaha wajib diisi.',
@@ -265,7 +272,7 @@ class CooperationController extends Controller
             'kota_id.required'   => 'Kota wajib diisi.',
             'kecamatan_id.required'   => 'Kecamatan wajib diisi.',
             'negara.required'   => 'Negara wajib diisi.',
-            'kategori_corporate_id.required'   => 'Kategori wajib diisi.',
+            // 'kategori_corporate_id.required'   => 'Kategori wajib diisi.',
         ];
 
         $validator = Validator::make($request->all(), $rules, $messages);
@@ -273,6 +280,7 @@ class CooperationController extends Controller
             $input = $request->all();
             $input['id'] = Str::uuid()->toString();
             $input['kode_corporate'] = 'C-'.Carbon::now()->format('Ymd').rand(100,999);
+            $input['nik'] = $request->nik;
             $input['status'] = 'Waiting';
             $cooperation = $this->cooperation->create($input);
             if ($cooperation) {
@@ -356,5 +364,17 @@ class CooperationController extends Controller
             'success' => false,
             'error' => $validator->errors()->all()
         ]);
+    }
+
+    public function cooperation_pdf_perjanjian($id)
+    {
+        $data['cooperation'] = $this->cooperation->where('id',$id)->where('status','Waiting')->first();
+
+        if (empty($data['cooperation'])) {
+            return redirect()->back();
+        }
+
+        $pdf = PDF::loadView('backend.cooperation.pdf_perjanjian',$data);
+        return $pdf->stream();
     }
 }

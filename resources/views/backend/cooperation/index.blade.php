@@ -22,11 +22,12 @@
                         <thead>
                             <tr>
                                 <th>Kode Corporate</th>
-                                <th>Kategori Usaha</th>
+                                {{-- <th>Kategori Usaha</th> --}}
                                 <th>Nama Usaha</th>
                                 <th>Email</th>
                                 <th>Nama Penanggung Jawab</th>
                                 <th>Status</th>
+                                <th>Dokumen</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -55,10 +56,10 @@
                     data: 'kode_corporate',
                     name: 'kode_corporate'
                 },
-                {
-                    data: 'kategori_corporate_id',
-                    name: 'kategori_corporate_id'
-                },
+                // {
+                //     data: 'kategori_corporate_id',
+                //     name: 'kategori_corporate_id'
+                // },
                 {
                     data: 'nama_usaha',
                     name: 'nama_usaha'
@@ -74,6 +75,10 @@
                 {
                     data: 'status',
                     name: 'status'
+                },
+                {
+                    data: 'dokumen',
+                    name: 'dokumen'
                 },
                 {
                     data: 'action',

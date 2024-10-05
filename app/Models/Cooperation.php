@@ -19,11 +19,12 @@ class Cooperation extends Model
     public $fillable = [
         'id',
         'kode_corporate',
+        'nik',
         'nama',
         'email',
         'nama_usaha',
         'logo_usaha',
-        'kategori_corporate_id',
+        // 'kategori_corporate_id',
         'alamat_usaha',
         'kecamatan_id',
         'kota_id',
