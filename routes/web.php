@@ -45,7 +45,7 @@ Route::domain(parse_url(env('APP_URL'), PHP_URL_HOST))->group(function () {
 
     Route::prefix('contact-us')->group(function(){
         // Route::get('/', [App\Http\Controllers\FrontendController::class, 'contact'])->name('frontend.contact');
-        Route::get('/', [App\Http\Controllers\v2\FrontendController::class, 'contact_us'])->name('frontend.contact');
+        Route::get('/', [App\Http\Controllers\FrontendController::class, 'contact_us'])->name('frontend.contact');
         Route::post('send-mail', [App\Http\Controllers\FrontendController::class, 'contact_send_mail'])->name('frontend.contact_send_mail');
     });
 
