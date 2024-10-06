@@ -108,7 +108,7 @@
                                         </div>
                                         <div class="col-md-6">
                                             <img src="{{ asset('frontend/new_1/assets/posting/poster_kawah_ijen_ppi.webp') }}"
-                                            alt="Kawah Ijen" style="width: 1920pt;height: 700pt;">
+                                            alt="Kawah Ijen">
                                         </div>
                                     </div>
                                 </div>

@@ -14,6 +14,7 @@
                     <a href="javascript:void()">Tour Wisata</a>
                     <ul class="sub-menu">
                         <li><a href="{{ route('frontend.bromo') }}">Bromo</a></li>
+                        <li><a href="{{ route('frontend.kawah_ijen') }}">Kawah Ijen</a></li>
                     </ul>
                 </li>
                 <li>
