@@ -41,6 +41,10 @@ Route::domain(parse_url(env('APP_URL'), PHP_URL_HOST))->group(function () {
         Route::get('{id}', [App\Http\Controllers\FrontendController::class, 'bromo_list'])->name('frontend.bromo_list');
     });
 
+    Route::prefix('kawah-ijen')->group(function(){
+        Route::get('/', [App\Http\Controllers\FrontendController::class, 'kawah_ijen'])->name('frontend.kawah_ijen');
+    });
+
     Route::get('about-us', [App\Http\Controllers\FrontendController::class, 'about'])->name('frontend.about');
 
     Route::prefix('contact-us')->group(function(){

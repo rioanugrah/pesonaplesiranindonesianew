@@ -10,7 +10,7 @@
     {{ route('frontend.bromo') }}
 @endsection
 @section('content')
-    <div class="breadcumb-wrapper" data-bg-src="{{ asset('backend/images/bromo.webp') }}">
+    <div class="breadcumb-wrapper" data-bg-src="{{ asset('assets/images/bromo.webp') }}">
         <div class="container z-index-common">
             <div class="breadcumb-content">
                 <h1 class="breadcumb-title">{{ $bromo->title }}</h1>

@@ -240,4 +240,9 @@ class FrontendController extends Controller
         //     return redirect()->back()->with('error','Payment Gagal');
         // }
     }
+
+    public function kawah_ijen()
+    {
+        return view('frontend.kawah_ijen.index');
+    }
 }
