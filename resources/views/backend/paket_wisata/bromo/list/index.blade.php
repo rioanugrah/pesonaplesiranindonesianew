@@ -99,7 +99,11 @@
                     searchable: false
                 },
             ],
-            // order: [1,'desc']
+            order: [0,'desc'],
+            columnDefs: [
+                { className: 'text-center', targets: [0, 1, 2, 3, 4, 5] },
+                // { className: 'text-center', targets: [5] },
+            ],
         });
 
         function reload() {

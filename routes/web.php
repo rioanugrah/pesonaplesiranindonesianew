@@ -31,7 +31,6 @@ Route::domain(parse_url(env('APP_URL'), PHP_URL_HOST))->group(function () {
     // Route::get('/', function(){
     //     return view('frontend.index');
     // })->name('frontend');
-
     // Route::get('/', [App\Http\Controllers\v2\FrontendController::class, 'index'])->name('frontend');
 
     Route::get('/', [App\Http\Controllers\FrontendController::class, 'index'])->name('frontend');
@@ -183,4 +182,20 @@ Route::domain(parse_url(env('APP_URL'), PHP_URL_HOST))->group(function () {
     Route::get('redirect/{driver}', [App\Http\Controllers\Auth\LoginController::class, 'redirectToProvider'])->name('login_google');
     Route::get('{driver}/callback', [App\Http\Controllers\Auth\LoginController::class, 'handleProviderCallback'])->name('login.callback');
     Route::post('mark-as-read', [App\Http\Controllers\NotifikasiController::class, 'markNotification'])->name('markNotification');
+});
+
+Route::domain('it.'.parse_url(env('APP_URL'), PHP_URL_HOST))->group(function () {
+    Route::get('/', function(){
+        // return view('layouts.it.master');
+    });
+
+    Route::get('login-apps', [App\Http\Controllers\IT\Auth\LoginController::class, 'formLogin'])->name('it.formLogin');
+    Route::post('login-apps', [App\Http\Controllers\IT\Auth\LoginController::class, 'postLogin'])->name('it.postLogin')->middleware('throttle:login-apps');
+
+    Route::group(['middleware' => 'auth'], function () {
+        Route::get('dashboard',function(){
+            return view('it.dashboard.index');
+        })->name('it.dashboard')->middleware('verified');
+        Route::post('logout-apps', [App\Http\Controllers\IT\Auth\LoginController::class, 'logout'])->name('it.logout')->middleware('verified');
+    });
 });

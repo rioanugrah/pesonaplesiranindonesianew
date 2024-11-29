@@ -83,5 +83,20 @@ class RouteServiceProvider extends ServiceProvider
         RateLimiter::for('api', function (Request $request) {
             return Limit::perMinute(60);
         });
+        // RateLimiter::for('login-apps', function (Request $request) {
+        //     return Limit::perMinute(3)->by(optional($request->user())->id ?: $request->ip())->response(function () {
+        //         return response(['messsage' => 'You have reached your access limit (Posts). Please try after 1 minute.'], 429);
+        //     });
+        // });
+        RateLimiter::for('login-apps', function(Request $request){
+            $key = 'login-apps.'.$request->ip();
+            $max = 3;
+            $decay = 60;
+            if (RateLimiter::tooManyAttempts($key,$max)) {
+                return redirect()->back()->with('message','Too Many Request.');
+            }else{
+                RateLimiter::hit($key,$decay);
+            }
+        });
     }
 }
