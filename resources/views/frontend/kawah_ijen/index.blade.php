@@ -40,7 +40,7 @@
                                         </div>
                                         <div class="col-auto">
                                             <p class="tour-price">
-                                                <strong>Start Price Rp. 300.000</strong> / Per Pax
+                                                <strong>Start Price Rp. 400.000</strong> / Per Pax
                                             </p>
                                         </div>
                                     </div>
@@ -49,14 +49,10 @@
                                         <div class="col-md-6">
                                             <p><strong>Tanggal Berangkat :</strong></p>
                                             <ul>
-                                                <li>12 - 13 Oktober 2024</li>
-                                                <li>19 - 20 Oktober 2024</li>
-                                                <li>26 - 27 Oktober 2024</li>
-                                                <li>09 - 10 November 2024</li>
-                                                <li>16 - 17 November 2024</li>
-                                                <li>23 - 24 November 2024</li>
-                                                <li>14 - 15 Desember 2024</li>
-                                                <li>21 - 22 Desember 2024</li>
+                                                <li>28 - 29 Januari 2025</li>
+                                                <li>08 - 09 Februari 2025</li>
+                                                <li>15 - 16 Februari 2025</li>
+                                                <li>22 - 23 Februari 2025</li>
                                             </ul>
                                             <p><strong>Include :</strong></p>
                                             <ul>
@@ -107,7 +103,7 @@
                                             <p>Pemesanan bisa melalui Whatsapp Office dan Whatsapp Admin yang tertera di website kami, serta melakukan Screenshot website untuk pemesanan Trip Kawah Ijen.</p>
                                         </div>
                                         <div class="col-md-6">
-                                            <img src="{{ asset('frontend/new_1/assets/posting/poster_kawah_ijen_ppi.webp') }}"
+                                            <img src="{{ asset('frontend/new_1/assets/posting/poster_kawah_ijen_ppi_240125.webp') }}"
                                             alt="Kawah Ijen">
                                         </div>
                                     </div>

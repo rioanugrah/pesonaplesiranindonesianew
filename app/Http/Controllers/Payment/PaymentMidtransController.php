@@ -97,7 +97,7 @@ class PaymentMidtransController extends Controller
             $input['id'] = Str::uuid()->toString();
             $kode_jenis_transaksi = 'TRX';
             $kode_random_transaksi = Carbon::now()->format('Ym').rand(100,999);
-            
+
             $input['transaction_code'] = $kode_jenis_transaksi.'-'.$kode_random_transaksi;
             $input['transaction_unit'] = $request->title;
 
@@ -178,10 +178,10 @@ class PaymentMidtransController extends Controller
                 $input['user'] = null;
             }
             $input['status'] = 'Unpaid';
-            
+
             $transactions = Transactions::create($input);
             DB::commit();
-            
+
             if($transactions){
                 $params['transaction_details'] = [
                     'order_id' => $input['transaction_code'],
@@ -222,18 +222,18 @@ class PaymentMidtransController extends Controller
                 $data['title'] = $request->title;
                 $data['qty'] = $input['transaction_qty'];
                 $data['price'] = $input['transaction_price'];
-        
+
                 $data['link_url_payment'] = $this->url_payment;
                 $data['midtrans_client_key'] = $this->midtrans_client_key;
                 $data['snapToken'] = \Midtrans\Snap::getSnapToken($params);
                 return view('frontend.frontend5.payment.index',$data);
             }
-            
+
         } catch (\Throwable $th) {
             DB::rollback();
             return redirect()->back();
         }
-        
+
         // return $data['snapToken'];
         // return view('orders.show', compact('order', 'snapToken'));
     }
