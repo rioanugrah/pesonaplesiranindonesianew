@@ -149,16 +149,30 @@
                     rupiah += separator + ribuan.join('.');
                 }
 
-                var adminfee = parseFloat($('#method').val().split('|')[1]);
+                if ($('#method').val().split('|')[0] == 'QRISC' || $('#method').val().split('|')[0] == 'QRIS2') {
+                    var adminfee = ((penjumlahan/100)*0.7)+parseFloat($('#method').val().split('|')[1]);
 
-                var adminfee_string = adminfee.toString(),
-                    sisa_adminfee = adminfee_string.length % 3,
-                    rupiahadminfee = adminfee_string.substr(0, sisa_adminfee),
-                    ribuanadminfee = adminfee_string.substr(sisa_adminfee).match(/\d{3}/g);
+                    var adminfee_string = adminfee.toString(),
+                        sisa_adminfee = adminfee_string.length % 3,
+                        rupiahadminfee = adminfee_string.substr(0, sisa_adminfee),
+                        ribuanadminfee = adminfee_string.substr(sisa_adminfee).match(/\d{3}/g);
 
-                if (ribuanadminfee) {
-                    separatoradminfee = sisa_adminfee ? '.' : '';
-                    rupiahadminfee += separatoradminfee + ribuanadminfee.join('.');
+                    if (ribuanadminfee) {
+                        separatoradminfee = sisa_adminfee ? '.' : '';
+                        rupiahadminfee += separatoradminfee + ribuanadminfee.join('.');
+                    }
+                }else{
+                    var adminfee = parseFloat($('#method').val().split('|')[1]);
+
+                    var adminfee_string = adminfee.toString(),
+                        sisa_adminfee = adminfee_string.length % 3,
+                        rupiahadminfee = adminfee_string.substr(0, sisa_adminfee),
+                        ribuanadminfee = adminfee_string.substr(sisa_adminfee).match(/\d{3}/g);
+
+                    if (ribuanadminfee) {
+                        separatoradminfee = sisa_adminfee ? '.' : '';
+                        rupiahadminfee += separatoradminfee + ribuanadminfee.join('.');
+                    }
                 }
 
                 var bilangantotal = penjumlahan+adminfee;
