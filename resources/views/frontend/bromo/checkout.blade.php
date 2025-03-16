@@ -82,6 +82,13 @@
                                                 class="woocommerce-Price-currencySymbol" id="subtotal"></span></bdi></span>
                                 </td>
                             </tr>
+                            <tr class="cart-subtotal">
+                                <th>Admin Fee</th>
+                                <td data-title="AdminFee" colspan="4"><span
+                                        class="woocommerce-Price-amount amount"><bdi><span
+                                                class="woocommerce-Price-currencySymbol" id="adminfee"></span></bdi></span>
+                                </td>
+                            </tr>
                             <tr class="order-total">
                                 <th>Total</th>
                                 <td data-title="Total" colspan="4"><strong><span
@@ -96,12 +103,18 @@
                 <div class="mt-lg-3">
                     <div class="woocommerce-checkout-payment">
                         <h4 class="mt-4 pt-lg-2">Payment Method</h4>
-                        @foreach ($channels as $channel)
+                        {{-- @foreach ($channels as $channel)
                             <div class="mt-2 mb-2">
-                                <input type="radio" name="method" value="{{ $channel->code }}" id="{{ $channel->code }}">
+                                <input type="radio" class="method" name="method" value="{{ $channel->code }}" id="{{ $channel->code }}">
                                 <label for="{{ $channel->code }}">{{ $channel->name }}</label>
                             </div>
-                        @endforeach
+                        @endforeach --}}
+                        <select name="method" class="form-control" id="method">
+                            <option value="">-- Select Payment --</option>
+                            @foreach ($channels as $channel)
+                                <option value="{{ $channel->code.'|'.$channel->total_fee->flat }}">{{ $channel->name }}</option>
+                            @endforeach
+                        </select>
                         <div class="form-row place-order pt-lg-2">
                             <button type="submit" class="vs-btn style4">Buy Now</button>
                         </div>
@@ -113,11 +126,14 @@
 @endsection
 @section('script')
     <script>
-        $('#qty').change(function() {
+        $('#method').change(function(){
+            // alert($('#method').val());
             if ('{{ $bromo->bromo->category_trip }}' == 'Publik') {
+                // alert($('.method').val());
                 var price = {{ $bromo->price - ($bromo->discount / 100) * $bromo->price }};
                 var jumlah = parseInt($('#qty').val());
                 var penjumlahan = jumlah * price;
+                // var penjumlahan = (jumlah * price)+parseFloat($('#method').val().split('|')[1]);
 
                 // $('#total').val(jumlah);
 
@@ -133,8 +149,33 @@
                     rupiah += separator + ribuan.join('.');
                 }
 
+                var adminfee = parseFloat($('#method').val().split('|')[1]);
+
+                var adminfee_string = adminfee.toString(),
+                    sisa_adminfee = adminfee_string.length % 3,
+                    rupiahadminfee = adminfee_string.substr(0, sisa_adminfee),
+                    ribuanadminfee = adminfee_string.substr(sisa_adminfee).match(/\d{3}/g);
+
+                if (ribuanadminfee) {
+                    separatoradminfee = sisa_adminfee ? '.' : '';
+                    rupiahadminfee += separatoradminfee + ribuanadminfee.join('.');
+                }
+
+                var bilangantotal = penjumlahan+adminfee;
+
+                var number_stringtotal = bilangantotal.toString(),
+                    sisatotal = number_stringtotal.length % 3,
+                    rupiahtotal = number_stringtotal.substr(0, sisatotal),
+                    ribuantotal = number_stringtotal.substr(sisatotal).match(/\d{3}/g);
+
+                if (ribuantotal) {
+                    separatortotal = sisatotal ? '.' : '';
+                    rupiahtotal += separatortotal + ribuantotal.join('.');
+                }
+
                 document.getElementById('subtotal').innerHTML = 'Rp. ' + rupiah;
-                document.getElementById('total').innerHTML = 'Rp. ' + rupiah;
+                document.getElementById('total').innerHTML = 'Rp. ' + rupiahtotal;
+                document.getElementById('adminfee').innerHTML = 'Rp. ' + rupiahadminfee;
                 // $('#order_total').val(penjumlahan);
             } else if ('{{ $bromo->bromo->category_trip }}' == 'Private') {
                 if (($('#qty').val()) >= parseInt('{{ $bromo->max_quota }}')) {
@@ -162,6 +203,57 @@
 
                 }
             }
+        });
+        $('#qty').change(function() {
+            // if ('{{ $bromo->bromo->category_trip }}' == 'Publik') {
+            //     // alert($('.method').val());
+            //     var price = {{ $bromo->price - ($bromo->discount / 100) * $bromo->price }};
+            //     var jumlah = parseInt($('#qty').val());
+            //     var penjumlahan = jumlah * price;
+
+            //     // $('#total').val(jumlah);
+
+            //     var bilangan = penjumlahan;
+
+            //     var number_string = bilangan.toString(),
+            //         sisa = number_string.length % 3,
+            //         rupiah = number_string.substr(0, sisa),
+            //         ribuan = number_string.substr(sisa).match(/\d{3}/g);
+
+            //     if (ribuan) {
+            //         separator = sisa ? '.' : '';
+            //         rupiah += separator + ribuan.join('.');
+            //     }
+
+            //     document.getElementById('subtotal').innerHTML = 'Rp. ' + rupiah;
+            //     document.getElementById('total').innerHTML = 'Rp. ' + rupiah;
+            //     // $('#order_total').val(penjumlahan);
+            // } else if ('{{ $bromo->bromo->category_trip }}' == 'Private') {
+            //     if (($('#qty').val()) >= parseInt('{{ $bromo->max_quota }}')) {
+            //         alert('Jumlah anggota maksimal ' + {{ $bromo->max_quota }} + ' orang');
+            //         $('#qty').val('');
+            //     } else {
+            //         var price = {{ $bromo->price - ($bromo->discount / 100) * $bromo->price }};
+            //         var jumlah = parseInt($('#qty').val());
+            //         var penjumlahan = jumlah * price;
+
+            //         var bilangan = price;
+
+            //         var number_string = bilangan.toString(),
+            //             sisa = number_string.length % 3,
+            //             rupiah = number_string.substr(0, sisa),
+            //             ribuan = number_string.substr(sisa).match(/\d{3}/g);
+
+            //         if (ribuan) {
+            //             separator = sisa ? '.' : '';
+            //             rupiah += separator + ribuan.join('.');
+            //         }
+
+            //         document.getElementById('subtotal').innerHTML = 'Rp. ' + rupiah;
+            //         document.getElementById('total').innerHTML = 'Rp. ' + rupiah;
+
+            //     }
+            // }
         });
     </script>
 @endsection

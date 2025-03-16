@@ -91,6 +91,7 @@ class FrontendController extends Controller
 
     public function bromo_checkout($id,$id_list)
     {
+        // dd('ok');
         $tanggal_live = Carbon::now()->addDay($this->addDay);
         // dd($tanggal_live);
         $data['bromo'] = $this->bromo_list->where('id',$id_list)->where('bromo_id',$id)
@@ -113,12 +114,13 @@ class FrontendController extends Controller
                                 ->whereDate('departure_date','>=',$tanggal_live->format('Y-m-d'))
                                 ->whereTime('departure_date','>=',$tanggal_live->format('H:i:s'))
                                 ->first();
+
         $kode_jenis_transaksi = 'TRX-BRMO';
         $kode_random_transaksi = Carbon::now()->format('Ym').rand(100,999);
         $input['id'] = Str::uuid()->toString();
         $input['transaction_code'] = $kode_jenis_transaksi.'-'.$kode_random_transaksi;
         $input['transaction_unit'] = $bromo->bromo->title.' - Departure Date '.$bromo->departure_date;
-        $transaction_price = $bromo->category_trip == 'Publik' ? ($bromo->price - (($bromo->discount/100) * $bromo->price)) * $request->qty : $bromo->price - (($bromo->discount/100) * $bromo->price);
+        $transaction_price = $bromo->category_trip == 'Publik' ? (($bromo->price - (($bromo->discount/100) * $bromo->price)) * $request->qty) : ($bromo->price - (($bromo->discount/100) * $bromo->price));
         $input['transaction_billing'] = json_encode([
             'first_name' => $request->first_name,
             'last_name' => $request->last_name,
@@ -150,7 +152,7 @@ class FrontendController extends Controller
         $tripay = $this->tripay;
         $paymentDetail = $tripay->requestTransaction(
             $input['transaction_unit'],
-            $request->method,$input['transaction_price'],
+            explode('|',$request->method)[0],$input['transaction_price'],
             $request->first_name,$request->last_name,$request->email,$request->phone,
             $input['transaction_code'],null
             // route('frontend.bromo.f_reservasi_invoice',['transaction_code' => $input['transaction_code']])
